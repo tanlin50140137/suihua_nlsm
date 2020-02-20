@@ -1,0 +1,32 @@
+<ul class='nav'>
+<li>
+  <a href="/" {if condition="$cur == 'home'"}class="selected1"{/if}>
+    <em {if condition="$cur == 'home'"}class="selected1em"{/if}></em>
+    <span>首页</span>
+   </a>
+</li>
+<li>
+  <a href="{:url('Index/classify')}" {if condition="$cur == 'type'"}class="selected2"{/if}>
+    <em></em>
+    <span>分类</span>
+     </a>
+</li>
+<li>
+  <a href="{:url('Index/shop')}" {if condition="$cur == 'business'"}class="selected3"{/if}>
+    <em></em>
+    <span>店铺街</span>
+    </a>
+</li>
+<li>
+  <a href="{:url('User/cart')}" {if condition="$cur == 'cart'"}class="selected4"{/if}>
+    <em></em>
+    <span>购物车</span>
+    </a>
+</li>
+<li>
+  <a href="{:url('User/index')}" {if condition="$cur == 'user'"}class="selected5"{/if}>
+    <em></em>
+    <span>我的</span>
+    </a>
+</li>
+</ul>

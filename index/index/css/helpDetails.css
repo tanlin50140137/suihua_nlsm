@@ -1,0 +1,177 @@
+#HelpDetails{
+    position: fixed;
+    z-index: 99999;
+    display: block;
+    width: 100%;
+    height:calc(100% - 23px);
+    overflow: hidden;
+    background: #f6f6f6;
+    top: 73px;
+}
+
+
+#HelpDetails #header{
+    width: 100%;
+    height: 50px;
+    background: #2b91d4;
+    text-align: center;
+    color: #fff;
+    position: relative;
+
+}
+#HelpDetails #header a{
+    display: block;
+    width: 12px;
+    height: 22px;
+    background: url(../image/icon/back.png) no-repeat center center / contain;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 25px;
+}
+
+
+#HelpDetails #header h2{
+    font-weight: normal;
+    line-height: 50px;
+}
+#HelpDetails #screen {
+    overflow: hidden;
+    background: #fff;
+}
+#HelpDetails .nav{
+    bottom: 0;
+    height: 57px;
+    border-top: 1px solid #ddd;
+    z-index: 99999;
+    background: #fff;
+    position: fixed;
+    width: 100%;
+}
+#HelpDetails .nav li{
+    width: 33.33333%;
+    height: 57px;
+    text-align: center;
+    float: left;
+    display: block;
+}
+#HelpDetails .nav li a{
+    display: block;
+    box-sizing: border-box;
+    -wibkit-sizing: border-box;
+    padding-top: 10%;
+    margin: 0 auto;
+}
+#HelpDetails .nav li.active a span{
+    color: #2b91d4;
+}
+#HelpDetails .nav li span{
+    font-size: 13px;
+    width: 100%;
+    color: #666;
+    display: block;
+    line-height: 13px;
+}
+#HelpDetails .nav li em{
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-bottom: 1%;
+}
+#HelpDetails .nav li:first-child em{
+    background: url(../image/icon/index.png) no-repeat;
+    background-size: contain;
+}
+#HelpDetails .nav li:nth-child(2) em{
+    background: url(../image/icon/invest-active.png) no-repeat;
+    background-size: contain;
+}
+#HelpDetails .nav li:last-child em{
+    background: url(../image/icon/profit.png) no-repeat;
+    background-size: contain;
+}
+
+.wrap{
+    width: 100%;
+    height: 100%;
+}
+#HelpDetails .invest_content{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: scroll;
+    margin-bottom: 30px;
+}
+#HelpDetails .header{
+    width: 100%;
+    height: 50px;
+    background: #2b91d4;
+    position: fixed;
+    z-index: 999;
+    color: #fff;
+    text-align: center;
+}
+#HelpDetails .header h2{
+    font-weight: 400;
+    line-height: 50px;
+}
+#HelpDetails .header a{
+    background: url(../image/icon/back.png) no-repeat;
+    background-size: contain;
+    display: block;
+    width: 12px;
+    height: 22px;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+}
+#HelpDetails .cont{
+    width: 100%;
+    height: calc(100% - 50px);
+    overflow: scroll;
+    margin-top:20px;
+}
+#HelpDetails .top{
+    width: 100%;
+    height: 145px;
+    background: #2b91d4;
+    text-align: center;
+    color: #fff;
+}
+#HelpDetails .top strong{
+    font-weight: 400;
+    font-size: 65px;
+    line-height: 85px;
+    padding-top: 15px;
+    display: block;
+}
+#HelpDetails .top span{
+    font-size: 15px;
+    display: block;
+}
+#HelpDetails .profit_deta{
+    width: 100%;
+    height: calc(100% - 30px);
+    overflow: scroll;
+    box-sizing: border-box;
+    padding:0px 15px;
+}
+#HelpDetails .profit_deta img{
+    width: 100%
+}
+#HelpDetails .profit_deta h4{
+    margin-bottom: 15px;
+    display: block;
+    margin-top: 20px;
+}
+
+#HelpDetails .profit_deta p{
+    line-height: 25px;
+    font-size: 15px;
+}

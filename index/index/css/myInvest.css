@@ -1,0 +1,354 @@
+#MyInvest{
+    /*position: fixed;*/
+    z-index: 99999;
+    display: block;
+    width: 100%;
+    height:calc(100%);
+    /*overflow: hidden;*/
+    background: #f6f6f6;
+    margin-top: 73px;
+}
+
+
+#MyInvest #header{
+    width: 100%;
+    height: 50px;
+    background: #38aee3;
+    text-align: center;
+    color: #fff;
+    position: relative;
+
+}
+.passport{
+    background: #fff;
+    margin-top:2px;
+}
+.passport .name {
+    background: url('../image/icon/user.png') no-repeat 5px center;
+}
+.passport .truename {
+    background: url('../image/icon/shop_icon.png') no-repeat 5px center;
+}
+.passport .alipay {
+    background: url('../image/icon/safety.png') no-repeat 5px center
+}
+.passport .mobile {
+    background: url('../image/icon/phone.png') no-repeat 5px center
+}
+.passport .address {
+    background: url('../image/icon/address.png') no-repeat 5px center
+}
+.passport .goods_name {
+    background: url('../image/icon/user.png') no-repeat 5px center;
+}
+.passport .goods_price {
+    background: url('../image/icon/shop_icon.png') no-repeat 5px center;
+}
+.passport .discount {
+    background: url('../image/icon/safety.png') no-repeat 5px center
+}
+.passport .market_price {
+    background: url('../image/icon/phone.png') no-repeat 5px center
+}
+.passport .goods_number {
+    background: url('../image/icon/address.png') no-repeat 5px center
+}
+#MyInvest #header a{
+    display: block;
+    width: 12px;
+    height: 22px;
+    background: url(../image/icon/back.png) no-repeat center center / contain;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 25px;
+}
+
+
+#MyInvest #header h2{
+    font-weight: normal;
+    line-height: 50px;
+}
+#MyInvest #screen {
+    overflow: hidden;
+    background: #fff;
+}
+#MyInvest #screen ul{
+    padding-left:0px !important;
+    margin:0px !important;
+}
+#MyInvest .nav{
+    bottom: 0;
+    height: 57px;
+    border-top: 1px solid #ddd;
+    z-index: 99999;
+    background: #fff;
+    position: fixed;
+    width: 100%;
+}
+#MyInvest .nav li{
+    width: 50%;
+    height: 57px;
+    text-align: center;
+    float: left;
+    display: block;
+}
+#MyInvest .nav li a{
+    display: block;
+    box-sizing: border-box;
+    -wibkit-sizing: border-box;
+    padding-top: 5%;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+}
+#MyInvest .nav li.active a span{
+    color: #38aee3;
+}
+#MyInvest .nav li span{
+    font-size: 13px;
+    width: 100%;
+    color: #666;
+    display: block;
+    line-height: 13px;
+}
+#MyInvest .nav li em{
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-bottom: 1%;
+}
+#MyInvest .nav li:first-child em{
+    background: url(../image/icon/index.png) no-repeat;
+    background-size: contain;
+}
+#MyInvest .nav li:nth-child(2) em{
+    background: url(../image/icon/profit-active.png) no-repeat;
+    background-size: contain;
+}
+
+#MyInvest #screen {
+    overflow: hidden;
+    background: #fff;
+}
+#MyInvest #screen ul li{
+    display: block;
+    width: 48%;
+    float: left;
+    text-align: center;
+    padding: 10px 0px;
+    color: #666;
+    font-size: 4.3vw;
+    border-bottom: 2px solid #fff;
+    -webkit-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+}
+.wrap{
+    width: 100%;
+    height: 100%;
+}
+#MyInvest .invest_content{
+    width: 100%;
+    /*height: calc(100% - 50px);*/
+    /*position: absolute;*/
+    /*margin-bottom: 30px;*/
+}
+#MyInvest .header{
+    width: 100%;
+    height: 50px;
+    background: #38aee3;
+    position: fixed;
+    z-index: 999;
+    color: #fff;
+    text-align: center;
+}
+#MyInvest .header h2{
+    font-weight: 400;
+    line-height: 50px;
+}
+#MyInvest .header a{
+    background: url(../image/icon/back.png) no-repeat;
+    background-size: contain;
+    display: block;
+    width: 12px;
+    height: 22px;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+}
+#MyInvest #cont{
+    width: 100%;
+    height: calc(100% - 110px);
+    margin-top:10px;
+}
+#MyInvest .top{
+    width: 100%;
+    height: 145px;
+    background: #38aee3;
+    text-align: center;
+    color: #fff;
+}
+#MyInvest .top strong{
+    font-weight: 400;
+    font-size: 65px;
+    line-height: 85px;
+    padding-top: 15px;
+    display: block;
+}
+#MyInvest .top span{
+    font-size: 15px;
+    display: block;
+}
+#MyInvest .profit_deta{
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+    margin:10px 0px;
+    -webkit-overflow-scrolling : touch;
+}
+#MyInvest .profit_deta .participation li{
+    display: block;
+    width: 100%;
+    height: 161px;
+    background: #fff;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    padding: 10px;
+}
+#MyInvest .profit_deta .participation li em{
+    display: block;
+    float: left;
+    width: 105px;
+    height: 141px;
+    margin-right: 10px;
+}
+#MyInvest .profit_deta .participation li h3{
+    font-weight: normal;
+    font-style: 18px;
+    line-height: 35px;
+    position: relative;
+}
+#MyInvest .profit_deta .participation li h3 i{
+    font-weight: normal;
+    font-size: 18px;
+    font-style: normal;
+    line-height: 35px;
+    display: block;
+    width: calc(80% - 125px);
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+#MyInvest .profit_deta .participation li h3 b{
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 35px;
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+
+}
+#MyInvest .profit_deta .participation li samp{
+    display: block;
+    float: left;
+    width: calc(100% - 115px);
+    color: #666;
+    line-height: 25px;
+
+}
+#MyInvest .profit_deta .participation li samp i{
+    font-style: normal;
+    color: #f13b3b;
+}
+#MyInvest .profit_deta .participation li span{
+    color: #666;
+    font-size: 15px;
+}
+
+
+
+
+#MyInvest .profit_deta .participation_no li{
+    display: block;
+    width: 100%;
+    height: 161px;
+    background: #fff;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    padding: 10px;
+}
+#MyInvest .profit_deta .participation_no li em{
+    display: block;
+    float: left;
+    width: 105px;
+    height: 141px;
+    margin-right: 10px;
+}
+#MyInvest .profit_deta .participation_no li h3{
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 25px;
+}
+#MyInvest .profit_deta .participation_no li samp{
+    display: block;
+    float: left;
+    width: calc(100% - 115px);
+    color: #666;
+    line-height: 25px;
+
+}
+#MyInvest .profit_deta .participation_no li samp i{
+    font-style: normal;
+    color: #f13b3b;
+}
+#MyInvest .profit_deta .participation_no li span{
+    color: #666;
+    font-size: 15px;
+    line-height: 30px;
+}
+#MyInvest .radeBox{
+    width:calc(100% - 115px);
+    float: left;
+    height: 8px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: #f2f2f2;
+    position: relative;
+    margin-top:5px;
+}
+#MyInvest .radeBox span{
+    display: block;
+
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #f7693e;
+    border-radius: 8px;
+}
+#MyInvest .sold_rade b{
+    font-size: 12px;
+    color: #666;
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+}
+#MyInvest .sold_rade b,.sold_rade strong{
+    font-weight: 400;
+}
+#MyInvest .sold_rade i{
+    font-style: normal;
+    text-align: left;
+}
+#MyInvest .sold_rade strong{
+    text-align: right;
+    float: right;
+}

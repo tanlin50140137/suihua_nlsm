@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>个人信息</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/user.css">
+
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class='close'></a>
+        <h2>个人信息</h2>
+    </div>
+</div>
+<div class="user-info"> 
+    <ul>
+        <li>头像
+            <img src="" alt="" id="user_face">
+            <div class="form_t">
+                <input type="file" accept="image/*" name="avater" id="userface-file" />
+            </div>
+        </li>
+        <li id="name">昵称<span></span></li>
+        <li id="garden">性别<span></span>
+        <select name="mysex" id="sex">
+            <option value="0" style="display:none;">保密</option>
+            <option value="1">男</option>
+            <option value="2">女</option>
+        </select></li>
+        <li id="birday">生日<input id="meeting" type="date" value="1996-11-25"/><span></span></li>
+        <li id="remark">简介<span></span></li>
+    </ul>
+    <ul>
+        <li><a onclick="tohtml('modify');">修改密码</a></li>
+        <li><a onclick="tohtml('paypwd');">支付密码</a></li>
+    </ul>
+    <p class="more">以下信息为非公开信息</p>
+    <ul class="baomi">
+        <li id="truename">真实姓名<span></span></li>
+        <li id="card">身份证号<span></span></li>
+        <li id="mobile">手机号码<span></span></li>
+        <li id="alipay"><a onclick="tohtml('alipay');">支付宝账号<span></span></a></li>
+    </ul>
+
+    <div id="editName">
+        <span class="mark"></span>
+        <div class="form">
+            <input type="text" placeholder="请输入信息">
+            <button class="tj">保存</button><button>取消</button>
+        </div>
+    </div>
+    <div id="editRemark">
+        <span class="mark"></span>
+        <div class="form">
+            <textarea name="" id="" cols="30" rows="10" placeholder="请输入信息"></textarea>
+            <button class="tj">保存</button><button>取消</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+</body>
+<script>
+    $(function(){
+        //获取会员信息
+        $.post(serverurl+'/api/app/detail',{'appkey':localStorage.appkey,'token':token},function(data){
+            $("#loading").hide();
+            if(data.list){
+                $('#user_face').attr('src',data.list.userface);
+                $('#name span').html(data.list.nickname);
+                $('#garden span').html(data.list.sexname);
+                $('#birday span').html(data.list.birthday);
+                $('#birday span').html(data.list.birthday);
+                $('#card span').html(data.list.card);
+                $('#mobile span').html(data.list.username);
+                $('#alipay span').html(data.list.alipay);
+                $('#remark span').html(data.list.remark);
+                $('#truename span').html(data.list.truename);
+                localStorage.mobile = data.list.username;
+            }else{
+                api.openWin({
+                    name: 'login',
+                    url:'login.html'
+                });
+            }
+        },"json");
+    
+
+        //上传头像
+        $('#userface-file').change(function(event) {
+            event.preventDefault()
+            var files = event.target.files;
+
+            var myfiles = files
+            var i
+            for(i = 0; i < files.length; i++) {
+                files[i].thumb = URL.createObjectURL(files[i])
+            }
+            files = Array.prototype.slice.call(files, 0)
+            files = files.filter(function(file) {
+                // $("#file").val(file);
+                // document.getElementById('file').value = file
+                return /image/i.test(file.type)
+            })
+            $("#user_face").attr("src", (files[0].thumb));
+
+            var img = new FormData();
+                img.append("userface", files[0]);
+                img.append("appkey",localStorage.appkey);
+                img.append("token",token);
+            $.ajax({
+                url: serverurl+'/api/app/edit',
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: img,
+                success: function(data) {
+                }
+            });
+        })
+        var filed = '';
+        // 姓名
+        $("#name").click(function(){
+            filed = 'nickname';
+            $("#editName").fadeIn(200);
+            $("#editName .form input").val($("#name span").text());
+        })
+        //身份证
+        $("#card").click(function(){
+            var text = $("#card span").text();
+            if(text){return false;}
+            filed = 'card';
+            $("#editName").fadeIn(200);
+            $("#editName .form input").val('');
+        })
+        //真实姓名
+        $("#truename").eq(0).click(function(){
+            var text = $("#truename span").text();
+            if(text){return false;}
+            filed = 'truename';
+            $("#editName").fadeIn(200);
+            $("#editName .form input").val(text);
+        })
+        //取消
+        $("#editName button").eq(1).click(function(){
+            $("#editName").fadeOut(200);
+        })
+        //保存
+        $("#editName .tj").click(function(){
+            $("#editName").fadeOut(200)
+            var text = $("#editName .form input").val();
+            if(text != ''){
+                var data = {};
+                    data.appkey = localStorage.appkey;
+                    data.token = token;
+                if(filed == 'nickname'){
+                    data.nickname = text;
+                    $("#name span").html(text);
+                }else if(filed == 'card'){
+                    data.card = $("#editName .form input").val();
+                    $("#card span").html(text);
+                }else if(filed == 'truename'){
+                    data.truename = $("#editName .form input").val();
+                    $("#truename span").html(text);
+                }
+                $.post(serverurl+'/api/app/edit',data,function(data){
+                    
+                },"json");
+            }else{
+                layer.msg('请输入信息');return false;
+            }
+        })
+        //性别
+        $("#sex").on("change",function(){
+            var sex = $(this).val();
+            var sexname = '男';
+            if(sex == 2){
+                sexname = '女';
+            }
+            $("#garden span").html(sexname)
+            $.post(serverurl+'/api/app/edit',{'sex':sex,'appkey':localStorage.appkey,'token':token},function(data){
+                    
+            },"json");
+        })
+        //生日
+        $("#meeting").on("change",function(){
+            $("#birday span").text($(this).val())
+            $.post(serverurl+'/api/app/edit',{'birthday':$(this).val(),'appkey':localStorage.appkey,'token':token},function(data){
+                    
+            },"json");
+        })
+
+        //简介
+        $("#remark").click(function(){
+            var remark = $("#remark").children("span").text();
+            $("#editRemark").fadeIn(200);
+            $("#editRemark .form textarea").val(remark);
+        })
+        $("#editRemark .mark").click(function(){
+            $("#editRemark").fadeOut(200);
+        })
+        $("#editRemark button").eq(1).click(function(){
+            $("#editRemark").fadeOut(200);
+        })
+        $("#editRemark .tj").click(function(){
+            var remark = $("#editRemark .form textarea").val();
+            if(remark != ""){
+                $("#remark").children("span").text($("#editRemark .form textarea").val())
+                $("#editRemark .form textarea").val("");
+                $("#editRemark").fadeOut(200);
+
+                $.post(serverurl+'/api/app/edit',{'remark':remark,'appkey':localStorage.appkey,'token':token},function(data){
+                    
+                },"json");
+            }else{
+                layer.msg('请输入信息');
+            }
+        })
+    })
+</script>
+</html>

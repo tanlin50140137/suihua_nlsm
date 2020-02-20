@@ -1,0 +1,312 @@
+#shoppingCart{
+    position: absolute;
+    display: block;
+    width: 100%;
+    height:calc(100% - 80px);
+    overflow: hidden;
+    background: #f6f6f6;
+    margin-top: 23px;
+}
+
+#shoppingCart #header{
+    width: 100%;
+    height: 50px;
+    background: #2b91d4;
+    color: #fff;
+    text-align: center;
+    position: relative;
+
+}
+#shoppingCart #header a{
+    display: block;
+    width: 12px;
+    height: 22px;
+    background: url(../image/icon/back.png) no-repeat center center / contain;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 25px;
+}
+#shoppingCart #header h2{
+    font-weight: normal;
+    line-height: 50px;
+}
+#shoppingCart #header span{
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+	font-size: 14px;
+}
+
+
+
+#shoppingCart #content{
+	clear: both;
+	width: 100%;
+	height:calc(100% - 105px);
+	overflow-y:scroll;
+	overflow-x: hidden;
+}
+#shoppingCart #content ul li{
+	width: 95%;
+	height: 90px;
+	background: #fff;
+	margin-top: 7px;
+	padding: 10px 3%;
+	transition: .3s;
+	position: relative;
+}
+#shoppingCart #content ul li h6{
+	float: right;
+	display: block;
+	width: 30px;
+	height: 110px;
+	position: absolute;
+	right: -35px;
+	top: 0px;
+	background: #f15656;
+	border-left: 1px solid #ededed;
+	font-weight: normal;
+	color: #fff;
+	line-height: 110px;
+	text-align: center;
+	font-size: 3.5vw;
+}
+#shoppingCart #content ul li input[type='checkbox']{
+	display: block;
+	float: left;
+	width: 34px;
+	display: none;
+}
+#shoppingCart #content ul li input[type='checkbox']+ label{
+    background-color: white;
+    border-radius:50%;
+    border:1px solid #2b91d4;
+    width:20px;
+    height:20px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20px;
+    position: relative;
+    float: left;
+    margin-right: 10px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+#shoppingCart #content ul li input[type='checkbox'] label{
+    background-color: #eee;
+}
+#shoppingCart #content ul li input[type='checkbox']:checked + label:after{
+    content:"";
+    display: block;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background: #2b91d4;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateY(-50%) translateX(-50%);
+    -ms-transform: translateY(-50%) translateX(-50%);
+    -o-transform: translateY(-50%) translateX(-50%);
+    transform: translateY(-50%) translateX(-50%);
+}
+    
+#shoppingCart #content ul li em{
+	display: block;
+	width: 86px;
+	height: 86px;
+	background: #ccc;
+	float: left;
+	border-radius: 5px;
+}
+#shoppingCart #content ul li .shop_right{
+	display: block; 
+	width: calc(100% - 130px);
+	height: 96%;
+	float: left;
+	margin-left: 10px;
+	padding:2% 0px;
+}
+#shoppingCart #content ul li .shop_right h3{
+	font-weight: normal;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+#shoppingCart #content ul li b i{
+	display: block;
+	float: left;
+	margin-bottom: 10px;
+	font-style: normal;
+	font-weight: normal;
+	color: #666;
+	font-size: 12px;
+	margin-right: 15px;
+}
+
+#shoppingCart #content ul li .shop_right .text_container{
+	color: #999;
+	font-size: 15px;
+	width:100%;
+    overflow : hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	/* autoprefixer: off */
+	-webkit-box-orient: vertical; 
+}
+#shoppingCart #content ul li .shop_right p{
+	display: block;
+	position: absolute;
+	overflow: hidden;
+	bottom: 10px;
+	width: 60%;
+}
+#shoppingCart #content ul li .shop_right strong{
+	float: left;
+	font-weight: normal;
+	color: #fc2a53;
+}
+#shoppingCart #content ul li .shop_right .goods_num{
+	display: block;
+	float: right;
+	width: 80px;
+	height: 22px;
+}
+#shoppingCart #content ul li .shop_right .goods_num button{
+	float: left;
+	width: 22px;
+	height: 22px;
+	background: #fff;
+	border:1px solid #ccc;
+}
+#shoppingCart #content ul li .shop_right .goods_num b{
+	display: block;
+	text-align: center;
+	line-height: 22px;
+	float: left;
+	width: 22px;
+	height: 22px;
+	font-size: 17px;
+	background: #f4f4f4;
+	border-top:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	box-sizing:border-box;
+	color: #666;
+	font-weight: normal;
+}
+
+#result{
+	width: 100%;
+	height: 50px;
+	position: absolute;
+	bottom: 0px;
+	background: #fff;
+	border-top: 1px solid #ededed;
+}
+
+
+
+
+#result #selectAll{
+	width: 25%;
+	height: 100%;
+	float: left;
+}
+#result #selectAll > div{
+	width: 100%;
+	height: 100%;
+	position: relative;
+	line-height: 50px;
+	text-align: center;
+}
+
+#result #money{
+	width: 44%;
+	height: 96%;
+	float: left;
+	padding:2% 3%;
+}
+#result #money h3{
+	font-size: 1rem;
+	line-height: 200%;
+}
+#result #money h3,#result #money h5{
+	font-weight: normal;
+	
+}
+#result #money h5{
+	color: #666;
+}	
+#result #settle{
+	width:25%;
+	height: 100%;
+	background: #f03030;
+	float: left;
+	color: #fff;
+	line-height: 50px;
+	font-size: 17px;
+	text-align: center;
+
+}
+
+#result input[type='checkbox']{
+	display: block;
+	float: left;
+	width: 34px;
+	display: none;
+}
+#result input[type='checkbox']+ label{
+    background-color: white;
+    border-radius:50%;
+    border:1px solid #2b91d4;
+    width:20px;
+    height:20px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20px;
+    float: left;
+    margin-right: 10px;
+	position: relative;
+	top: 50%;
+	left: 15%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+    float: left;
+}
+#result input[type='checkbox'] label{
+    background-color: #eee;
+}
+#result input[type='checkbox']:checked + label:after{
+    content:"";
+    display: block;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background: #2b91d4;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateY(-50%) translateX(-50%);
+    -ms-transform: translateY(-50%) translateX(-50%);
+    -o-transform: translateY(-50%) translateX(-50%);
+    transform: translateY(-50%) translateX(-50%);
+}
+#result span{
+	
+}

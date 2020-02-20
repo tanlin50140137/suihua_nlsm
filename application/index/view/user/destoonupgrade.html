@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>会员专享</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/destoonUpgrade.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+
+<body>
+<div id='loading'><img src='/public/skin/image/loading.png' alt=''></div>
+<div id="worry"></div>
+<div id='destoonUpgrade'>
+	<div class='invest_content'>
+		<div id='header'>
+			<div class="header">
+				<div>
+					<a href="javascript:;"></a>
+					<h2>会员专享</h2>
+				</div>
+			</div>
+		</div>
+
+		<div id='content'>
+			<div class="content_on">
+				<ul></ul>
+			</div>
+		</div>
+
+		<footer>
+			<h3></h3><h4></h4>
+			<div class="text"></div>
+		</footer>
+
+		<button class="a" id="upLevelBtn">立即购买</button>
+	</div>
+
+</div>
+<div id="payTypeBox" style="display: none;">
+	<div id='header2'>
+		<div>
+			<a href='javascript:;'></a>
+			<h2>支付方式</h2>
+		</div>
+	</div>
+	<div class="payment-container payment">
+				<a href="javascript:;" name='1' class='payType'><img src="/public/skin/image/payment1.png"><i>微信支付</i></a>
+				<a href="javascript:;" name='2' class='payType'><img src="/public/skin/image/payment2.png"><i>支付宝支付</i></a>
+		</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+apiready = function(){
+	$(function(){
+		var upgradeId = '';
+		var payType = '';
+		var pauNum = '';
+		$('#header a').on('touchstart',function(){
+			var url = document.referrer;
+			if(url){
+				window.history.back();
+			}else{
+				window.history.go(-4);
+			}
+		})
+		$('#header2 a').on('touchstart',function(){
+			$('#payTypeBox').fadeOut(500)
+		})
+
+
+		//获取套餐列表
+		getDestoon();
+		function getDestoon(){
+			$.ajax({
+				url:serverurl+'/api/app/member_goods',
+				type:'post',
+				data:{
+			        token:localStorage.token,
+				},
+				success:function(data){
+					console.debug(data);
+					if(data.list.length>0){
+						for(var i=0;i<data.list.length;i++){
+							var helpListStr = "<li name='"+data.list[i].id+"'>\
+								<p><span>"+data.list[i].name+"</span></p>\
+								<div class='d'>\
+								</div>\
+							</li>";
+							$('.content_on ul').append(helpListStr);
+						}
+						//选择升级套餐
+						$('.content_on ul li').on('touchstart',function(){
+							$('.content_on ul li').removeClass('hover')
+							$(this).addClass('hover')
+							$('footer h3').text(returnLevel(data.list[$(this).index()].level_id))
+							$('footer h4').text("￥"+data.list[$(this).index()].price)
+							$('.text').html(data.list[$(this).index()].content);
+							upgradeId = $(this).attr('name');
+						})
+						function returnLevel(num){
+		            if(num==1){
+		                return '普通会员'
+		            }else if(num==2){
+		                $('.user_identity').addClass('user_level_1');
+		                return '店长会员'
+		            }else if(num==3){
+		                $('.user_identity').addClass('user_level_2');
+		                return '经理会员'
+		            }else if(num==4){
+		                $('.user_identity').addClass('user_level_3');
+		                return '总监会员'
+		            }
+		        }
+					}else{
+						$('.content_on ul').html("<center>暂时没有可升级的套餐</center>")
+					}
+					$('#loading').fadeOut(100);
+				}
+			})
+		}
+
+		//打开支付方式
+		$('#upLevelBtn').on('touchstart',function(){
+			$('#payTypeBox').fadeIn(300);
+		})
+
+		//选择支付方式后调起支付
+		$('.payType').click(function(){
+			payType = $(this).children('i').text();
+			pauNum = $(this).attr('name')
+			$('#payTypeBox').fadeOut(200)
+			$.ajax({
+				url:serverurl+'/api/app/add_goods',
+				type:'post',
+				data:{
+					token:localStorage.token,
+					appkey:localStorage.appkey,
+					id:upgradeId,
+					paytype:payType
+				},
+				success:function(data){
+					if(data.success){
+						window.location.href = "/index/payment/payorder?act=goods&id="+data.order_id;
+					}else{
+						alertFade(data.info)
+					}
+				}
+			})
+		})
+
+
+	})
+}
+</script>

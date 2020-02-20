@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>话费充值</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/topUp.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script type="text/javascript" src="/public/skin/js/api.js"></script>
+<script src="/public/skin/js/jquery.js"></script>
+<script src='/public/skin/js/isLogin.js'></script>
+<body>
+<div id="worry"></div>
+<div id='SalesReturn_container'>
+	<div id='header'>
+		<div>
+			<a href='javascript:;' class="goback"></a>
+			<h2>充值</h2>
+		</div>
+
+		<div id="header_bottom">
+			<div class="header_left">
+				<p>0</p>
+				<span>累计充值(人)</span>
+			</div>
+			<div class="header_center"></div>
+			<div class="header_right">
+				<p>0</p>
+				<span>累计充值(次)</span>
+			</div>
+		</div>
+
+		<div id="header_notice">
+			<div class="header_notice_left">
+				<img src="/public/skin/image/icon/2.png" />
+			</div>
+
+			<ul class="header_notice_right"></ul>
+		</div>
+
+		<div id="header_phone">
+			<div class="header_phone_left">
+				<img src="/public/skin/image/icon/1.png" />
+			</div>
+			<div class="header_phone_center">
+			<!--  onkeyup="value=value.replace(/[^\d]/g,'')" ng-pattern="/[^a-zA-Z]/" -->
+			<input type="number" step="0.01" name="header_phone_text" id="header_phone_text" placeholder="请输入手机号码" />
+			</div>
+		</div>
+	</div>
+	<div id='content'>
+		<div class='order_list'>
+			<div id="content_top">
+				<h6>充值金额</h6>
+				<div id="box">
+					<ul class="box_left">
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="footer">
+		<div class="footer_one">
+			<b>请选择充值方式</b><span>0.00元</span>
+		</div>
+
+		<div class="footer_two">
+			<ul>
+				<li>
+					<div class="footer_two_left">
+						<img src="/public/skin/image/icon/5.png" />
+					</div>
+					<span>支付宝支付</span>
+					<input name="goods" class='selectGoods' type="radio" value="" id='checkbox1' checked/>
+					<label for="checkbox1"></label>
+				</li>
+
+				<li>
+					<div class="footer_two_left">
+						<img src="/public/skin/image/icon/6.png" />
+					</div>
+					<span>微信支付</span>
+					<input name="goods" class='selectGoods' type="radio" value="" id='checkbox2'/>
+					<label for="checkbox2"></label>
+				</li>
+			</ul>
+		</div>
+
+		<button type="button" class="top_up">立即充值</button>
+	</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+var recharg_id = '';
+var payType = '微信支付';
+
+$(document).ready(function(){
+	//返回上一页
+	$(".goback").click(function(){
+		var url = document.referrer;
+		if(url){
+			window.history.back();
+		}else{
+			window.history.go(-4);
+		}
+	});
+	// $('.header_notice_right li').css({'transform':'translateY(-10%)'});
+
+	// 消息通知滚动
+	function pushMove(){
+		var s =  $('.header_notice_right li').height();
+		var timer;
+		var num = 0;
+		timer=setInterval(function(){
+			num++;
+			if(num>=$('.header_notice_right li').length){
+				num=0;
+				$('.header_notice_right li').eq(0).animate({
+					'marginTop':0
+				},0);
+			}
+			$('.header_notice_right li').eq(0).animate({
+				'marginTop':-(num*s)
+			},500);
+		},2000)
+	}
+
+
+	//获取充值会员信息
+	getCount();
+	function getCount(){
+		$.ajax({
+			url:serverurl+'/api/app/recharg_count',
+			type:'post',
+			data:{
+				token:localStorage.token,
+			},success:function(data){
+				$('.header_notice_right').html('');
+				$('.header_left p').text(data.list.count)
+				$('.header_right p').text(data.list.number)
+				for(var i=0;i<data.list.list.length;i++){
+					var countDOM = "<li>\
+										<p>【"+data.list.list[i].nickname+"】会员充值"+data.list.list[i].goods_name+"</p>\
+										<span>"+data.list.list[i].create_time+"</span>\
+									</li>"
+					$('.header_notice_right').append(countDOM)
+					pushMove();
+				}
+			}
+		})
+
+	}
+
+	//获取话费充值套餐
+	$.ajax({
+		url:serverurl+'/api/app/recharg',
+		type:'post',
+		data:{
+			token:localStorage.token,
+		},success:function(data){
+			for(var i=0;i<data.list.length;i++){
+				var rechargDOM = "<li name='"+data.list[i].price+"' id='"+data.list[i].id+"'><b>"+data.list[i].name+"</b><span>预存"+data.list[i].price+"元</span></li>"
+				$('#box .box_left').append(rechargDOM);
+			}
+			// 套餐选择
+			$('.box_left li').on('touchstart',function(){
+				$('.box_left li').removeClass('hover');
+				$(this).addClass('hover');
+				$('.footer_one span').text($(this).attr('name')+'元')
+				recharg_id = $(this).attr('id');
+			})
+		}
+	})
+
+	//立即充值
+	$('.top_up').click(function(){
+		var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+		if(!myreg.test($("#header_phone_text").val())) {
+		    alertFade('请输入有效的手机号码！');
+		    return false;
+		}else{
+			if(recharg_id!=''){
+				$.ajax({
+					url:serverurl+'/api/app/add_recharg',
+					type:'post',
+					data:{
+						token:localStorage.token,
+						appkey:localStorage.appkey,
+						id:recharg_id,
+						mobile:$("#header_phone_text").val(),
+						paytype:$('input[name=goods]:checked').prev().text()
+					},
+					success:function(data){
+						if(data.success){
+							window.location.href = "/index/payment/payorder?act=recharg&id="+data.order_id;
+
+						}else{
+							alertFade(data.info)
+						}
+					}
+				})
+			}else{
+				alertFade('请选择有效的话费套餐！');
+			}
+		}
+	})
+})
+
+</script>

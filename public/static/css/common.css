@@ -1,0 +1,44 @@
+.zbody { width:100%; height: 100%; position:fixed; left: 0; top: 0; z-index: 998; background:#000; opacity: 0.1; filter:alpha(opacity=10);  }
+.zbodys { width:100%; height: 100%; position:fixed; left: 0; top: 0; z-index: 9998; background:#000; opacity: 0.1; filter:alpha(opacity=10);  }
+.bpop { width:auto; height: auto; min-width: 200px; max-width: 99%; max-height: 99%; position: fixed; left: 0; top: 0; box-shadow: 0px 0px 10px 1px #999; background:#fff; z-index: 9999;
+	transform:scale(0); -moz-transform:scale(0); -o-transform:scale(0); -webkit-transform:scale(0);
+	transition:transform 0.1s; -moz-transition:transform 0.1s; -o-transition:transform 0.1s; -webkit-transition:transform 0.1s;
+ }
+.bpop .bpop-center { width: auto; height: auto; padding:0px 15px 15px 15px; border:solid 1px #fff; border-top:solid 2px #e84d3d; }
+.bpop .bpop-title { width:100%; height:40px; line-height: 40px; font-size:14px !important; font-weight: 900; color:#333; text-align: center; }
+.bpop .bpop-body { width:100%; height: auto; line-height: 24px; padding:0 10px; font-size:14px !important; color:#555; }
+.bpop .bpop-btn { width:100%; height: auto; padding:12px 0 8px 0; margin-top:8px; text-align: center; font-size:12px; }
+.bpop .bpop-btn .btn-item { border:solid 1px #ccc; padding:4px 14px; margin:0 10px; background:#f5f5f5; box-shadow: 1px 1px 0px #ddd; color:#333; }
+.bpop .bpop-btn .btn-item-red { background:#e84d3d; border:solid 1px #e84d3d; color:#fff; }
+.bpop .bpop-btn .btn-item:hover { opacity: 0.9; cursor: pointer; }
+.bpop .bpop-btn .btn-item:active { box-shadow: 1px 1px 1px #ccc inset; }
+.bpop .bpop-btn .btn-item-red:active { box-shadow: 1px 1px 1px #d0301f inset; }
+.bpop-css3 {
+	transform:scale(1);
+	-moz-transform:scale(1);
+	-webkit-transform:scale(1);
+	-o-transform:scale(1);
+}
+.bpop-load { position: fixed; left: 0; top: 0; width:100px; height: 100px; background:url(../image/loading.gif) no-repeat center; z-index: 999; }
+
+.bpop-tip { position: fixed; left: 0; top: 0; width:auto; height: auto; background:#fff; z-index: 9999; }
+.bpop-tip .bpop-tip-center { padding:7px 12px 7px 10px; border:solid 1px #ccc; color:#555; font-size:14px !important; }
+.bpop-tip .bpop-s { display: inline-block; width:36px; height: 36px; background:url(../image/bpop-status.png) no-repeat left top; float: left; margin-right:10px; }
+.bpop-tip .bpop-t { background-position: left -36px }
+.bpop-tip .bpop-n { background-position: left -72px }
+.bpop-tip .bpop-font { display: inline-block; width:auto; height: 36px; line-height: 36px; float: left; }
+.bpop-tip .bpop-clear { clear:both; }
+
+/*弹窗函数样式*/
+#dpop { position:fixed; width:400px; height:250px; background:#ecf0f5; z-index:901; box-shadow:0px 0px 20px #555; overflow: hidden; }
+#dpop .dpop_title { position:relative; width:100%; height:40px; line-height:40px; border-bottom:solid 1px #e5e5e5; background:#fff; font-size:14px; font-family:"微软雅黑"; color:#333; text-indent:14px; font-weight: 900 }
+
+#dpop .dpop_title .dpop_close { width:32px; height:40px; position:absolute; right:-1px; top:0; background:url(../image/pop_close.png) no-repeat left bottom; }
+#dpop .dpop_title .dpop_close:hover { background:url(../image/pop_close.png) no-repeat left top; cursor:pointer; }
+#dpop .dpop_title .dpop_fd { width:32px; height:40px; position:absolute; right:32px; top:0; background:url(../image/pop_close.png) no-repeat right bottom; }
+#dpop .dpop_title .dpop_fd:hover { background:url(../image/pop_close.png) no-repeat right top; cursor:pointer; }
+#dpop .dpop_title .dpop_sx { display:none; width:32px; height:40px; position:absolute; right:32px; top:0; background:url(../image/pop_close.png) no-repeat -32px bottom; }
+#dpop .dpop_title .dpop_sx:hover { background:url(../image/pop_close.png) no-repeat -32px top; cursor:pointer; }
+#dpop .frame { width:100%; height: auto; overflow: hidden; background:url(../image/loading3.gif) no-repeat center; }
+
+#dpop .bodys { width:100%; height: auto; padding:20px 20px; overflow-y:auto; }

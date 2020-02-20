@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台登陆</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/public/static/css/amazeui.min.css" />
+    <link rel="stylesheet" href="/public/static/css/amazeui.datatables.min.css" />
+    <link rel="stylesheet" href="/public/static/css/app.css">
+    <link rel="stylesheet" type="text/css" href="/public/static/css/verify.css">
+
+</head>
+<body data-type="login" class="theme-white">
+    <div class="am-g tpl-g">
+        
+        <div class="tpl-login">
+            <div class="tpl-login-content">
+                <div class="tpl-login-logo">
+                </div>
+                <form class="am-form tpl-form-line-form" id="form">
+                    <div class="am-form-group">
+                        <input type="text" autocomplete="off"  class="tpl-form-input" id="username" placeholder="请输入账号">
+
+                    </div>
+
+                    <div class="am-form-group">
+                        <input type="password" class="tpl-form-input" id="password" placeholder="请输入密码">
+
+                    </div>
+
+                    <div class="am-form-group ">
+                        <input type="text" autocomplete="off"  class="form-control uname m-b" placeholder="验证码" id="code" />
+                        <div class="verify-code" onclick="get_code();">? - ? = ?</div>
+                    </div>
+                    <div class="am-form-group">
+                        <div id="verify" ></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row footer">
+            <div style="text-align: center;">&copy; 1996-2018 <a href="http://www.miitbeian.gov.cn" target="_blank">粤ICP备18075220号</a></div>
+        </div>
+    </div>
+    <script src="/public/static/js/jquery.min.js"></script>
+    <!-- 弹框插件 -->
+    <link rel="stylesheet" href="/public/static/css/common.css">
+    <script src="/public/static/js/common.js"></script>
+    <script src="/public/static/js/md5.js"></script>
+    <script type="text/javascript" src="/public/static/js/verify.js" ></script>
+</body>
+<script>
+    $(function(){
+        //获取验证码
+        get_code();
+        //滑动验证
+        $('#verify').slideVerify({
+            type : 1,       //类型
+            vOffset : 5,    //误差量，根据需求自行调整
+            barSize : {
+                width : '100%',
+                height : '40px',
+            },
+            ready : function() {
+            },
+            _reset:function(){
+                // alert(1)
+            },
+            success : function() {
+                var username = $("#username").val();    //用户名
+                var password = $("#password").val();    //密码
+                var code = $("#code").val();            //验证码
+                // 验证用户输入数据
+                if(username.length<1){
+                    bpop.tip('请输入用户名！', 2, 1);return false;
+                }else if(password.length<6  || password.length>18){
+                    bpop.tip('请输入6-18位数之间会员密码！', 2, 1);return false;
+                }else if(code.length<1){
+                    bpop.tip('请输入验证码！', 2, 1);return false;
+                }
+                password = md5(password);
+                bpop.addLoading(true);
+                //Ajax post提交表单验证
+                $.post("__MODULE__/Login/login",{'username':username,'password':password,'code':code},function(data){
+                    //验证成功跳转到后台主页
+                    if(data.success == true){
+                        window.parent.location.reload();
+                    }else{
+                        bpop.tip(data.info, 2, 1);
+                        get_code();
+                    }
+                },"json");
+            }
+            
+        });
+    })
+    //获取验证码
+    function get_code(){
+        //Ajax post提交表单验证
+        $.post("__MODULE__/Login/code",{'code':''},function(data){
+            $(".verify-code").html(data.list);
+        },"json");
+    }
+</script>
+</html>

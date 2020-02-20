@@ -1,0 +1,629 @@
+#user_container{
+    position: absolute;
+    display: block;
+    width: 100%;
+    height:calc(100%);
+    overflow: scroll;
+    background: #f6f6f6;
+    margin-top: 12px;
+
+}
+.user-top{
+	width: 100%;
+	height: 268px;
+	margin-bottom: 10px;
+	background: #fff;
+}
+
+
+#myOrder{
+	width: 100%;
+	height: 113px;
+	background: #fff;
+	margin-bottom: 10px;
+}
+
+
+#myAssets{
+	width: 100%;
+	height: 60px;
+	background: #fff;
+	margin-bottom: 10px;
+}
+
+.user-top > div{
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+ .user-top .top_face{
+ 	width: 100%;
+ 	height: 200px;
+ 	background: #2b91d4;
+ 	/*background:url('../image/face_bg.png') no-repeat center center / cover;*/
+ }
+  .user-top .chat_btn{
+  	width: 24px;
+  	height: 23px;
+  	position: absolute;
+  	left: 5%;
+  	top: 5%;
+  	background: url('../image/icon/chat.png') no-repeat center center / contain;
+  }
+  .user-top .setting_btn{
+  	width: 24px;
+  	height: 23px;
+  	position: absolute;
+  	right: 5%;
+  	top: 5%;
+  	background: url('../image/icon/setting.png') no-repeat center center / contain;
+  }
+  .user-top .user_face{
+  	width: 90px;
+  	height: 90px;
+  	border:3px solid #fff;
+  	border-radius: 50%;
+  	position: absolute;
+  	left: 50%;
+  	top:30%;
+  	-webkit-transform: translateX(-50%) translateY(-50%);
+  	-ms-transform: translateX(-50%) translateY(-50%);
+  	-o-transform: translateX(-50%) translateY(-50%);
+  	transform: translateX(-50%) translateY(-50%);
+
+  }
+ .user-top .user_name{
+ 	position: absolute;
+ 	width: 100%;
+ 	text-align: center;
+ 	color: #fff;
+ 	font-size: 18px;
+ 	bottom: 105px;
+
+ }
+  .user-top .user_identity{
+ 	position: absolute;
+ 	width:25%;
+ 	text-align: center;
+  padding:.5% 2%;
+ 	color: #fff;
+ 	font-size: 3.7vw;
+ 	bottom: 80px;
+  background: rgba(0, 0, 0, 0.2);
+  left: 50%;
+  transform:translateX(-50%);
+  border-radius: 20px;
+ }
+   .user-top .user_identity:after{
+     content: '';
+     width: 6px;
+     height: 6px;
+     background: #e21111;
+     position: absolute;
+     top:-1px;
+     right: -1px;
+     border:1px solid #ededed;
+     border-radius: 50%;
+   }
+
+.user_level_1:before{
+	content: '';
+   	display: block;
+   	width: 4vw;
+   	height: 4vw;
+   	background: url('../image/icon/level_1.png') no-repeat center center / contain;
+   	position: absolute;
+   	top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+   	left: 10%;
+
+}
+.user_level_2:before{
+	content: '';
+   	display: block;
+    width: 4vw;
+   	height: 4vw;
+   	background: url('../image/icon/level_2.png') no-repeat center center / contain;
+   	position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+   	left: 10%;
+}
+.user_level_3:before{
+	content: '';
+   	display: block;
+    width: 4vw;
+   	height: 4vw;
+   	background: url('../image/icon/level_3.png') no-repeat center center / contain;
+   	position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+   	left: 10%;
+}
+
+
+.user-top ul{
+	width: 100%;
+	height: 68px;
+}
+.user-top ul li{
+	display: block;
+	float: left;
+	width: 49.8%;
+	height: 100%;
+	text-align: center;
+	color: #666;
+	/*line-height: 68px;*/
+}
+.user-top ul li:nth-child(1){
+	border-right: 1px solid #ededed;
+	line-height: 68px;
+}
+.user-top ul li i{
+	display: block;
+	width: 100%;
+	height: 34px;
+	line-height: 50px;
+	font-style: normal;
+}
+.user-top ul li span{
+	display: block;
+	width: 100%;
+	height:34px;
+	line-height: 34px;
+	font-size: 15px;
+}
+
+
+
+#myOrder > div{
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+#myOrder .myOrder_top{
+	width: 100%;
+	height: 48px;
+	border-bottom: 1px solid #ececec;
+	line-height: 48px;
+
+}
+#myOrder .myOrder_top span:nth-child(1){
+	margin-left: 15px;
+	color: #333;
+}
+#myOrder .myOrder_top span:nth-child(2){
+	float: right;
+	margin-right: 15px;
+	color: #ccc;
+	font-size: 14px;
+}
+#myOrder .myOrder_bottom{
+	width: 100%;
+	height: 64px;
+}
+#myOrder .myOrder_bottom ul {
+	width: 100%;
+	height: 100%;
+}
+#myOrder .myOrder_bottom ul li{
+	width: 20%;
+	height: 100%;
+	float: left;
+	text-align: center;
+	color: #666;
+	line-height: 105px;
+	font-size: 13px;
+	position: relative;
+}
+#myOrder .myOrder_bottom ul li em{
+	display: block;
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	border:1px solid #2b91d4;
+	border-radius: 50%;
+	right: 10px;
+	top: 5px;
+	background: #fff;
+	color: #2b91d4;
+	font-size: 13px;
+	line-height: 16px !important;
+	font-style: normal;
+
+}
+#myOrder .myOrder_bottom ul li:nth-child(1){
+	background: url('../image/icon/daizhifu.png') no-repeat center 13px;
+	background-size:25px;
+}
+#myOrder .myOrder_bottom ul li:nth-child(2){
+	background: url('../image/icon/daifahuo.png') no-repeat center 13px;
+	background-size:25px;
+}
+
+#myOrder .myOrder_bottom ul li:nth-child(3){
+	background: url('../image/icon/daishouhuo.png') no-repeat center 8px;
+	background-size:30px;
+}
+
+#myOrder .myOrder_bottom ul li:nth-child(4){
+	background: url('../image/icon/daipingjia.png') no-repeat center 13px;
+	background-size:25px;
+}
+
+#myOrder .myOrder_bottom ul li:nth-child(5){
+	background: url('../image/icon/daituihuo.png') no-repeat center 13px;
+	background-size:25px;
+}
+
+
+#myAssets > div{
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+
+
+#myAssets .myAssets_center{
+	width: 100%;
+	height: 60px;
+	border-bottom: 1px solid #ececec;
+	background: url('../image/icon/line.png') no-repeat center center / cover;
+	position: relative;
+}
+#myAssets .myAssets_center span{
+	display: block;
+	width: 60px;
+  height: 60px;
+	position: absolute;
+	top: 0px;
+  right: 5px;
+  background: url('../image/icon/right_arrow.png') no-repeat center center / 20%;
+  opacity: .6;
+}
+#myAssets .myAssets_center h2{
+	display: block;
+	width: 100%;
+	text-align: left;
+	font-size: 18px !important;
+	line-height: 60px;
+	color: #e61a2c;
+  font-weight: normal;
+  padding-left: 55px;
+  box-sizing: border-box;
+  background: url('../image/icon/3.png') no-repeat 20px center / 6%;
+  opacity: .8;
+}
+#myAssets .myAssets_center p{
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: 13px;
+	position: absolute;
+	bottom: 15px;
+	color: #666;
+}
+
+
+
+#myAssets .myAssets_bottom{
+	width: 100%;
+	height: 61px;
+}
+#myAssets .myAssets_bottom ul{
+	width: 100%;
+	height: 100%;
+}
+#myAssets .myAssets_bottom ul li{
+	width: 33.33%;
+	height: 100%;
+	float: left;
+	text-align: center;
+	color: #666;
+}
+#myAssets .myAssets_bottom ul li span{
+	display: block;
+	width: 100%;
+	height: 50%;
+}
+#myAssets .myAssets_bottom ul li span:nth-child(1){
+	line-height: 45px;
+	font-size: 14px;
+}
+#myAssets .myAssets_bottom ul li span:nth-child(2){
+	line-height: 20px;
+}
+
+#functionList{
+	width: 100%;
+	height: 325px;
+	background: #fff;
+}
+#functionList > div{
+	width: 100%;
+	height: 100%;
+}
+#functionList ul{
+	width: 100%;
+	height: 100%;
+}
+#functionList ul li{
+	width: 33.33%;
+	height: 33.33%;
+	float: left;
+	text-align: center;
+	line-height:160px;
+	font-size: 15px;
+	color: #666;
+	box-sizing: border-box;
+
+}
+#functionList ul li:nth-child(1){
+	background: url('../image/icon/youhuiquan.png') no-repeat center 30px;
+	background-size: 25%;
+}
+#functionList ul li:nth-child(2){
+	background: url('../image/icon/tuiguangerweima.png') no-repeat center 30px;
+	background-size: 23%;
+}
+#functionList ul li:nth-child(3){
+	background: url('../image/icon/wodefensi.png') no-repeat center 30px;
+	background-size: 25%;
+}
+#functionList ul li:nth-child(4){
+	background: url('../image/icon/shouhuodizhi.png') no-repeat center 30px;
+	background-size: 20%;
+}
+#functionList ul li:nth-child(5){
+	background: url('../image/icon/collect.png') no-repeat center 30px;
+	background-size: 28%;
+}
+#functionList ul li:nth-child(6){
+	background: url('../image/icon/guanyuwomen.png') no-repeat center 30px;
+	background-size: 25%;
+}
+#functionList ul li:nth-child(7){
+	background: url('../image/icon/yijianfankui.png') no-repeat center 30px;
+	background-size: 25%;
+}
+#functionList ul li:nth-child(8){
+	background: url('../image/icon/Online-help.png') no-repeat center 30px;
+	background-size: 25%;
+}
+#functionList ul li:nth-child(9){
+	background: url('../image/icon/logout.png') no-repeat center 30px;
+	background-size: 25%;
+}
+
+.user-info{
+	position: absolute;
+    display: block;
+    width: 100%;
+    height: calc(100%);
+    background: #f6f6f6;
+    margin-top: 73px;
+    z-index: 9999;
+}
+
+.user-info ul{
+	display: block;
+	overflow: hidden;
+	margin-bottom: 10px;
+	background: #fff;
+	box-shadow: 1px 1px 5px #ccc;
+}
+.user-info ul li{
+	padding: 15px;
+	font-size: 15px;
+	color: #666;
+	border-bottom: 1px solid #ececec;
+	position: relative;
+}
+.user-info ul li:after{
+	display: block;
+	content: '';
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform:translateY(-50%);
+	background: url('../image/right_arrow.png') no-repeat center center / contain;
+	opacity: .3;
+	
+}
+.user-info ul:nth-child(1) li:nth-child(1){
+	height:40px;
+	line-height: 40px;
+	position: relative;
+}
+.user-info #userface-file{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.user-info .more{
+	font-size: 12px;
+	color: #999;
+	line-height: 30px;
+	margin-top: -10px;
+	margin-left: 15px;
+}
+.user-info #user_face{
+    width: 50px;
+    height: 50px;
+    float: right;
+    margin-right: 15px;
+    border: 1px solid #ededed;
+    border-radius: 50%;
+    margin-top: -5px;
+}
+.user-info .form_t{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    opacity: 0;
+    z-index: 2;
+    
+}
+
+.user-info ul li span{
+	float: right;
+	font-size: 14px;
+	color: #999;
+	margin-right: 20px;
+	transform: translateY(2px);
+}
+.user-info ul li a{
+	display: block;
+	color: #666;
+}
+
+.user-info #editName,#editRemark{
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	z-index: 999;
+	top: 0px;
+	left: 0px;
+	display: none;
+}
+
+.user-info .mark{
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.5);
+	position: absolute;
+	z-index: 1;
+}
+.user-info #editName .form,#editRemark .form{
+	position: absolute;
+	left: 50%;
+	top: 45%;
+	transform: translateY(-50%) translateX(-50%);
+	width: 70%;
+	display: block;
+	overflow: hidden;
+	padding:20px 15px;
+	background: #fff;
+	border-radius: 5px;
+	z-index: 999999;
+}
+
+.user-info #editName .form input{
+	display: block;
+	margin: 0 auto;
+	width: 95%;
+	padding:10px 5px;
+	border: 1px solid #ccc;
+}
+
+.user-info #editRemark .form textarea{
+	display: block;
+	margin: 0 auto;
+	width: 95%;
+	padding:10px 5px;
+	border: 1px solid #ccc;
+}
+
+.user-info #editName .form button{
+	display: block;
+	width: 46.5%;
+	float: left;
+	margin-top: 15px;
+	padding: 7px 0px;
+	background: #fff;
+	border: 1px solid #dda29e;
+	color: #dda29e;
+
+}
+.user-info #editRemark .form button{
+	display: block;
+	width: 46.5%;
+	float: left;
+	margin-top: 15px;
+	padding: 7px 0px;
+	background: #fff;
+	border: 1px solid #dda29e;
+	color: #dda29e;
+
+}
+
+
+.user-info #editName .form .tj{
+	margin-right: 6%;
+	border: 1px solid #addf9f;
+	color:#addf9f
+}
+.user-info #editRemark .form .tj{
+	margin-right: 6%;
+	border: 1px solid #addf9f;
+	color:#addf9f
+}
+
+.user-info #birday{
+	position: relative;
+	display: block;
+	overflow: hidden;
+}
+.user-info #meeting{
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	opacity: 0;
+	-webkit-appearance: none;
+}
+.user-info #sex{
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	opacity: 0;
+}
+.funList ul{
+	display: block;
+	overflow: hidden;
+	margin-top: 10px;
+	background: #fff;
+}
+.funList ul li{
+	display: block;
+	border-bottom: 1px solid #efeff4;
+	padding: 10px 40px;
+	font-size: 15px;
+	color: #666;
+}
+.funList ul li a{
+	display: block !important;
+	width: 100%;
+	height: 100%;
+}
+.funList ul:nth-child(1) li:nth-child(1){
+	background:url(../image/evaluate.png) no-repeat 10px center / 5%;
+}
+.funList ul:nth-child(1) li:nth-child(2){
+	background:url(../image/btcall.png) no-repeat 10px center / 5%;
+}
+.funList ul:nth-child(1) li:nth-child(3){
+	background:url(../image/qr.png) no-repeat 10px center / 5%;
+}
+.funList ul:nth-child(1) li:nth-child(4){
+	background:url(../image/icon/logout.png) no-repeat 10px center / 5%;
+}
+.funList a{font-size: 15px;color: #666;}

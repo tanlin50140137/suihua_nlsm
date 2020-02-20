@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>个人中心</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/user.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<link rel="stylesheet" href="/public/skin/css/main.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/fastclick.js"></script>
+<body>
+<div id='loading'><img src='/public/skin/image/loading.png' alt=''></div>
+<div id="worry"></div>
+<div id='user_container'>
+        <div id='top'>
+             <div>
+                <div class='top_face'>
+                    <div class='user_face'></div>
+                    <div class='user_name'></div>
+                    <div class='user_identity'></div>
+
+                </div>
+                <div class='chat_btn' onclick="goPage('myMessage.html')"></div>
+                <div class='setting_btn' onclick="goPage('personal.html')"></div>
+                    <ul>
+                        <li onclick="goPage('sign.html')">
+                           今日签到
+                        </li>
+                        <li onclick="goPage('myLeDing.html')">
+                            <i></i>
+                            <span>我的乐叮</span>
+                        </li>
+                        <li onclick="goPage('myLeDang.html')">
+                            <i></i>
+                            <span>我的乐当</span>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <div id='myOrder'>
+            <div>
+                <div class='myOrder_top'>
+                    <span>我的订单</span>
+                    <span onclick="goPage('orderList.html')">查看全部订单 ></span>
+                </div>
+                <div class='myOrder_bottom'>
+                    <ul>
+                        <li onclick="goPage('orderList.html?orderType=1')">待支付</li>
+                        <li onclick="goPage('orderList.html?orderType=2')">待发货</li>
+                        <li onclick="goPage('orderList.html?orderType=3')">待收货</li>
+                        <li onclick="goPage('orderList.html?orderType=7')">待评价</li>
+                        <li onclick="goPage('salesReturn.html')">退货</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id='myAssets'>
+            <div>
+                <div class='myAssets_center'>
+                    <h2>
+                        我的投资
+                    </h2>
+                    <span></span>
+                </div>
+            </div>
+
+        </div>
+        <div id='functionList'>
+            <div>
+                <ul>
+                    <li onclick="goPage('myCoupon.html')" style="border-right: 1px solid #ededed;border-bottom: 1px solid #ededed;">优惠券</li>
+                    <li onclick="goPage('generalize.html')" style="border-right: 1px solid #ededed;border-bottom: 1px solid #ededed;">推广二维码</li>
+                    <li onclick="goPage('myFans.html')" style="border-bottom: 1px solid #ededed;">我的粉丝</li>
+                    <li onclick="goPage('mysite.html')" style="border-right: 1px solid #ededed;border-bottom: 1px solid #ededed;">收货地址</li>
+                    <li onclick="goPage('myCollect.html')" style="border-right: 1px solid #ededed;border-bottom: 1px solid #ededed;">我的收藏</li>
+                    <li onclick="goPage('orderset.html')" style="border-bottom: 1px solid #ededed;">话费订单</li>
+                    <li onclick="goPage('feedback.html')" style="border-right: 1px solid #ededed;">意见反馈</li>
+                    <li onclick="goPage('help.html')" style="border-right: 1px solid #ededed;">在线帮助</li>
+                    <li onclick="goPage('aboutUs.html')">关于我们</li>
+                </ul>
+            </div>
+        </div>
+        <div style="height: 50px;"></div>
+    </div>
+
+{include file="Common/footer"}
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+apiready = function(){
+this.goPage = function(page){
+    api.openWin({
+        name: 'location',
+        url:page
+    });
+}
+
+    $(function(){
+        FastClick.attach(document.body);
+        /*$('.chat_btn').click(function(){
+            api.openWin({
+                name: 'index',
+                url:'index.html'
+            });
+        })*/
+        if(localStorage.appkey){
+            $.ajax({
+            url:serverurl+'/api/app/detail',
+            type:'post',
+            data:{
+                appkey:localStorage.appkey,
+                token:localStorage.token
+            },
+            success:function(data){
+
+                if(data.info == "appkey验证失败！"){
+                    alertFade("登录异常，请重新登录！",function(){
+                        localStorage.appkey = '';
+                        api.openWin({
+                            name: 'login',
+                            url:'{:url("Login/index")}'
+                        });
+                    });
+                }else{
+
+                    $('.user_face').css('background','url('+data.list.userface+') no-repeat center center / cover')
+                    $('.user_name').text(data.list.nickname)
+                    $('.user_identity').text(data.list.level_name)
+                    if(data.list.level_id==2){
+                        $('.user_identity').addClass('user_level_1');
+
+                    }else if(data.list.level_id==3){
+                        $('.user_identity').addClass('user_level_2');
+                    }else if(data.list.level_id==4){
+                        $('.user_identity').addClass('user_level_3');
+                    }
+                    $('#top ul li').eq(1).children('i').text(data.list.money);
+                    $('#top ul li').eq(2).children('i').text(data.list.point.toFixed(2));
+
+                  //进入升级会员页面
+                  $('.user_identity').on('touchstart',function(){
+                    api.openWin({
+                        name: 'destoonUpgrade',
+                        url:'{:url("User/destoonupgrade")}'
+                    });
+                  })
+
+                    $.ajax({
+                        url:serverurl+'/api/app/order_count',
+                        type:'post',
+                        data:{
+                            appkey:localStorage.appkey,
+                            token:localStorage.token
+                        },
+                        success:function(data){
+                                $('.myOrder_bottom ul li').eq(0).append(returnNumber(data.list[1]))
+                                $('.myOrder_bottom ul li').eq(1).append(returnNumber(data.list[2]))
+                                $('.myOrder_bottom ul li').eq(2).append(returnNumber(data.list[3]))
+                                $('.myOrder_bottom ul li').eq(3).append(returnNumber(data.list[7]))
+                                $('.myOrder_bottom ul li').eq(4).append(returnNumber(data.list[4]))
+                        }
+                    })
+
+                    function returnNumber(num){
+                        if(num!=0){
+                            return "<em>"+num+"</em>";
+                        }else{
+                            return '';
+                        }
+                    }
+
+                }
+                $('#loading').fadeOut(100);
+            }
+        })
+        }else{
+            api.openWin({
+                name: 'login',
+                url:'{:url("Login/index")}'
+            });
+        }
+
+    })
+}
+</script>

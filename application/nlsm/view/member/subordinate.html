@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>下级会员列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+</head>
+<body>
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Member/subordinate" id="search">
+                <select name="level_id" class="form-control input-sm level_id">
+                    <option value="" >全部会员</option>
+                    {volist name="levellist" id="vo"}
+                    <option value="{$vo.id}" {if condition="$level_id == $vo.id"}selected{/if}>{$vo.name}</option>
+                    {/volist}     
+                </select>
+                <input type="hidden" name="id" value="{$id}">
+                <input type="hidden" name="level" value="{$level}">
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped" role="grid">
+            <tr>
+                <th width="80">用户ID</th>
+                <th>用户头像</th>
+                <th>用户昵称</th>
+                <th>用户等级</th>
+                <th>手机号码</th>
+                <th>账户余额</th>
+                <th>账户券分</th>
+                <th width="140">注册时间</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="13">暂无用户数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.id}" id="{$vo.id}">
+                <td>{$vo.id}</td>
+                <td><img alt="image" class="img-circle m-t-xs img-responsive" src="{$vo.userface}" width="50"></td>
+                <td>{$vo.nickname}</td>
+                <td>{$vo.level_name}</td>
+                <td>{$vo.username}</td>
+                <td>{$vo.money}</td>
+                <td>{$vo.point}</td>
+                <td>{$vo.create_time}</td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+
+<div class="footer" style="height:50px;">
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+
+</body>
+</html>

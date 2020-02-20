@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>我的粉丝</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/myteam.css">
+
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div id='MyFans'>
+    <div class='header'>
+        <div>
+            <a href='javascript:;' class='close'></a>
+            <h2>我的粉丝</h2>
+        </div>
+    </div>
+
+    <div id='screen'>
+        <div>
+            <ul>
+                <li class="active">
+                    <em>0人</em>
+                    <i>忠粉</i>
+                </li>
+                <li>
+                    <em>0人</em>
+                    <i>实粉</i>
+                </li>
+                <li>
+                    粉丝消费
+                </li>
+            </ul>
+        </div>
+    </div>
+   
+    <div id='content'>
+        <!-- 没有数据时display: block; -->
+        <div class="null-data" style="display: none;"></div>
+
+        <ul class="state1"></ul>
+        <ul class="state2"></ul>
+        <ul class='state3'>
+            <div class="user-top">
+                <ul>
+                    <li>
+                        忠粉
+                    </li>
+                    <li>
+                        <i class="money">0.00</i>
+                        <span>消费现金</span>
+                    </li>
+                    <li>
+                        <i class="point">$0.00</i>
+                        <span>消费券分</span>
+                    </li>
+                    
+                </ul>
+                <ul>
+                    <li>
+                        实粉
+                    </li>
+                    <li>
+                        <i class="money">0.00</i>
+                        <span>消费现金</span>
+                    </li>
+                    <li>
+                        <i class="point">$0.00</i>
+                        <span>消费券分</span>
+                    </li>
+                    
+                </ul>
+            </div>
+        </ul>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+</body>
+
+<script>
+    var page = 1;
+    var iscroll = 1;
+
+    $(function(){
+        //滚动到底部
+        $('#content').scroll(function(){
+        　　var scrollTop = $(this).scrollTop();
+        　　var scrollHeight = $('#content ul').height();
+        　　var windowHeight = $(this).height();
+        　　if( Math.ceil(scrollTop + windowHeight)+10 >= scrollHeight && iscroll == 1){
+                //查询下一页数据
+                page = page + 1;
+                var text = $('.active').find('i').text();
+
+                if(text == '忠粉'){
+                    getprev();
+                }else{
+                    getnext();
+                }
+        　　}
+        });
+
+        //顶部导航切换
+        $('.state2').hide();
+        $('.state3').hide();
+        $('#screen ul li').click(function(){
+
+            page = 1;
+            iscroll = 1;
+
+            $('#screen ul li').removeClass('active');
+            $(this).addClass('active');
+            if($(this).index()==0){
+                $('.state1').show();
+                $('.state2').hide();
+                $('.state3').hide();
+            }else if($(this).index()==1){
+                $('.state2').show();
+                $('.state1').hide();
+                $('.state3').hide();
+            }else{
+                $('.state3').show();
+                $('.state1').hide();
+                $('.state2').hide();
+                $(".null-data").hide();
+            }
+        })
+
+        getprev();
+        getnext();
+    })
+    
+    function getprev(){
+        iscroll = 2;
+
+        //获取我的团队会员信息
+        $.post(serverurl+'/api/app/subordinate',{'pid':1,'page':page,'appkey':localStorage.appkey,'token':token},function(data){
+            
+            var html = '';
+            var num = 0;
+            $("#loading").hide();
+            if(data.list != ''){
+                iscroll = 1;
+                
+                var html = '';
+                for(x in data.list){
+                    html = html + "<li><em style='background:url("+data.list[x].userface+") center center / cover'></em><b>"+data.list[x].nickname+"</b><span>"+data.list[x].level_name+"</span><strong>手机号："+data.list[x].username+"&nbsp;&nbsp;&nbsp;推荐人："+data.list[x].parname+"</strong></li>";
+                }
+                $('.state1').append(html);
+
+                $('#screen ul li').eq(0).children('em').text(data.count[2]+'人');
+                $('.money').eq(0).text(data.count[0]);
+                $('.point').eq(0).text('$'+data.count[1]);
+            }else{
+                if(data.info == 'appkey验证失败！'){
+                    api.openWin({
+                        name: 'login',
+                        url: 'login.html',
+                    });
+                }
+                // $(".null-data").show();
+            }
+
+        },"json");
+    }
+
+    function getnext(){
+        iscroll = 2;
+
+        $.post(serverurl+'/api/app/subordinate',{'page':page,'appkey':localStorage.appkey,'token':token},function(data){
+            
+
+            $("#loading").hide();
+            if(data.list != ''){
+                iscroll = 1;
+
+                var html = '';
+                for(x in data.list){
+                    html = html + "<li><em style='background:url("+data.list[x].userface+") center center / cover'></em><b>"+data.list[x].nickname+"</b><span>"+data.list[x].level_name+"</span><strong>手机号："+data.list[x].username+"&nbsp;&nbsp;&nbsp;推荐人："+data.list[x].parname+"</strong></li>";
+                }
+                $('.state2').append(html);
+                $('#screen ul li').eq(1).children('em').text(data.count[2]+'人');
+                $('.money').eq(1).text(data.count[0]);
+                $('.point').eq(1).text('$'+data.count[1]);
+            }else{
+                if(data.info == 'appkey验证失败！'){
+                    api.openWin({
+                        name: 'login',
+                        url: 'login.html',
+                    });
+                }
+                // $(".null-data").show();
+            }
+        },"json");
+    }
+</script>
+</html>

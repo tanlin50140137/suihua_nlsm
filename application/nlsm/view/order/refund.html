@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单退款</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+</head>
+<style type="text/css">
+.ordermi td.ol { width:140px; }
+</style>
+<div class="box box-solid">
+    <div class="box-body">
+        <table class="ordermi">
+            <tr>
+                <td class="ol">订 单 号：</td>
+                <td>{$order['order_id']}【{$order['state']}】</td>
+                <td class="ol">下单日期：</td>
+                <td>{$order['create_time']}</td>
+            </tr>
+            <tr>
+                <td class="ol">订单总额：</td>
+                <td>￥{$order['total_price']}</td>
+                <td class="ol">已付金额：</td>
+                <td>
+                    ￥{$order['payprice']}
+                </td>
+            </tr>
+            <tr>
+                <td class="ol">退款方式：</td>
+                <td colspan="3" class="form-inline">
+                    <select class="form-control payment input-sm">
+                        <option value="支付宝">支付宝</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="ol">退款帐号：</td>
+                <td colspan="3" class="form-inline">
+                    <input type="text" autocomplete="off"  class="form-control input-sm account" value="{$alipay}" placeholder="收款支付宝账号" />
+                </td>
+            </tr>
+            <tr>
+                <td class="ol">退款金额：</td>
+                <td class="form-inline">
+                    <input type="text" autocomplete="off"  class="form-control input-sm money" placeholder="收款金额" value="{$order['payprice']}" />
+                </td>
+                <td class="ol">返还用户积分：</td>
+                <td class="form-inline">
+                    <input type="text" autocomplete="off"  class="form-control input-sm point" placeholder="返还用户积分" value="{$order['point']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="ol">退款备注：</td>
+                <td colspan="3">
+                    <textarea class="form-control remark"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="footer">
+    <button class="btn btn-sm btn-primary btn-flat" onclick="submits();">确认退款</button>
+</div>
+
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+var order_id = "{$order['order_id']}";
+var uid = "{$order['uid']}";
+function submits() {
+    bpop.add('确定要进行退款操作吗？', 2, function(){
+        var money = $('.money').val(),
+            account = $('.account').val(),
+            point = $('.point').val(),
+            remark = $('.remark').val();
+        // 验证用户输入数据
+        if(money.length<1){
+            bpop.tip('请填写正确的退款金额！', 2, 1);return false;
+        }
+        if(account.length<1){
+            bpop.tip('请填写正确的退款账号！', 2, 1);return false;
+        }
+        bpop.addLoading(true);
+        $.post('__MODULE__/Order/refund',{'order_id' : order_id,'uid' : uid, 'money' : money, 'account' : account, 'point' : point, 'remark' : remark}, function(data) {
+            if (data.success == true) {
+                bpop.tip(data.info, 1, 1);
+                setTimeout('parent.location.reload();',1000); 
+            }else {
+                bpop.tip(data.info, 2, 1);
+            }
+        }, 'JSON');
+    })
+    
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>通知设置</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="nav-tabs-custom goods-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li><a href="__MODULE__/Config/index">平台设置</a></li>
+        <li class="active"><a href="__MODULE__/Config/notice">通知设置</a></li>
+        <li><a href="__MODULE__/Config/user">用户设置</a></li>
+    </ul>
+</div>
+<form action=" " method="post" id="form">
+<div class="box box-solid">
+
+	<div class="box box-solid getform">
+	    <div class="box-body">
+			<table class="tab-member">
+				<tr>
+					<th colspan="4">聚合短信接口</th>
+				</tr>
+				<tr>
+					<td class="td-r">聚合账号：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="text" autocomplete="off"  class="form-control pinput" name="name" value="{$list.name}">
+                        </div>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">短信AppKey：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="text" autocomplete="off"  class="form-control pinput" name="appkey" value="{$list.appkey}">
+                        </div>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">验证码模板ID：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="text" autocomplete="off"  class="form-control pinput" name="code" value="{$list.code}">
+                        </div>
+					</td>
+				</tr>
+				<tr>
+					<th colspan="4">聚合话费接口</th>
+				</tr>
+				<tr>
+					<td class="td-r">话费AppKey：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="text" autocomplete="off"  class="form-control pinput" name="mappkey" value="{$list.mappkey}">
+                        </div>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">话费Openid：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="text" autocomplete="off"  class="form-control pinput" name="openid" value="{$list.openid}">
+                        </div>
+					</td>
+				</tr>
+			</table>
+	    </div>
+	</div>
+	<div class="footer">
+		<button class="btn btn-primary btn-sm btn-flat" type="submit">保存修改</button>
+	</div>
+</div>
+</form>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+	//保存修改
+	$(function(){
+		$("#form").submit(function(){  
+			var param = $("#form").serialize();
+			bpop.addLoading(true);
+		    //Ajax post提交表单验证
+	        $.post("__MODULE__/Config/notice",param,function(data){
+	            if(data.success == true){
+                    bpop.tip(data.info, 1, 1);
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+	        },"json");
+	        return false; 
+		}); 
+	})
+</script>
+</body>
+</html>

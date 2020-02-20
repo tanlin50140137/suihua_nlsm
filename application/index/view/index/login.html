@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>会员登陆</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/common.css"  />
+
+</head>
+
+<body>
+<div id='loading' class="hide"><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div id='classify_container'>
+    <div class='header'>
+        <div>
+            <a href='javascript:;' class='close' data="login"></a>
+            <h2>会员登陆</h2>
+        </div>
+    </div>
+    <div id='content'>
+        <div id='left'>
+            <div>
+                <ul>
+
+                </ul>
+            </div>
+        </div>
+        <div id='right'>
+            <div>
+                <ul>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="passport">
+    <div class="am-img"><img src="./image/logo.jpg" alt=""></div>
+    <div class="am-g">
+        <div class="am-u-md-8 am-u-sm-centered">
+                <div class="am-form-group am-form-icon">
+                    <input type="text" class="username am-form-field am-input-lg" name="username" placeholder="用户账号/手机！" />
+                </div>
+                <div class="am-form-group am-form-icon">
+                    <input type="password" class="password am-form-field am-input-lg" placeholder="登陆密码" name="password"/>
+                </div>
+
+                <span class="am-btn am-btn-lg am-btn-danger am-btn-block login">登　陆</span>
+
+                <div class="am-form-group pother">
+                    <a class="forget">忘记密码？</a> | <a class="register">立即注册</a>
+                </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+</body>
+
+<script>
+    $(function(){
+        $('.login').on('click',function(){
+            var username = $(".username").val();    
+            var password = $(".password").val();    
+            // 验证用户输入数据
+            if(username.length<1){
+                layer.msg('请输入账号/手机！',{time:10000000});return false;
+            }else if(password.length<1){
+                layer.msg('请输入登陆密码！');return false;
+            }
+            //Ajax post提交表单验证
+            $("#loading").show();
+            $.post(serverurl+'/api/app/login',{'mobile':username,'password':password,'token':token},function(data){
+                $("#loading").hide();
+                if(data.success){
+                    localStorage.appkey = data.list.appkey;
+                    api.openWin({
+                        name: 'user',
+                        reload:true,
+                        url: 'user.html',
+                    });
+                }else{
+                    layer.msg(data.info);
+                }
+            },"json");
+        })
+
+        $('.forget').click(function(){
+            api.openWin({
+                name: 'forget',
+                url: 'forget.html',
+            });
+        })
+        
+        $('.register').click(function(){
+            api.openWin({
+                name: 'register',
+                url: 'register.html',
+            });
+        })
+    })
+</script>
+</html>

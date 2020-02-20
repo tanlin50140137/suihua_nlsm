@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>收货地址</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/mySite.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/isLogin.js"></script>
+
+<body>
+<div id='loading'><img src='/public/skin/image/loading.png' alt=''></div>
+<div id="worry"></div>
+<div id='MySite_container'>
+	<div class="top" id='container_top'>
+		<div class="head">
+			<a href='javascript:;' class="back" ></a>
+			<h2>收货地址</h2>
+		</div>
+	</div>
+	<div class="content" id='container_content'>
+		<div>
+			<a href='addsite.html'>添加新地址</a>
+			<ul>
+			</ul>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+apiready = function() {
+	$(function(){
+		getSite();
+
+
+		$('.back').on('touchstart',function(){
+			api.closeWin()
+		})
+
+		function getSite(){
+			$.ajax({
+				url:serverurl+'/api/app/address',
+				type:'post',
+				data:{
+					appkey:localStorage.appkey,
+					token:localStorage.token,
+				},success:function(data){
+					$('#container_content ul').html('');
+					var siteListStr = '';
+					var defaultSite = '';
+					if(data.list.length>0){
+						for(var i=0;i<data.list.length;i++){
+							if(data.list[i].is_state!=1){
+
+								siteListStr += '<li><b>'+data.list[i].username+'</b><strong>'+data.list[i].mobile+'</strong><p>'+data.list[i].city.replace(/-/g,'') + '' + data.list[i].address+'</p><button name="'+data.list[i].id+'"></button></li>'
+							}else{
+								defaultSite = '<li><b>'+data.list[i].username+'</b><strong>'+data.list[i].mobile+'</strong><em>默认</em><p>'+data.list[i].city.replace(/-/g,'') + '' + data.list[i].address+'</p><button name="'+data.list[i].id+'"></button></li>'
+							}
+
+						}
+						$('#container_content ul').html(defaultSite + siteListStr);
+
+						//进入编辑
+						$('#container_content ul li button').click(function(){
+							api.openWin({
+				                name: 'editSite',
+				                url:"editsite.html?siteId="+$(this).attr('name')+""
+				            });
+						})
+						//选择默认
+						$('#container_content ul li').click(function(){
+							$.ajax({
+								url:serverurl+'/api/app/edit_address',
+								type:'post',
+								data:{
+									appkey:localStorage.appkey,
+									token:localStorage.token,
+									id:$(this).children('button').attr('name'),
+									is_state:1
+								},success:function(data){
+									if(data.success){
+										getSite();
+									}else{
+										alertFade(data.info);
+									}
+								}
+							})
+						})
+					}else{
+						$('#container_content ul').html("<center>暂无收货地址，请添加收货地址</center>")
+					}
+						$('#loading').fadeOut(100);
+				}
+			})
+			}
+
+
+	})
+}
+</script>

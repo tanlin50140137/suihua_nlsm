@@ -1,0 +1,102 @@
+#myMoney_container{
+    position: fixed;
+    display: block;
+    width: 100%;
+    height:calc(100% - 23px);
+    overflow: hidden;
+    background: #f6f6f6;
+    margin-top: 23px;
+    z-index: 9999;
+}
+#myMoney_container #content{
+    padding-top: 0px;
+}
+
+#myMoney_container .balance_content{
+    width: 100%;
+    height: calc(100% - 50px);
+}
+#myMoney_container .top{
+    position: fixed;
+    top: 73px;
+    background: #ededed;
+    width: 100%;
+    height: 164px;
+    background: #ff5000;
+}
+#myMoney_container .head{
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+}
+#myMoney_container .head h2{
+    font-weight: normal;
+    line-height: 50px;
+}
+#myMoney_container .head .back{
+    background: url(../image/icon/back.png);
+    background-size: cover;
+    width: 12px;
+    height: 22px;
+    position: absolute;
+    left: 22px;
+    top: calc(50% - 11px);
+    z-index: 1;
+}
+#myMoney_container .balance{
+    padding: 0 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 114px;
+}
+#myMoney_container .balance .title{
+    font-size: 15px;
+    color: #fff;
+    line-height: 35px;
+}
+#myMoney_container .balance .price{
+    font-size: 39px;
+    line-height: 39px;
+    height: 39px;
+    display: block;
+    color: #fff;
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+}
+#myMoney_container .balance .btn{
+    width: 50px;
+    height: 26px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    line-height: 26px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+#myMoney_container .balance .btn2{
+    width: 50px;
+    height: 26px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    line-height: 26px;
+    position: absolute;
+    bottom: 10px;
+    right: 80px;
+}
+
+#myMoney_container .balance_detail{
+    background: #fff;
+    margin-top: 213px;
+    overflow-y: scroll;
+    height: calc(100% - 163px);
+    -webkit-overflow-scrolling : touch;
+}

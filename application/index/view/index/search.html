@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>热门搜索</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/shop.css">
+
+</head>
+
+<body style="background: #fff;">
+    <div id='loading'><img src='./image/loading.png' alt=''></div>
+    <div id="top"></div>
+    <div class='header'>
+        <div>
+            <a href='javascript:;' class='close'></a>
+            <div class="right" tapmode="highlight" onclick="search();">搜索</div>
+            <div class="middle">
+                <img src="./image/header/search_groupbuy.png">
+                <input type="text" id="keyword" placeholder="请输入搜索内容" />
+            </div>
+        </div>
+    </div>
+    <div class="darktitle">热门搜索</div>
+    <div class="row inwrap">
+
+    </div>
+</body>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+<script>
+    $(function(){
+        $.post(serverurl+'/api/app/search',{'token':token},function(data){
+            $("#loading").hide();
+            if(data.list.length>0){
+                var html = '';
+                for(x in data.list){
+                    html = html + "<div class='col flipcard open-win' win='goods_list' param="+data.list[x].value+">"+data.list[x].value+"</div>";
+                }
+                $('.inwrap').append(html);
+                //搜索商品
+                $(".open-win").click(function(){
+                    var keyword = $(this).attr('param');
+                    api.openWin({
+                        name: 'goods_list',
+                        reload:true,
+                        url: './goods_list.html?keyword='+keyword
+                    });
+                });
+            }
+        },"json");
+    })
+    //搜索
+    function search() {
+        var keyword = $('#keyword').val();
+        if(keyword.length > 0){
+            api.openWin({
+                name: 'goods_list',
+                reload:true,
+                url: './goods_list.html?keyword='+keyword
+            });
+        }else{
+            layer.msg('请输入搜索关键词');
+        }
+    };
+</script>
+</html>

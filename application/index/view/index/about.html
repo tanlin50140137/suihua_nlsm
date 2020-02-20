@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>关于我们</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/aboutUs.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>关于我们</h2>
+    </div>
+</div>
+<div id='editSite_container'>
+    <div class="cash_content">
+       
+        <div class="cash_content_box">
+            <div class="cash_content_img">
+                <img src="./image/logo.jpg" />
+            </div>
+            <h5></h5>
+            <p></p>
+        </div>
+
+        <div class="cash" id='WithdrawDeposit_form'>
+                <div class="box_h">
+
+                    <div class="notes_left">
+                        <b>官方微信</b>
+                        <span id='guanfangweixin'></span>
+                    </div>
+                    <div class="notes_left">
+                        <b>官方微博</b>
+                        <span id="guanfangshangcheng"></span>
+                    </div>
+                    <div class="notes_left">
+                        <b>官方网站</b>
+                        <span id='guanfangwangzhan'></span>
+                    </div>
+                    <div class="notes_left">
+                        <b>客服电话</b>
+                        <span id="kefudianhua"></span>
+                    </div>
+                    <div class="notes_left">
+                        <b>公司邮箱</b>
+                        <span id="gongsiyouxiang"></span>
+                    </div>
+                    
+                </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+</body>
+
+<script>
+    $(function(){
+        $.ajax({
+            url:serverurl+'/api/app/about',
+            type:'post',
+            data:{token:token},
+            success:function(data){
+                $("#loading").hide();
+                $('.cash_content_box h5').text(data.list.name)
+                $('.cash_content_box p').text(data.list.version)
+                $('#guanfangweixin').text(data.list.weixin)
+                $('#guanfangshangcheng').text(data.list.weibo)
+                $('#guanfangwangzhan').text(data.list.url)
+                $('#kefudianhua').text(data.list.mobile)
+                $('#gongsiyouxiang').text(data.list.email)
+            }
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改配送运费</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body>
+
+
+<form role="form" class="getform form-horizontal" id="form">
+<div class="box box-solid">
+    
+    <div class="box-body">
+        <div class="form-group">
+            <label class="control-label col-xs-2">运费名称：</label>
+            <div class="col-xs-9">
+                <input type="text" autocomplete="off"  class="form-control pinput name " name="name" datatype="4,40" rule="length" errorms="模版名称请在4~40个字符以内" value="{$list['name']}" />
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-2">配送描述：</label>
+            <div class="col-xs-9">
+                <textarea type="textarea" class="form-control pinput remark" name="remark">{$list['remark']}</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-2">配送方式：</label>
+            <div class="col-xs-9">
+                <label class="radio-inline" style="margin-left:20px;">
+                    <input type="radio" class="typeid pinput" name="typeid" value="0" {if condition="$list['typeid'] == 0"}checked{/if} /> 统一费用
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" class="typeid pinput" name="typeid" value="1" {if condition="$list['typeid'] == 1"}checked{/if} /> 按重量计算
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" class="typeid pinput" name="typeid" value="2" {if condition="$list['typeid'] == 2"}checked{/if} /> 按商品件数计算
+                </label>
+            </div>
+        </div>
+        <input type="hidden" class="pinput id" name="id" value="{$list['id']}" />
+        <div class="form-group">
+            <label class="control-label col-xs-2">运费设置：</label>
+            <div class="col-xs-9 delivery-data">
+
+                <table class="dtable unify none" id="dtable-unify">
+                    <tr>
+                        <th colspan="2">统一费用</th>
+                    </tr>
+                    <tr>
+                        <td>配送区域</td>
+                        <td class="th-title">
+                            
+                            <span class="th-head">配送费用(¥)</span>
+                        </td>
+                    </tr>
+                    {if condition="$list['typeid'] EQ 0"}
+
+                        {volist name="list['value']" id="vo"}
+                        <tr class="tr-list">
+                            <td>
+                                {if condition="$key eq 0"}
+                                <div class="td-title">{$vo['namelist']}</div>
+                                {else/}
+                                <div>
+                                    指定地区
+                                    <a href="javascript:;" class="blue edit_area">编辑</a>
+                                    <a href="javascript:;" class="blue del_area">删除</a>
+                                </div>
+                                <div class="sgray region-list-item">{$vo['namelist']}</div>
+                                {/if}
+                                <input type="hidden" class="region" value="{$vo['region']}" />
+                                <input type="hidden" class="namelist" value="{$vo['namelist']}" />
+                            </td>
+                            <td class="td-input form-inline">
+                                <input type="text" autocomplete="off"  class="text form-control input-sm price" value="{$vo['price']}" />
+                            </td>
+                        </tr>
+                        {/volist}
+
+                    {else/}
+                    <tr class="tr-list">
+                        <td>
+                            <div class="td-title">全国默认地区</div>
+                            <input type="hidden" class="region" value="1" />
+                            <input type="hidden" class="namelist" value="全国默认" />
+                            <span class="red"></span>
+                        </td>
+                        <td class="td-input form-inline">
+                            <input type="text" autocomplete="off"  class="text form-control input-sm price" />
+                        </td>
+                    </tr>
+                    {/if}
+                    <tr>
+                        <td colspan="2">
+                            <a href="javascript:;" class="blue add_area">+ 为指定地区设置运费</a>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="dtable none" id="dtable-weight">
+                    <tr>
+                        <th colspan="2">按重量计算</th>
+                    </tr>
+                    <tr>
+                        <td>配送区域</td>
+                        <td class="th-title">
+                            <span class="th-head">配送运费(kg/¥)</span>
+                        </td>
+                    </tr>
+
+                    {if condition="$list['typeid'] EQ 1"}
+
+                        {volist name="list['value']" id="vo"}
+                        <tr class="tr-list">
+                            <td>
+                                {if condition="$key eq 0"}
+                                <div class="td-title">{$vo['namelist']}</div>
+                                {else/}
+                                <div>
+                                    指定地区
+                                    <a href="javascript:;" class="blue edit_area">编辑</a>
+                                    <a href="javascript:;" class="blue del_area">删除</a>
+                                </div>
+                                <div class="sgray region-list-item">{$vo['namelist']}</div>
+                                {/if}
+                                <input type="hidden" class="region" value="{$vo['region']}" />
+                                <input type="hidden" class="namelist" value="{$vo['namelist']}" />
+                            </td>
+                            <td class="td-input form-inline">
+                                <input type="text" autocomplete="off"  class="text form-control input-sm price" value="{$vo['price']}" />
+                            </td>
+                        </tr>
+                        {/volist}
+
+                    {else/}
+                    <tr class="tr-list">
+                        <td>
+                            <div class="td-title">全国默认地区</div>
+                            <input type="hidden" class="region" value="1" />
+                            <input type="hidden" class="namelist" value="全国默认" />
+                            <span class="red"></span>
+                        </td>
+                        <td class="td-input form-inline">
+                            <input type="text" autocomplete="off"  class="text form-control input-sm price" />
+                        </td>
+                    </tr>
+                    {/if}
+
+                    <tr>
+                        <td colspan="2">
+                            <a href="javascript:;" class="blue add_area">+ 为指定地区设置运费</a>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="dtable none" id="dtable-number">
+                    <tr>
+                        <th colspan="2">按商品件数计算</th>
+                    </tr>
+                    <tr>
+                        <td>配送区域</td>
+                        <td class="th-title">
+                            <span class="th-head">配送运费(件/¥)</span>
+                        </td>
+                    </tr>
+
+                    {if condition="$list['typeid'] EQ 2"}
+                        {volist name="list['value']" id="vo"}
+                        <tr class="tr-list">
+                            <td>
+                                {if condition="$key eq 0"}
+                                <div class="td-title">{$vo['namelist']}</div>
+                                {else/}
+                                <div>
+                                    指定地区
+                                    <a href="javascript:;" class="blue edit_area">编辑</a>
+                                    <a href="javascript:;" class="blue del_area">删除</a>
+                                </div>
+                                <div class="sgray region-list-item">{$vo['namelist']}</div>
+                                {/if}
+                                <input type="hidden" class="region" value="{$vo['region']}" />
+                                <input type="hidden" class="namelist" value="{$vo['namelist']}" />
+                            </td>
+                            <td class="td-input form-inline">
+                                <input type="text" autocomplete="off"  class="text form-control input-sm price" value="{$vo['price']}" />
+                            </td>
+                        </tr>
+                        {/volist}
+                    {else/}
+                    <tr class="tr-list">
+                        <td>
+                            <div class="td-title">全国默认地区</div>
+                            <input type="hidden" class="region" value="1" />
+                            <input type="hidden" class="namelist" value="全国默认" />
+                            <span class="red"></span>
+                        </td>
+                        <td class="td-input form-inline">
+                            <input type="text" autocomplete="off"  class="text form-control input-sm price" />
+                        </td>
+                    </tr>
+                    {/if}
+
+                    <tr>
+                        <td colspan="2">
+                            <a href="javascript:;" class="blue add_area">+ 为指定地区设置运费</a>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" name="value" class="value">
+<div class="footer">
+    <input type="submit" class="btn btn-sm btn-success btn-flat" value="　保存　" />
+    <input type="button" class="btn btn-sm btn-default btn-flat" value="　取消　" onclick="dpop.parentClose();" />
+</div>
+</form>
+
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+<script type="text/javascript" src="/public/static/js/region-list.js"></script>
+<script type="text/javascript" src="/public/static/js/delivery.js"></script>
+
+<script>
+$(function() {
+    $('body .typeid').click(function(event) {
+        event.stopImmediatePropagation();
+        dy.show();
+    });
+    dy.init();
+    $(dpop.fixed($('#dpop'), 500));
+    $("#form").submit(function(){
+        //验证用户输入的信息
+        var name = $("input[name=name]").val();
+        if(name.length < 1){
+            bpop.tip("运费名称不能为空！", 2, 1);return false;
+        }
+        var value = dy.getData();
+        $(".value").val(JSON.stringify(value));
+        var param = $("#form").serialize();
+        bpop.addLoading(true);
+        $.post('__MODULE__/Distribu/freight_edit', param, function(data) {
+            if (data.success == true) {
+                bpop.tip(data.info, 1, 1);
+            }else {
+                bpop.tip(data.info, 2, 1);
+            }
+        }, 'JSON');
+        return false;
+    })
+});
+
+
+</script>
+<script type="text/html" id="list-tpl">
+<tr class="tr-list">
+    <td>
+        <div class="td-title">
+            指定地区
+            <a href="javascript:;" class="blue edit_area">编辑</a>
+            <a href="javascript:;" class="blue del_area">删除</a>
+        </div>
+        <div class="sgray region-list-item">未指定地区</div>
+        <input type="hidden" class="region" />
+        <input type="hidden" class="namelist" />
+        <span class="red"></span>
+    </td>
+    <td class="td-input form-inline">
+        <input type="text" autocomplete="off"  class="text form-control input-sm price" />
+    </td>
+</tr>
+</script>
+<script type="text/html" id="area-tpl">
+<div class="row">
+    <div class="col-xs-5">
+        <div class="dyarea">
+            <div class="title">省、直辖市、市</div>
+            <div class="area-box">
+                <ul class="area-ul">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-2">
+        <button class="btn btn-default area-add">　添加　</button>
+    </div>
+    <div class="col-xs-5">
+        <div class="dyarea">
+            <div class="title title-count">已选择0个</div>
+            <div class="area-box">
+                <ul class="area-l">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="foot">
+    <button class="btn btn-success btn-flat btn-sm area-confirm">　确认　</button>
+    <button class="btn btn-default btn-flat btn-sm" onclick="dpop.closeAll();">　取消　</button>
+</div>
+</script>
+</body>
+</html>

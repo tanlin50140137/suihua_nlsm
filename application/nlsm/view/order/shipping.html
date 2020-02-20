@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单发货</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+</head>
+<style type="text/css">
+.ordermi td.ol { width:140px; }
+</style>
+<div class="box box-solid">
+    <div class="box-body">
+        <table class="ordermi">
+            <tr>
+                <td class="ol">订单号：</td>
+                <td>{$order['order_id']}【{$order['state']}】</td>
+                <td class="ol">下单日期：</td>
+                <td>{$order['create_time']}</td>
+            </tr>
+            <tr>
+                <td class="ol">物流公司：</td>
+                <td>
+                    <select class="form-control input-sm logistics" name="logistics">
+                        <option value="圆通快递">圆通快递</option>
+                        <option value="申通快递">申通快递</option>
+                        <option value="韵达快递">韵达快递</option>
+                        <option value="顺丰快递">顺丰快递</option>
+                        <option value="中通快递">中通快递</option>
+                        <option value="天天快递">天天快递</option>
+                        <option value="速尔快递">速尔快递</option>
+                    </select>
+                </td>
+                <td class="ol">物流单号：</td>
+                <td>
+                    <input type="text" autocomplete="off"  class="form-control input-sm logistino" placeholder="填写物流单号" />
+                </td>
+            </tr>
+            <tr>
+                <td class="ol">配送费用：</td>
+                <td>￥ {$order['freight_price']}</td>
+                <td class="ol">物流费用：</td>
+                <td colspan="3" class="form-inline">
+                    <input type="text" autocomplete="off"  class="form-control input-sm freight_price" placeholder="填写物流费用" value="{$order['freight_price']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="ol">收货人姓名：</td>
+                <td>
+                    <input type="text" autocomplete="off"  class="form-control input-sm username" value="{$order['username']}" />
+                </td>
+                <td class="ol">联系方式：</td>
+                <td>
+                    <input type="text" autocomplete="off"  class="form-control input-sm mobile" value="{$order['mobile']}" />
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="ol">收货地区：</td>
+                <td colspan="3">
+                    <input type="text" autocomplete="off"  class="form-control input-sm city" value="{$order['city']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="ol">收货地址：</td>
+                <td colspan="3">
+                    <input type="text" autocomplete="off"  class="form-control input-sm address" value="{$order['address']}" />
+                </td>
+            </tr>
+            <tr>
+                <td class="ol">发货单备注：</td>
+                <td colspan="3">
+                    <textarea class="form-control remark"></textarea>
+                </td>
+            </tr>
+        </table>
+        <table class="order-tab goods-item" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;">
+            <tr>
+                <th>商品名称</th>
+                <th width="100">购买数量</th>
+                <th width="100">已发货量</th>
+                <th width="100">此单发货</th>
+            </tr>
+            {volist name="$order['goods']" id="vo" key="k"}
+            <tr>
+                <td class="tl">
+                    {$vo['goods_name']}
+                    {if condition="$vo['spec_value']"}
+                    （{$vo['spec_value']}）
+                    {/if}
+                </td>
+                <td>
+                    x {$vo['goods_number']}
+                </td>
+                <td>
+                    x {$vo['sendnum']}
+                </td>
+                <td>
+                    <input type="text" autocomplete="off"  class="form-control item-id input-sm" data-id="{$k}" num="{$vo['goods_number']-$vo['sendnum']}" value="{$vo['goods_number']-$vo['sendnum']}" />
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+<div class="footer">
+    <button class="btn btn-sm btn-primary btn-flat" onclick="submits();">确认发货</button>
+</div>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+
+var order_id = "{$order['order_id']}";
+var uid = "{$order['uid']}";
+function submits() {
+    bpop.add('确定要发货操作吗？', 2, function(){
+        var freight_price = $('.freight_price').val(),
+            logistics = $('.logistics').val(),
+            logistino = $('.logistino').val(),
+            username = $('.username').val(),
+            city = $('.city').val(),
+            address = $('.address').val(),
+            mobile = $('.mobile').val();
+        // 验证用户输入数据
+        if(freight_price.length<1){
+            bpop.tip('请填写正确的物流费用！', 2, 1);return false;
+        }
+        if(username.length<1){
+            bpop.tip('请填写收货人！', 2, 1);return false;
+        }
+        if(address.length<1){
+            bpop.tip('请填写收货人地址！', 2, 1);return false;
+        }
+        if(mobile.length<1){
+            bpop.tip('请填写正确的电话号码！', 2, 1);return false;
+        }
+        var items = Array();
+        $('.goods-item .item-id').each(function() {
+            var num = $(this).attr('num'),          //可发货数量
+                sendnum = $(this).val(),            //发货数量
+                item_id = $(this).attr('data-id');  //货号ID
+            if (num > 0 && sendnum > 0) {
+                items.push( { 'key' : item_id, 'sendnum' : sendnum } );
+            }
+        });
+        bpop.addLoading(true);
+        $.post('__MODULE__/Order/shipping',{'order_id' : order_id,'uid' : uid, 'freight_price' : freight_price, 'logistics' : logistics, 'logistino' : logistino, 'username' : username, 'city' : city, 'address' : address, 'mobile' : mobile, 'items' : items}, function(data) {
+            if (data.success == true) {
+                bpop.tip(data.info, 1, 1);
+                setTimeout('window.location.reload()',1000); 
+            }else {
+                bpop.tip(data.info, 2, 1);
+            }
+        }, 'JSON');
+    })
+}
+</script>
+</body>
+</html>

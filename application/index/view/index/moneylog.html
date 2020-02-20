@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>我的余额</title>
+</head>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/myMoney.css">
+    <link rel="stylesheet" href="./css/reward.css">
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+	<div>
+		<a href='javascript:;' class='close'></a>
+		<h2>我的余额</h2>
+	</div>
+</div>
+<div id='myMoney_container'>
+	<div class="balance_content">
+		<div class="top" id='myMoney_container_top'>
+			<div>
+				<div class="balance">
+					<p class="title">可用余额</p>
+					<span class="price"></span>
+					<div class="btn">提现</div>
+					<div class="btn2">转账</div>
+				</div>
+    		</div>
+		</div>
+		
+		<div class="balance_detail" id='myMoney_container_balance_detail' style="height: calc(100% - 135px) !important;">
+
+			<div id='content'>
+			<!-- 没有数据时display: block; -->
+        	<div class="null-data" style="display: none;"></div>
+			<div class='order_list'>
+				<ul class="message"></ul>
+    		</div>
+		</div>
+	</div>
+
+</div>
+</body>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+<script>
+	var page = 1;
+	var iscroll = 1;
+	var is_alipay = '';
+
+	$(function(){
+		//获取用户余额
+		$.ajax({
+			url:serverurl+'/api/app/detail',
+			type:'post',
+			data:{
+				'appkey':localStorage.appkey,
+		        'token':token
+			},
+			success:function(data){
+				if(data.info == 'appkey验证失败！'){
+	                api.openWin({
+	                    name: 'login',
+	                    url: 'login.html',
+	                });
+	            }
+	            localStorage.money = data.list.money;
+				$('.price').text(data.list.money)
+				if(data.list.alipay){
+					is_alipay = 'you'
+				}else{
+					is_alipay = 'meiyou'
+				}
+			}
+		})
+		getMoneylog();
+		//滚动到底部
+		$('#myMoney_container .balance_detail').scroll(function(){
+
+		　　var scrollTop = $(this).scrollTop();
+		　　var scrollHeight = $('.message').height();
+		　　var windowHeight = $(this).height();
+		　　if( Math.ceil(scrollTop + windowHeight)+10 >= scrollHeight && iscroll == 1){
+				//查询下一页数据
+				page = page + 1;
+				getMoneylog();
+		　　}
+		});
+
+		//转账
+		$('.btn2').click(function(){
+			api.openWin({
+                name: 'transfermoney',
+                url:'transfermoney.html'
+            });
+		})
+
+		//提现
+		$('.btn').click(function(){
+			if(is_alipay=='you'){
+				api.openWin({
+	                name: 'withdrawmoney',
+	                url:'withdrawmoney.html'
+	            });
+			}else{
+				layer.msg('请先绑定支付宝！');
+				setTimeout(function(){
+					api.openWin({
+		                name: 'alipay',
+		                url:'alipay.html'
+		            });
+				},500);
+			}
+		})
+	})
+
+	function getMoneylog(){
+		$.post(serverurl+'/api/app/money',{'page':page,'appkey':localStorage.appkey,'token':token},function(data){
+            $("#loading").hide();
+            if(data.list.length>0){
+        		iscroll = 1;
+        		var html = '';
+                for(x in data.list){
+                    html = html + "<li>\
+										<div class='message_img'>\
+											<img src='image/icon/3.png' />\
+										</div>\
+										<div class='message_text'>\
+											<h5>"+data.list[x].remark+"[<span style='color:red'>"+data.list[x].money+"</span>]</h5>\
+											<span>"+data.list[x].create_time+"</span>\
+										</div>\
+									</li>"
+                }
+                $('.message').append(html);
+
+            }else if(page == 1){
+               $('.null-data').show();
+            }else{
+            	if(data.info == 'appkey验证失败！'){
+	                api.openWin({
+	                    name: 'login',
+	                    url: 'login.html',
+	                });
+	            }
+            }
+        },"json");
+	}
+</script>
+</html>

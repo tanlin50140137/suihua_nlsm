@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>帮助中心</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/helpDetails.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>帮助中心</h2>
+    </div>
+</div>
+<div id='HelpDetails'>
+    <div class='invest_content'>
+        
+        <div id='cont'>
+            <div>
+                    <div class="profit_deta">
+                    <h4></h4>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+</body>
+
+<script>
+    $(function(){
+        var id = geturldata('id');
+        //获取帮助详情
+        $.ajax({
+            url:serverurl+'/api/app/article',
+            type:'post',
+            data:{
+                token:token,
+                id:id
+            },
+            success:function(data){
+                $("#loading").hide();
+                $('.header h2').text(data.list.title)
+                $('.profit_deta h4').after(data.list.content);
+            }
+        })
+    })
+</script>
+</html>

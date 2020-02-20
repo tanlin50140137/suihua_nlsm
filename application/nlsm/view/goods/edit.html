@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改商品信息</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/image.css" rel="stylesheet" />
+    <style>
+        .image-item img{padding:1px;width:50px;height: 50px;}
+    </style>
+    <script>
+        //商品分类
+        var goods_type = '{$typelist}';
+            goods_type = JSON.parse(goods_type); 
+        //商品规格
+        var spec = '{$spec}';
+            spec = JSON.parse(spec); 
+        var spec_list = spec.spec_list;
+        var spec_data = spec.spec_value;
+        var goods_spec = '{$goods_spec}';
+            goods_spec = JSON.parse(goods_spec); 
+        //保存用户选中规格
+        var spec_res = {};
+
+        //商品信息
+        var goods_id = "{$goods['goods_id']}";
+        var is_spec = "{$goods['is_spec']}";
+        
+    </script>
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+    <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="tab-item active"><a href="javascript:;">基本信息</a></li>
+        <li class="tab-item"><a href="javascript:;">详情描述</a></li>
+    </ul>
+</div>
+
+<form role="form" class="getform form-horizontal form-inline" id="form">
+<div class="box box-solid">
+    <div class="box-body">
+        <div id="tabs">
+            <table class="tab-goods">
+                <tr class="tr-th">
+                    <th colspan="6"><i class="fa fa-minus"></i> <span class="th-text">基本信息</span></th>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">商品分类：</td>
+                    <td colspan="3">
+                        <span class="cat-name">未选择</span>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">分类选择：</td>
+                    <td colspan="3">
+                        {volist name="goods['typelist']" id="vo"}
+                            <select class="form-control select-list input-sm typeid" name="typeid" size="10">
+                                {volist name="goods_type" id="v"}
+                                    {if condition="$v['pid'] eq $vo['pid']"}
+                                        <option value="{$v['id']}" {if condition="$v['id']==$vo['id']"}selected{/if}>{$v['name']}</option>
+                                    {/if}
+                                {/volist}
+                            </select>
+                        {/volist}
+                    </td>
+                </tr>
+
+                <tr class="rtd">
+                    <td class="td-r">商品名称：</td>
+                    <td colspan="3">
+                        <input type="text" autocomplete="off"  class="form-control input-sm input-400 pinput goods_name" name="goods_name" maxlength="60" datatype="1,60" rule="length" errorms="商品名称请在1~60个字符以内" value="{$goods['goods_name']}" />
+                        <span class="help-block">（必填，60个字符以内）</span>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">所属商家：</td>
+                    <td colspan="3">
+                        <select type="select" class="form-control input-sm bus_id pinput" name="bus_id">
+                            <option value="0" selected>==自营商品==</option>
+                            {volist name="business" id="vo"}
+                            <option value="{$vo['id']}" {if condition="$vo['id']==$goods['bus_id']"}selected{/if}>{$vo['name']}</option>
+                            {/volist}
+                        </select>
+                    </td>
+                </tr>
+                
+                <tr class="rtd">
+                    <td class="td-r">商品货号：</td>
+                    <td colspan="3">
+                        <input type="text" autocomplete="off"  class="form-control pinput input-sm input-400 goods_sn" name="goods_sn" maxlength="15" value="{$goods['goods_sn']}" />
+                        <span class="help-block">（唯一，如不填写，系统将自动生成，15位以内）</span>
+                    </td>
+                </tr>
+                <tr class="rtd">
+
+                    <td class="td-r">券分抵用：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-dot-circle-o"></i></span>
+                            <input type="number" step="0.01" class="form-control use_point pinput" name="use_point" maxlength="5" value="{$goods['use_point']}" />
+                            <span class="input-group-addon">个</span>
+                        </div>
+                        <span class="help-block">（购买商品时，最多可使用多少个券分抵用）</span>
+                    </td>
+                </tr>
+
+                <tr class="rtd">
+
+                    <td class="td-r">商品价格：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput goods_price" name="goods_price" maxlength="10" value="{$goods['goods_price']}" />
+                            <span class="input-group-addon">元</span>
+                        </div>
+                        <span class="help-block">（购买商品时，商品的售卖运算价格）</span>
+                    </td>
+                </tr>
+                <tr class="rtd">
+
+                    <td class="td-r">商品折扣：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput discount" name="discount" maxlength="10" value="{$goods['discount']}" />
+                            <span class="input-group-addon">折</span>
+                        </div>
+                        <span class="help-block">（购买商品时，商品的折扣,10不打折）</span>
+                    </td>
+                </tr>
+                
+                
+                <tr class="rtd">
+                    <td class="td-r">成本价：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput costs_price" name="costs_price" maxlength="10" value="{$goods['costs_price']}" />
+                            <span class="input-group-addon">元</span>
+                        </div>
+                        <span class="help-block">（成本价，仅起到后台可查看，商品成本转帐商家价）</span>
+                    </td>
+                </tr>
+                         
+                <tr class="rtd">
+                    <td class="td-r">市场价：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput market_price" name="market_price" maxlength="10" value="{$goods['market_price']}" />
+                            <span class="input-group-addon">元</span>
+                        </div>
+                        <span class="help-block">（只是作为同款商品的市面参考价格，不参与实际运算）</span>
+                    </td>
+                </tr>
+
+                 <tr class="rtd">
+                    <td class="td-r">vip会员价：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput vip_price" name="vip_price" maxlength="10" value="{$goods['vip_price']}" />
+                            <span class="input-group-addon">元</span>
+                        </div>
+                        <span class="help-block">（只是作为同款商品的市面参考价格，不参与实际运算）</span>
+                    </td>
+                </tr>
+     
+     
+                <tr class="rtd">
+                    <td class="td-r">商品库存：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-cubes"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput goods_number" name="goods_number" maxlength="10" value="{$goods['goods_number']}" />
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">商品重量：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-truck"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput goods_weight" name="goods_weight" maxlength="10" value="{$goods['goods_weight']}" />
+                        </div>
+                        <span class="help-block">(重量：kg/千克)</span>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">计量单位：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-sitemap"></i></span>
+                            <input type="text" autocomplete="off"  class="form-control pinput goods_unit" name="goods_unit" maxlength="10" value="{$goods['goods_unit']}" />
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="tr-th">
+                    <th colspan="6"><i class="fa fa-minus"></i> <span class="th-text">规格/属性/参数表</span></th>
+                </tr>
+
+                <tr class="rtd">
+                    <td class="td-r">规格类型：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="is_spec" class="pinput is_spec" {if condition="$goods['is_spec']==1"}checked{/if}/>
+                                </div> 
+                                <i></i> 统一规格
+                            </label>
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="is_spec" class="pinput is_spec" {if condition="$goods['is_spec']==2"}checked{/if}/>
+                                </div> 
+                                <i></i> 多种规格
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="rtd spec-list" style="display: none;">
+                    <td class="td-r">规格列表：</td>
+                    <td colspan="3">
+                        <button type="button" class="btn btn-sm btn-default btn-flat" onclick="show_spec();"><i class="fa fa-refresh"></i> 重新加载规格</button>
+                        <button type="button" class="btn btn-sm btn-default btn-flat" onclick="clear_spec();"><i class="fa fa-trash"></i> 清除所有规格</button>
+                        <div class="spec-s">
+                            暂无相关数据规格
+                        </div>
+                        <table class="spec-table">
+                            <thead>
+                                <tr class="th">
+                                    <th>商品图片</th>
+                                    <th>商品货号</th>
+                                    <th>销售价</th>
+                                    <th>成本价</th>
+                                    <th>市场价</th>
+                                    <th>库存</th>
+                                    <th>重量</th>
+                                    <th class="th-b">上架</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr class="tr-th">
+                    <th colspan="6"><i class="fa fa-minus"></i> <span class="th-text">商品相册 - 最多九张 - 第一张为默认列表图片</span></th>
+                </tr>
+
+                <tr class="rtd">
+                    <td class="td-r">相册列表：</td>
+                    <td colspan="3">
+                        <div class="goods-gallery">
+                            <div class="img-box full">
+                                <section class=" img-section">
+                                    <div class="z_photo upimg-div clear" >
+                                            {volist name="$goods['goods_image']" id="vo"}
+                                            <section class="up-section fl gallery-team">
+                                                <span class="up-span"></span>
+                                                <img class="close-upimg" src="/public/image/a7.png">
+                                                <img class="up-img images" src="{$vo}">
+                                                <p class="img-name-p">{$vo}</p>
+                                                <div class="oper">
+                                                    <span class="prev" onclick="gallery('prev', this)"><i class="fa fa-arrow-left"></i></span>
+                                                    <span class="next" onclick="gallery('next', this)"><i class="fa fa-arrow-right"></i></span>
+                                                </div>
+                                            </section>
+                                            {/volist}
+                                             <section class="z_file fl">
+                                                <img src="/public/image/a11.png" class="add-img">
+                                                <input type="file" name="file[]" id="image" class="file" accept="image/jpg,image/jpeg,image/png,image/bmp" />
+                                             </section>
+                                     </div>
+                                 </section>
+                            </div>
+                            <aside class="mask works-mask">
+                                <div class="mask-content">
+                                    <p class="del-p ">您确定要删除作品图片吗？</p>
+                                    <p class="check-p"><span class="del-com wsdel-ok">确定</span><span class="wsdel-no">取消</span></p>
+                                </div>
+                            </aside>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="tr-th">
+                    <th colspan="6"><i class="fa fa-minus"></i> <span class="th-text">促销信息</span></th>
+                </tr>
+                
+                <tr class="rtd">
+                    <td class="td-r">会员直推返利：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput huitui" name="huitui" maxlength="10" value="{$goods['huitui']}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">招商返利：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput shang" name="shang" maxlength="10" value="{$goods['shang']}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </td>
+                </tr>
+                <!-- <tr class="rtd">
+                    <td class="td-r">店长直推返利：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput diantui" name="diantui" maxlength="10" value="{$goods['diantui']}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">经理直推返利：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput jingtui" name="jingtui" maxlength="10" value="{$goods['jingtui']}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">总监直推返利：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput zongtui" name="zongtui" maxlength="10" value="{$goods['zongtui']}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">店长返利金额：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput dianfan" name="dianfan" maxlength="10" value="{$goods['dianfan']}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">经理返利金额：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput jingfan" name="jingfan" maxlength="10" value="{$goods['jingfan']}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">总监返利金额：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput zongfan" name="zongfan" maxlength="10" value="{$goods['zongfan']}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </td>
+                </tr> -->
+                <tr class="rtd">
+                    <td class="td-r">商品销量：</td>
+                    <td colspan="3">
+                        <div class="input-group input-200 input-group-sm">
+                            <span class="input-group-addon"><i class="fa fa-cube"></i></span>
+                            <input type="number" step="0.01" class="form-control pinput goods_salse" name="goods_salse" maxlength="8" value="{$goods['goods_salse']}" />
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">是否推荐：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="is_recom" class="pinput is_recom" {if condition="$goods['is_recom']==1"}checked{/if}/>
+                                </div> 
+                                <i></i> 推荐 &nbsp;&nbsp;
+                            </label>
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="is_recom" class="pinput is_recom" {if condition="$goods['is_recom']==2"}checked{/if}/>
+                                </div> 
+                                <i></i> 不推荐 &nbsp;&nbsp;
+                            </label>
+                        </div>
+                    </td>    
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">是否新品：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="is_hot" class="pinput is_hot" {if condition="$goods['is_hot']==1"}checked{/if}/>
+                                </div> 
+                                <i></i> 新品 &nbsp;&nbsp;
+                            </label>
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="is_hot" class="pinput is_hot" {if condition="$goods['is_hot']==2"}checked{/if}/>
+                                </div> 
+                                <i></i> 非新品 &nbsp;&nbsp;
+                            </label>
+                        </div>
+                    </td>   
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">会员专享：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="is_xiang" class="pinput is_xiang" {if condition="$goods['is_xiang']==1"}checked{/if}/>
+                                </div> 
+                                <i></i> 是 &nbsp;&nbsp;
+                            </label>
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="is_xiang" class="pinput is_xiang" {if condition="$goods['is_xiang']==2"}checked{/if}/>
+                                </div> 
+                                <i></i> 不是 &nbsp;&nbsp;
+                            </label>
+                        </div>
+                    </td>   
+                </tr>
+                <tr class="tr-th">
+                    <th colspan="6"><i class="fa fa-minus"></i> <span class="th-text">SEO优化</span></th>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">商品页面标题：</td>
+                    <td colspan="3">
+                        <input type="text" autocomplete="off"  class="form-control input-sm input-400 pinput goods_title" name="goods_title" maxlength="80" value="{$goods['goods_title']}" />
+                        <span class="help-block">（选填，80字以内，不填写则默认显示商品名称）</span>
+                    </td>
+                </tr>
+               
+                <tr class="rtd">
+                    <td class="td-r">页面关键词：</td>
+                    <td colspan="3">
+                        <input type="text" autocomplete="off"  class="form-control input-sm input-400 pinput goods_keyword" name="goods_keyword" maxlength="80"  value="{$goods['goods_keyword']}"/>
+                    <span class="help-block">（选填，80字以内，多个请用|隔开）</span>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">页面描述：</td>
+                    <td colspan="3">
+                        <textarea type="textarea" class="form-control input-400 input-sm pinput goods_remark" name="goods_remark">{$goods['goods_remark']}</textarea>
+                        <span class="help-block">（商品页面描述）</span>
+                    </td>
+                </tr>
+                
+                <tr class="tr-th">
+                    <th colspan="6"><i class="fa fa-minus"></i> <span class="th-text">上架设置</span></th>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">商品类型：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="radio-inline">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="is_xian" class="pinput is_xian" {if condition="$goods['is_xian']==1"}checked{/if}/>
+                                </div> 
+                                <i></i> 线下 &nbsp;&nbsp;
+                            </label>
+                            <label class="radio-inline">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="is_xian" class="pinput is_xian" {if condition="$goods['is_xian']==2"}checked{/if}/>
+                                </div> 
+                                <i></i> 线上 &nbsp;&nbsp;
+                            </label>
+                            
+                        </div>
+                        
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">上架时间：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="radio-inline">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="is_state" class="pinput is_state" {if condition="$goods['is_state']==1"}checked{/if}/>
+                                </div> 
+                                <i></i> 立即上架 &nbsp;&nbsp;
+                            </label>
+                            <label class="radio-inline">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="is_state" class="pinput is_state" {if condition="$goods['is_state']==2"}checked{/if}/>
+                                </div> 
+                                <i></i> 下架 &nbsp;&nbsp;
+                            </label>
+                            <label class="radio-inline">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="3" name="is_state" class="pinput is_state" {if condition="$goods['is_state']==3"}checked{/if}/>
+                                </div> 
+                                <i></i> 暂不上架，放入我的商品中
+                            </label>
+                        </div>
+                        
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">配送方式：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            {volist name="freight" id="vo"}
+                                <label class="">
+                                    <div class="icheckbox_square-green">
+                                        <input type="radio" value="{$vo.id}" name="freight_id" {if condition="$vo.id==$goods['freight_id']"}checked{/if} class="pinput freight_id"/>
+                                    </div> 
+                                    <i></i> {$vo.name} - {$vo.typename} &nbsp;&nbsp;
+                                </label>
+                            {/volist}
+                            
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="tabs">
+            <script id="content" name="content" type="text/plain" style="width:100%;height:600px;"></script>
+        </div>
+
+    </div>
+</div>
+
+<div class="footer">
+    <button type="submit" class="btn btn-success btn-sm btn-flat"><i class="fa fa-plus"></i> 保存修改</button>
+</div>
+</form>
+</section>
+<script src="/public/static/js/jquery-1.8.3.min.js"></script>
+
+<!-- 选项框插件 -->
+<link href="/public/plugins/iCheck/custom.css" rel="stylesheet">
+<script src="/public/plugins/iCheck/icheck.min.js"></script>
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script src="/public/static/js/image.js"></script>
+<script src="/public/static/js/goods.js"></script>
+
+<script src="/public/plugins/ueditor/ueditor.config.js"></script>
+<script src="/public/plugins/ueditor/ueditor.all.js"></script>
+<script src="/public/plugins/ueditor/ueditor.parse.js"></script>
+<script>
+    $(document).ready(function(){$(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",})});
+</script>
+<script type="text/javascript">
+window.UEDITOR_CONFIG.serverUrl = '__MODULE__'+window.UEDITOR_CONFIG.serverUrl;
+$(function() {
+    UE.getEditor('content', {
+        toolbars: [
+             ['fullscreen', 'source', 'undo', 'redo', 'bold', 'italic', 'underline', 'fontborder', 'backcolor', 'fontsize', 'fontfamily', 'justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', 'link', 'unlink', 'emotion', 'simpleupload', 'insertimage','insertvideo', 'help']
+        ]
+    });
+    UE.getEditor('content').ready(function() {
+        UE.getEditor('content').setContent('{$goods.goods_content}');
+    });
+    //分类路径显示
+    var list = Array();
+    $('.typeid').each(function(i) {
+        if ($(this).find(':selected')) {
+            list[i] = $(this).find(':selected').text();
+        }
+    });
+    list = list.join(' -> ');
+    $('.cat-name').html(list);
+    //显示商品规格信息
+    if(is_spec == 2){
+        show_spec();
+    }
+    //修改商品信息
+    $("#form").submit(function(){
+        //获取表单内容
+        var param = getFormValue();
+        param.goods_id = goods_id;
+        //商品分类
+        param.typeid = $('.typeid').eq(-1).val();
+        if (!param.typeid) {
+            bpop.tip('请完善的选择商品分类！', 2, 1);return false;
+        }
+        //商品图片
+        param.goods_img = Array();
+        $('.up-img').each(function() {
+            param.goods_img.push($(this).attr('src'));
+        });
+        if (param.goods_img.length < 1) {
+            bpop.tip('请最少上传一张商品图片！', 2, 1);return false;
+        }
+        //详情信息
+        param.goods_content = UE.getEditor('content').getContent();
+        //商品规格
+        param.spec_list = Array();
+        if (param.is_spec == 2) {
+            if (spec_data.length < 1) {
+                bpop.tip('商品没有相应规格属性，不能开启规格选项！', 2, 1);return false;
+            }
+            if(!spec_res.length){
+                bpop.tip('请选择商品相应规格属性！', 2, 1);return false;
+            }
+            var table_tr = $('.spec-table').find('.tr-open');
+            var h = 0, hk = Array();
+            for (var i = 0; i < spec_res.length; i++) {
+                //获取规格信息
+                var res = {
+                    'goods_logo' : table_tr.eq(i).find('.logo').attr('src'),
+                    'goods_sn' : table_tr.eq(i).find('.goods_sn').val(),
+                    'goods_price' : table_tr.eq(i).find('.goods_price').val(),
+                    'costs_price' : table_tr.eq(i).find('.costs_price').val(),
+                    'market_price' : table_tr.eq(i).find('.market_price').val(),
+                    'goods_number' : table_tr.eq(i).find('.goods_number').val(),
+                    'goods_weight' : table_tr.eq(i).find('.goods_weight').val(),
+                    'is_state' : table_tr.eq(i).find('.is_state:checked').val()
+                };
+
+                var trsize = table_tr.eq(i).find('.spec-name').size();
+                //获取规格名称
+                var spec_name = Array();
+                if (h == 0 || h == trsize) {
+                    h = table_tr.eq(i).find('.spec-name').size();
+                    for (var n = 0; n < h; n++) {
+                        spec_name.push(table_tr.eq(i).find('.spec-name').eq(n).val());
+                    }
+                }else {
+                    //先获取
+                    for (k = 0, next_len = table_tr.eq(i).find('.spec-name').size(); k < next_len; k++) {
+                        spec_name.push(table_tr.eq(i).find('.spec-name').eq(k).val());
+                    }
+                    if (spec_name.length != h) {
+                        var ab = hk[i-1].slice(0, h - spec_name.length);
+                        for (k = ab.length - 1; k >= 0; k--) {
+                            spec_name.unshift(ab[k]);
+                        }
+                    }                    
+                }
+                hk[i] = spec_name;
+                res.spec_name = spec_name;
+                //获取规格ID号
+                var data_id = table_tr.eq(i).attr('data-id');
+                var spec_id = Array();
+                var data_id = data_id.split(',');
+                for (var j = 0, len2 = data_id.length; j < len2; j++) {
+                    var rs = select_spec(data_id[j]);
+                    spec_id.push(rs.typeid);
+                }
+                res.spec_id = spec_id;
+                res.spec_idlist = data_id;
+                param.spec_list.push(res);
+            }
+        }
+        bpop.addLoading(true);
+        $.post('__MODULE__/Goods/edit', param, function(data) {
+            if (data.success == true) {
+                bpop.tip(data.info, 1, 1);
+            }else{
+                bpop.tip(data.info, 2, 1);
+            }
+        },"json");
+        return false;
+    });
+});
+
+</script>
+</body>
+</html>

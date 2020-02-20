@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>我的优惠卷</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/myCoupon.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>我的优惠卷</h2>
+    </div>
+</div>
+
+<div id='MyCoupon'>
+    
+    <div id='screen'>
+        <div>
+            <ul>
+                <li style='color:#38aee3;border-bottom:2px solid #38aee3'>未使用</li>
+                <li>已使用</li>
+                <li>已过期</li>
+            </ul>
+        </div>
+    </div>
+    <div id='content'>
+        <!-- 没有数据时display: block; -->
+        <div class="null-data" style="display: none;"></div>
+        <div class="cont_in state1" style="display: none;">
+                <ul class="pt"></ul>
+                <ul class="dp"></ul>
+            </div>
+
+            <div class="cont_in state2" style="display: none;">
+                <ul class="pt"></ul>
+                <ul class="dp"></ul>
+            </div>
+
+            <div class="cont_in state3" style="display: none;">
+                <ul class="pt"></ul>
+                <ul class="dp"></ul>
+            </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+</body>
+
+<script>
+$(function(){
+    //优惠券类型切换
+    $('#screen ul li').click(function(){
+        $('#screen ul li').removeAttr('style');
+        $(this).css('color','#38aee3').css('border-bottom','2px solid #38aee3');
+        if($(this).index()==0){
+            get_coupon(1);
+        }else if($(this).index()==1){
+            get_coupon(2);
+        }else{
+            get_coupon(3);
+        }
+    })
+    get_coupon(1);
+})
+// 优惠券获取
+function get_coupon(status){
+           
+        $.post(serverurl+'/api/app/mycoupon',{'appkey':localStorage.appkey,'token':token},function(data){
+            $("#loading").hide();
+            if(data.info == 'appkey验证失败！'){
+                api.openWin({
+                    name: 'login',
+                    url: 'login.html',
+                });
+            }
+
+            if(data.list){
+
+                $('.cont_in ul').html('');
+                var couponList = '';
+                var couponLists = '';
+                if(status==1){  
+                    $(".state1").show();             
+                    for(var i=0;i<data.list.length;i++){
+                        if(data.list[i].is_state == 1){
+                            if(data.list[i].bus_id == 0){
+                                    couponList +='<li name='+data.list[i].id+'><samp class="d_top"></samp><samp class="d_bottom"></samp><div class="notes"><h2>平台通用卷</h2><h3>使用范围：无限制</h3><p>适用期限：'+data.list[i].start_time+'-'+data.list[i].end_time+'</p></div><div class="full_out"><div class="full"><samp class="d_left"></samp><samp class="d_right"></samp><p class="price">￥'+data.list[i].money+'</p><p class="my">满'+data.list[i].min_price+'可用</p></div></div></li>'
+                                    $('.cont_in .pt').html('<h4 class="ptq">平台券</h4>'+couponList).css('background','#fff');
+                                    $('.cont_in .pt').removeClass("state2");  
+                                    $('.cont_in .pt').removeClass("state3");
+                            }else{
+                                    couponLists +='<li name='+data.list[i].id+'><samp class="d_top"></samp><samp class="d_bottom"></samp><div class="notes"><h2>'+data.list[i].busname+'</h2><h3>使用范围：无限制</h3><p>适用期限：'+data.list[i].start_time+'-'+data.list[i].end_time+'</p></div><div class="full_out"><div class="full"><samp class="d_left"></samp><samp class="d_right"></samp><p class="price">￥'+data.list[i].money+'</p><p class="my">满'+data.list[i].min_price+'可用</p></div></div></li>';
+                                    $('.cont_in .dp').html('<h4 class="dpq">店铺券</h4>'+couponLists).css('background','#fff');
+                                    $('.cont_in .dp').removeClass("state2");  
+                                    $('.cont_in .dp').removeClass("state3");  
+                            }
+                        }
+                    }    
+                }else if(status == 2){
+                    var couponLists_state2 = '';
+                    var couponLists_states2 = '';
+
+                    for(var i=0;i<data.list.length;i++){                                
+                            
+                        if(data.list[i].is_state == 2){
+                            if(data.list[i].bus_id == 0){
+                                    couponLists_state2 +='<li name='+data.list[i].id+'><samp class="d_top"></samp><samp class="d_bottom"></samp><div class="already_used"></div><div class="notes">平台通用卷<h3>使用范围：无限制</h3><p>适用期限：'+data.list[i].start_time+'-'+data.list[i].end_time+'</p></div><div class="full_out"><div class="full"><samp class="d_left"></samp><samp class="d_right"></samp><p class="price">￥'+data.list[i].money+'</p><p class="my">满'+data.list[i].min_price+'可用</p></div></div><div class="clear"></div></li>'
+                                    $('.cont_in .pt').html('<h4 class="ptq">平台券</h4>'+couponLists_state2).css('background','#fff');
+                                    $('.cont_in .pt').addClass("state2"); 
+                            }else{
+                                    couponLists_states2 +='<li name='+data.list[i].id+'><samp class="d_top"></samp><samp class="d_bottom"></samp><div class="already_used"></div><div class="notes">'+data.list[i].busname+'<h3>使用范围：无限制</h3><p>适用期限：'+data.list[i].start_time+'-'+data.list[i].end_time+'</p></div><div class="full_out"><div class="full"><samp class="d_left"></samp><samp class="d_right"></samp><p class="price">￥'+data.list[i].money+'</p><p class="my">满'+data.list[i].min_price+'可用</p></div></div><div class="clear"></div></li>';
+                                    $('.cont_in .dp').html('<h4 class="dpq">店铺券</h4>'+couponLists_states2).css('background','#fff');
+                                    $('.cont_in .dp').addClass("state2");
+                            }
+                        }
+                    }
+                }else if(status == 3){
+                    var couponLists_state3 = '';
+                    var couponLists_states3 = '';
+
+                        for(var i=0;i<data.list.length;i++){                                
+                                
+                        if(data.list[i].is_state == 3){
+                            if(data.list[i].bus_id == 0){
+                                    couponLists_state3 +='<li name='+data.list[i].id+'><samp class="d_top"></samp><samp class="d_bottom"></samp><div class="xpired"></div><div class="notes">平台通用卷<h3>使用范围：无限制</h3><p>适用期限：'+data.list[i].start_time+'-'+data.list[i].end_time+'</p></div><div class="full_out"><div class="full"><samp class="d_left"></samp><samp class="d_right"></samp><p class="price">￥'+data.list[i].money+'</p><p class="my">满'+data.list[i].min_price+'可用</p></div></div><div class="clear"></div></li>'
+                                    $('.cont_in .pt').html('<h4 class="ptq">平台券</h4>'+couponLists_state3).css('background','#fff');
+                                    $('.cont_in .pt').addClass("state3");
+                            }else{
+                                    couponLists_states3 +='<li name='+data.list[i].id+'><samp class="d_top"></samp><samp class="d_bottom"></samp><div class="xpired"></div><div class="notes">'+data.list[i].busname+'<h3>使用范围：无限制</h3><p>适用期限：'+data.list[i].start_time+'-'+data.list[i].end_time+'</p></div><div class="full_out"><div class="full"><samp class="d_left"></samp><samp class="d_right"></samp><p class="price">￥'+data.list[i].money+'</p><p class="my">满'+data.list[i].min_price+'可用</p></div></div><div class="clear"></div></li>';
+                                    $('.cont_in .dp').html('<h4 class="dpq">店铺券</h4>'+couponLists_states3).css('background','#fff'); 
+                                    $('.cont_in .dp').addClass("state3");
+                            }
+                            
+                        }
+                    }
+                }
+                $('.null-data').hide();
+            }else{
+                $('.null-data').show();
+            }
+        },"json");
+}
+</script>
+</html>

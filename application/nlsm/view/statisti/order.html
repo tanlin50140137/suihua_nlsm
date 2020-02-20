@@ -1,0 +1,120 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单统计</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+{include file="Statisti/menu"}
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Statisti/order">
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="d4311" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})" class="form-control input-sm time start_time" name="start_time" type="text" autocomplete="off"  placeholder="开始时间" value="{$start_time}"/>
+                </div>
+                ~
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="d4312" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})" class="form-control input-sm time end_time" name="end_time" type="text" autocomplete="off"  placeholder="结束时间" value="{$end_time}"/>
+                </div>
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    
+    <div class="am-g tpl-g">
+        <div class="goods-info">
+            {volist name="count" id="vo"}
+                <span class="block">{$vo.state}：<strong>{$vo.count}</strong></span>
+            {/volist}
+        </div>
+        <!-- 内容区域 -->
+        <div class="row-content am-cf">
+            
+            <div class="widget am-cf">
+                <div class="widget-head am-cf">
+                        <div class="widget-function am-fr">
+                            <a href="javascript:;" class="am-icon-cog"></a>
+                        </div>
+                    </div>
+                <div class="widget-body am-fr">
+                    <div style="height: 600px" id="tpl-echarts-A">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/public/plugins/My97DatePicker/WdatePicker.js"></script>
+<script src="/public/static/js/echarts.min.js"></script>
+<script>
+    var echartsA = echarts.init(document.getElementById('tpl-echarts-A'));
+        option = {
+            title : {
+                text: '',
+                subtext: ''
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:[{$list['name']}]
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    magicType : {show: true, type: ['line', 'bar']},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    data : [{$list['data']}]
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {volist name="$list['list']" id="vo"}
+                {
+                    name:'{$vo.state}',
+                    type:'bar',
+                    data:[{$vo.list}],
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name: '最小值'}
+                        ]
+                    }
+                    
+                },
+                {/volist}
+            ]
+        };
+
+        echartsA.setOption(option);
+</script>
+</section>
+</body>
+</html>

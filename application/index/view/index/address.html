@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>添加地址</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/address.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>添加地址</h2>
+    </div>
+</div>
+<div id='AddSite_container'>
+    <div class="cash_content">
+        
+        <div class="cash" id='WithdrawDeposit_form'>
+            <div>
+                <ul>
+                    <li>
+                        <span class="notes_left">收货人姓名</span>
+                        <input type="text" id='userName'/>
+                        <div class="claer"></div>
+                    </li>
+                    <li class="txz">
+                        <span class="notes_left">手机号码</span>
+                        <input type="text" id='userPhone'/>
+                        <div class="claer"></div>
+                    </li>
+                    <li class="cityd">
+                        <strong class="fr" data-toggle="distpicker">
+                            <select></select>
+                            <select></select>
+                            <select></select>
+                        </strong>
+                        <div class="claer"></div>
+                    </li>
+                    <li class="code">
+                        <span class="notes_left">详细地址</span>
+                        <input type="text" id='userCitys'/>
+                        <div class="claer"></div>
+                    </li>
+                </ul>
+                <button type="button" class="tj_btn" id="addSiteBtn">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+<script type="text/javascript" src="./js/distpicker.data.js"></script>
+<script type="text/javascript" src="./js/distpicker.js"></script>
+</body>
+
+<script>
+$(function(){
+    $("#loading").hide();
+    //添加收货地址
+    $('#addSiteBtn').click(function(){
+        if($('#userName').val()!='' && $('#userPhone').val()!='' && $('#userCitys').val()!=''){
+            var city1 = $("select:eq(0) option:checked").text();
+            var city2 = $("select:eq(1) option:checked").text();
+            var city3 = $("select:eq(2) option:checked").text();
+            var city = city1 +'-'+ city2 +'-'+ city3;
+            $.post(serverurl+'/api/app/add_address',{'mobile':$('#userPhone').val(),'username':$('#userName').val(), 'address':$('#userCitys').val(),'city':city,'appkey':localStorage.appkey,'token':token},function(data){
+                if(data.success){
+                    if(localStorage.Callback){
+                        api.openWin({
+                            name: localStorage.Callback,
+                            reload:true,
+                            url: localStorage.Callback+'.html',
+                        });
+                    }else{
+                        api.closeWin();
+                    }
+                }else{
+                    layer.msg(data.info);
+                    if(data.info == 'appkey验证失败！'){
+                        api.openWin({
+                            name: 'login',
+                            url: 'login.html',
+                        });
+                    }
+                }
+            },"json");
+        }else{
+            layer.msg('请完善收货信息')
+        }
+    })
+})
+</script>
+</html>

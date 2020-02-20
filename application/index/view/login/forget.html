@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>忘记密码</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/forget.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+
+<body>
+<div id="worry"></div>
+<div id='Forget_container'>
+	<div class="content">
+		<div class="top" id='Forget_top'>
+			<div>
+    			<div class="head">
+					<a href='javascript:;' class="back" ></a>
+					<h2>忘记密码</h2>
+				</div>
+    		</div>
+		</div>
+		<div class="cash" id='Forget_form'>
+			<div>
+	    			<ul>
+						<li>
+							<span class="notes_left1"></span>
+							<input type="text" placeholder="请输入手机号码" id='user_phone'/>
+							<div class="claer"></div>
+						</li>
+						<li>
+							<span class="notes_left2"></span>
+							<input type="text" placeholder="请输入验证码"  id='user_code'/>
+							<div class="code_btn">获取验证码</div>
+
+							<div class="claer"></div>
+						</li>
+						<li>
+							<span class="notes_left3"></span>
+							<input type="password" placeholder="请输入新密码" id='user_password'/>
+							<div class="claer"></div>
+						</li>
+						<li>
+							<span class="notes_left3"></span>
+							<input type="password" placeholder="请再次输入密码" id='user_repassword'/>
+							<div class="claer"></div>
+							<p>密码由6-32位英文字母、数字或特殊符号组成</p>
+						</li>
+					</ul>
+					<button type="button" class="tj_btn" id="forgetBtn">确定</button>
+	    		</div>
+		</div>
+		<div class="explain" id='Forget_text'></div>
+	</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+apiready = function() {
+
+	$(function(){
+		$('.back').on('touchstart',function(){
+			api.closeWin()
+		})
+		$('.code_btn').click(function(){
+			var timer;
+			var _self = $(this);
+			if($('#user_phone').val()!=''){
+			$.ajax({
+				url:serverurl+'/api/app/sendCode',
+				type:'post',
+				data:{
+					mobile:$('#user_phone').val(),
+					token:localStorage.token
+				},
+				success:function(data){
+					timerNum = 60;
+					if(data.info=="验证码发送成功！"){
+						_self.css('background','#ededed').css('color','#999').css('pointer-events','none')
+						timer = setInterval(function(){
+							timerNum--;
+							_self.text(timerNum+'s');
+							if(timerNum==0){
+								clearInterval(timer);
+								_self.text('获取验证码')
+								_self.removeAttr('style');
+							}
+						},1000)
+
+					}else{
+						alertFade(data.info);
+					}
+				}
+			})
+		}
+		})
+
+		$('#forgetBtn').click(function(){
+			if($('#user_phone').val()!='' && $('#user_code').val()!='' && $('#user_password').val()!='' && $('#user_repassword').val()!=''){
+				if($('#user_password').val()==$('#user_repassword').val()){
+					$.ajax({
+						url:serverurl+'/api/app/forget',
+						type:'post',
+						data:{
+							mobile:$('#user_phone').val(),
+							password:$('#user_password').val(),
+							code:$('#user_code').val(),
+							token:localStorage.token
+						},
+						success:function(data){
+							if(data.success){
+								alertFade('修改成功',function(){
+									api.openWin({
+							            name: 'login',
+							            url: './index.html',
+							        });
+								});
+
+							}else{
+								alertFade(data.info);
+							}
+						}
+					})
+				}else{
+					alertFade('两次密码输入不一致')
+				}
+
+			}else{
+				alertFade('请完善账号信息')
+			}
+		})
+	})
+}
+</script>

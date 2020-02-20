@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单退货</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+</head>
+<style type="text/css">
+.ordermi td.ol { width:140px; }
+</style>
+<div class="box box-solid">
+    <div class="box-body">
+        
+        <table class="order-tab goods-item" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;">
+            <tr>
+                <th width="170">发货单号</th>
+                <th width="100">物流公司</th>
+                <th>商品名称</th>
+                <th width="100">已发货量</th>
+                <th width="100">已退货量</th>
+                <th width="100">此单退货</th>
+            </tr>
+            {volist name="item_list" id="vo"}
+            <tr>
+                <td>
+                    {$vo['id']}
+                </td>
+                <td>
+                    {$vo['logistics']}
+                </td>
+                <td class="tl">
+                    {$vo['goods_name']}
+                </td>
+                <td>
+                    x {$vo['number']}
+                </td>
+                <td>
+                    x {$vo['returnnum']}
+                </td>
+                <td>
+                    <input type="text" autocomplete="off"  class="form-control item-id input-sm" data-id="{$vo['id']}" num="{$vo['number'] - $vo['returnnum']}" value="{$vo['number']  - $vo['returnnum']}" />
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+<div class="footer">
+    <button class="btn btn-sm btn-primary btn-flat" onclick="submits();">确认退货</button>
+</div>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+var order_id = "{$order_id}";
+var uid = "{$item_list[0]['uid']}";
+function submits() {
+    bpop.add('确定要退货操作吗？', 2, function(){
+        var items = Array();
+        $('.goods-item .item-id').each(function() {
+            var num = $(this).attr('num'),          //可退货数量
+                sendnum = $(this).val(),            //退货数量
+                item_id = $(this).attr('data-id');  //货号ID
+            if (num > 0 && sendnum > 0) {
+                items.push( { 'ship_id' : item_id, 'sendnum' : sendnum } );
+            }
+        });
+        bpop.addLoading(true);
+        $.post('__MODULE__/Order/shipping_return',{'order_id' : order_id,'uid' : uid, 'items':items}, function(data) {
+            if (data.success == true) {
+                bpop.tip(data.info, 1, 1);
+                setTimeout('window.location.reload()',1000); 
+            }else {
+                bpop.tip(data.info, 2, 1);
+            }
+        }, 'JSON');
+    })
+}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>个人提现</title>
+</head>
+<link rel="stylesheet" href="./css/body.css">
+<link rel="stylesheet" href="./css/withdrawDeposit.css">
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+	<div>
+		<a href='javascript:;' class='close'></a>
+		<h2>个人提现</h2>
+	</div>
+</div>
+<div id='WithdrawDeposit_container'>
+            	<div class="cash_content">
+					
+					<div class="cash" id='WithdrawDeposit_form'>
+						<div>
+			    			<ul>
+								<li>
+									<span class="notes_left">提现金额</span>
+									<input type="number" placeholder="请输入提现的金额"  id='user_money'/>
+									<div class="claer"></div>
+								</li>
+								<li class="txz">
+									<span class="notes_left">支付密码</span>
+									<input type="password" placeholder="请输入支付密码"  id='user_password'/>
+									<div class="claer"></div>
+								</li>
+								<li>
+									<span class="notes_left">手机号码</span>
+									<input type="text" placeholder="请输入手机号码"  disabled="disabled"  id='user_phone'/>
+									<div class="claer"></div>
+								</li>
+								<li class="code">
+									<span class="notes_left">验证码</span>
+									<input type="text" placeholder="请输入验证码"  id='user_code'/>
+									<button class="code_btn send">获取验证码</button>
+									<div class="claer"></div>
+								</li>
+								<li>
+									<span class="notes_left">可提现余额</span>
+									<em id='money'>0.00</em>
+									<div class="claer"></div>
+								</li>
+							</ul>
+							<button type="button" class="tj_btn">提交申请</button>
+			    		</div>
+
+					</div>
+					<div class="explain" id='WithdrawDeposit_text'>
+						<div>
+			    			<div class="explain_title">
+								<span>特别说明</span>
+							</div>
+							<div class="explain_text">
+								<p>1.滞纳金100元，提现金额需要是100的整倍数。</p>
+								<p>2.提现需要扣去3%的提现手续费。</p>
+								<p>3.到账时间：10000及以下两小时内到账，10000以上工作
+								日T+1到账，周五到周日提现周一到账。</p>
+							</div>
+			    		</div>
+					</div>
+				</div>
+            </div>
+</body>
+</html>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+<script>
+	$(function(){
+		$("#loading").hide();
+		if(localStorage.mobile){
+            $("#user_phone").val(localStorage.mobile); 
+        }
+        if(localStorage.money){
+            $("#money").html(localStorage.money); 
+        }
+
+        $('.send').on('click',function(){
+            var username = $("#user_phone").val();  
+            // 验证用户输入数据
+            if(username.length<1){
+                layer.msg('请输入手机号码');return false;
+            }  
+            var _this = $(this);
+                _this.attr('disabled',true);
+            var timenum = 60;
+            var time = setInterval(function(){
+                timenum--;
+                _this.text(timenum+'s');
+                if(timenum == 0){
+                    clearInterval(time);
+                    _this.text('获取验证码')
+                    _this.attr('disabled',false);
+                }
+            },1000);
+
+            $.post(serverurl+'/api/app/sendCode',{'mobile':username,'token':token},function(data){
+                if(data.success == false){
+                    layer.msg(data.info);
+                }
+            },"json");
+
+        })
+
+        $('.tj_btn').on('click',function(){
+            if($('#user_phone').val()!='' && $('#user_code').val()!='' && $('#user_password').val()!='' ){
+            		$("#loading").show();
+					$.ajax({
+						url:serverurl+'/api/app/take_money',
+						type:'post',
+						data:{
+							'mobile':$('#user_phone').val(),
+							'password':$('#user_password').val(),
+							'code':$('#user_code').val(),
+							'token':token,
+							'money':$('#user_money').val(),
+							'appkey':localStorage.appkey
+						},
+						success:function(data){
+							$("#loading").hide();
+							if(data.success){
+								layer.msg(data.info)
+								api.closeWin();
+							}else{
+								layer.msg(data.info);
+							}
+						}
+					})
+			}else{
+				layer.msg('请完善提现申请内容')
+			}
+        })
+	})
+</script>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>个人中心</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/user.css">
+
+</head>
+
+<body style="margin-bottom: 0px;">
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div id='user_container'>
+    <div class="user-top">
+         <div>
+            <div class='top_face'>
+                <div class='user_face'></div>
+                <div class='user_name'></div>
+                <div class='user_identity'></div>
+
+            </div>
+            <div class='chat_btn'></div>
+            <div class='setting_btn' onclick="tohtml('personal');"></div>
+                <ul>
+                    <li onclick="tohtml('moneylog.html')">
+                        <i class="money"></i>
+                        <span>我的余额</span>
+                    </li>
+                    <li onclick="tohtml('pointlog.html')">
+                        <i class="point"></i>
+                        <span>我的券分</span>
+                    </li>
+                    
+                </ul>
+        </div>
+    </div>
+    <div id='myOrder'>
+        <div>
+            <div class='myOrder_top'>
+                <span>我的订单</span>
+                <span onclick="tohtml('orderlist.html')">查看全部订单 ></span>
+            </div>
+            <div class='myOrder_bottom'>
+                <ul>
+                    <li onclick="tohtml('orderlist.html?is_state=1')">待支付</li>
+                    <li onclick="tohtml('orderlist.html?is_state=2')">待发货</li>
+                    <li onclick="tohtml('orderlist.html?is_state=3')">待收货</li>
+                    <li onclick="tohtml('orderlist.html?is_state=7')">待评价</li>
+                    <li >退货</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="myAssets" class="hide" onclick="tohtml('invest')">
+        <div>
+            <div class="myAssets_center">
+                <h2>
+                    商家加盟
+                </h2>
+                <span></span>
+            </div>
+        </div>
+
+    </div>
+
+    <div id='functionList'>
+        <div>
+            <ul>
+                <li style="border-right: 1px solid #ededed;border-bottom: 1px solid #ededed;" onclick="tohtml('coupon')">优惠券</li>
+                <li style="border-right: 1px solid #ededed;border-bottom: 1px solid #ededed;" onclick="tohtml('code');">推广二维码</li>
+                <li style="border-bottom: 1px solid #ededed;" onclick="tohtml('myteam');">我的粉丝</li>
+                <li style="border-right: 1px solid #ededed;border-bottom: 1px solid #ededed;" onclick="tohtml('myaddress');">收货地址</li>
+                <li style="border-right: 1px solid #ededed;border-bottom: 1px solid #ededed;" onclick="tohtml('collect');">我的收藏</li>
+                <li style="border-bottom: 1px solid #ededed;" onclick="tohtml('about');">关于我们</li>
+                <li style="border-right: 1px solid #ededed;" onclick="tohtml('feedback');">意见反馈</li>
+                <li style="border-right: 1px solid #ededed;" onclick="tohtml('help');">在线帮助</li>
+                <li class="logout">退出登录</li>
+            </ul>
+        </div>
+    </div>
+    <div class="funList">
+        <ul>
+            <li class="touch goods" style="display: none;" onclick="tohtml('release');"><a >商品发布</a></li> 
+            <li class="touch"><a href="tel:020-31528513">服务热线</a></li>
+            <li class="touch" onclick="tohtml('feedback');"><a >意见反馈</a></li>
+            <li class="touch" onclick="tohtml('help');"><a >帮助中心</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 57px;"></div>
+</div>
+<!--底部-->
+<div style="width:100%;height:57px;"></div>
+<ul class='nav'>
+    <li><a><em></em><span>首页</span></a></li>
+    <li><a><em></em><span>分类</span></a></li>
+    <li><a><em></em><span>劵分区</span></a></li>
+    <li><a><em></em><span>购物车</span></a></li>
+    <li><a class="selected5"><em></em><span>我的</span></a></li>
+</ul>
+<!--底部 END-->
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+</body>
+
+<script>
+    $(function(){
+        //获取会员信息
+        $.post(serverurl+'/api/app/detail',{'appkey':localStorage.appkey,'token':token},function(data){
+            $("#loading").hide();
+            if(data.list){
+                $('.user_face').css('background','url('+data.list.userface+') no-repeat center center / cover')
+                $('.user_name').html(data.list.nickname)
+                $('.user_identity').html(data.list.level_name)
+                if(data.list.level_id==2){
+                    $('.user_identity').addClass('user_level_1');
+
+                }else if(data.list.level_id==3){
+                    $('.user_identity').addClass('user_level_2');
+                }else if(data.list.level_id==4){
+                    $('.user_identity').addClass('user_level_3');
+                }
+                $('.money').html('$'+data.list.money);
+                $('.point').html(data.list.point);
+                if(data.list.bus_id==0 && data.list.level_id == 2){
+                    $("#myAssets").show();
+                }
+                if(data.list.level_id == 3){
+                    $(".goods").show();
+                }
+
+                $.ajax({
+                    url:serverurl+'/api/app/order_count',
+                    type:'post',
+                    data:{
+                        appkey:localStorage.appkey,
+                        token:token
+                    },
+                    success:function(data){
+                        $('.myOrder_bottom ul li').eq(0).append("<em>"+data.list[1]+"</em>")
+                        $('.myOrder_bottom ul li').eq(1).append("<em>"+data.list[2]+"</em>")
+                        $('.myOrder_bottom ul li').eq(2).append("<em>"+data.list[3]+"</em>")
+                        $('.myOrder_bottom ul li').eq(3).append("<em>"+data.list[7]+"</em>")
+                        $('.myOrder_bottom ul li').eq(4).append("<em>"+data.list[4]+"</em>")
+                    }
+                })
+
+            }else{
+                api.openWin({
+                    name: 'login',
+                    url:'login.html'
+                });
+            }
+        },"json");
+    
+        //退出登陆
+        $(".logout").click(function(){
+            if(confirm("确定退出登录吗？")){
+                localStorage.appkey = '';
+                api.openWin({
+                    name: 'login',
+                    url:'login.html'
+                });
+            }
+        });
+    })
+</script>
+</html>

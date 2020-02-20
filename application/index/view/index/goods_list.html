@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>商品列表</title>
+</head>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/goods_list.css">
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+	<div>
+		<a href='javascript:;' class='close'></a>
+		<h2>商品列表</h2>
+	</div>
+</div>
+<div id='goodsList_container'>
+
+	<div id='screen'>
+		<div>
+			<ul>
+				<li style='color:#38aee3'><span>默认</span></li>
+				<li><span>销量</span></li>
+				<li>价格</li>
+			</ul>
+		</div>
+	</div>
+	<div id='content'>
+		<div>
+			<ul>
+
+			</ul>
+		</div>
+		<div class="null"><span>已经到底了...</span></div>
+	</div>
+</div>
+</body>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script>
+	var page = 1;
+	var iscroll = 1;
+	$(function(){
+		getGoodsList();
+		//滚动到底部
+		$('#goodsList_container #content').scroll(function(){
+		　　var scrollTop = $(this).scrollTop();
+		　　var scrollHeight = $('#goodsList_container #content ul').height();
+		　　var windowHeight = $(this).height();
+		　　if( Math.ceil(scrollTop + windowHeight)+10 >= scrollHeight && iscroll == 1){
+				//查询下一页数据
+				page = page + 1;
+				getGoodsList();
+		　　}
+		});
+
+		//顶部导航切换
+		$('#screen ul li').click(function(){
+			page = 1;
+			iscroll = 1;
+			$('#content ul').html('');
+
+            $('#screen ul li').removeAttr('style');
+            $('#screen ul li span').removeAttr('style');
+            $(this).css('color','#38aee3');
+            if($(this).text()=='价格'){
+                if($(this).attr('class')){
+                    if($(this).attr('class')=='select_screen_price1'){
+                        $(this).attr('class','select_screen_price2');
+                        getGoodsList('goods_price','asc');
+                    }else{
+                        $(this).attr('class','select_screen_price1');
+                        getGoodsList('goods_price','desc');
+                    }
+                }else{
+                    $(this).addClass('select_screen_price1');
+                    getGoodsList('goods_price');
+                }
+            }else if($(this).text()=='销量'){
+            	getGoodsList('goods_salse');
+            }else{
+            	getGoodsList();
+                $('#screen ul li').removeClass('select_screen_price1');
+                $('#screen ul li').removeClass('select_screen_price2');
+            }
+        })
+	})
+
+	//获取商品列表
+    function getGoodsList(field,sort){
+    	iscroll = 2;
+
+    	var type = geturldata('type');
+    	var typeid = geturldata('typeid');
+    	var field = field ? field : 'sort';
+    	var sort = sort ? 'asc' : 'desc';
+    	var keyword = geturldata('keyword');;
+    	$("#loading").show();
+    	$.post(serverurl+'/api/app/goods_list',{'type':type,'typeid':typeid,'field':field,'sort':sort,'keyword':keyword,'page':page,'limit':6,'token':token},function(data){
+            $("#loading").hide();
+            if(data.list.length>0){
+        		iscroll = 1;
+        		var html = '';
+                for(x in data.list){
+                    html = html + "<li onclick='tohtml(\"goods.html?id="+data.list[x].goods_id+"\");'>	\
+										<em style='background:url("+data.list[x].goods_logo+") no-repeat center center / contain'></em>\
+										<h4>"+data.list[x].goods_name+"</h4>\
+										<b>￥"+data.list[x].goods_price+"</b><i>￥"+data.list[x].market_price+"</i>\
+										<span>已售"+data.list[x].goods_salse+"件</span>\
+									</li>"
+                }
+                $('#content ul').append(html);
+
+            }else{
+               $('#content .null').show();
+            }
+        },"json");
+    }
+
+</script>
+</html>

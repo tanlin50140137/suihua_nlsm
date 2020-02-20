@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加商品规格</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <style>
+        .fa{font-size: 15px;margin: 5px 0 0 10px;cursor: pointer;}
+    </style>
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+    <form role="form" class="getform form-horizontal" id="form">
+<div class="box box-solid">
+    
+    <div class="box-body">
+    
+        <div class="form-group">
+            <label class="control-label col-xs-2">规格名称：</label>
+            <div class="col-xs-9 input-group-sm">
+                <input type="text" autocomplete="off"  class="form-control pinput name" name="name" maxlength="20" datatype="1,20" rule="length" errorms="规格名称请在1~20字以内！" />
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="box box-solid">
+    <div class="box-body">
+        <table class="ftable">
+            <tr>
+                <th>规格值名称</th>
+                <th width="140">操作</th>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="footer">
+    <input type="button" class="btn btn-sm btn-warning btn-flat" value="添加规格值" onclick="s.add();" />
+    <input type="submit" class="btn btn-sm btn-success btn-flat" value="　保存　"/>
+</div>
+</form>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+$(function(){
+    $("#form").submit(function(){  
+        var name = $(".name").val();
+        if (name.length < 1) {
+            bpop.tip('请输入规格名称！', 2, 1);
+            return false;
+        }
+        var spec_value = Array();
+        $('.ftable .tr-list').each(function() {
+            if ($(this).find('.spec_value').val() != '') {
+                spec_value.push($(this).find('.spec_value').val());
+            }
+        });
+        if (spec_value.length < 1) {
+            bpop.tip('请至少添加一个属性值！', 2, 1);
+            return false;
+        }
+
+        var param = $("#form").serialize();
+        bpop.addLoading(true);
+        //Ajax post提交表单验证
+        $.post("__MODULE__/Goods/spec_add",param,function(data){
+            if(data.success == true){
+                bpop.tip(data.info, 1, 1);
+            }else{
+                bpop.tip(data.info, 2, 1);
+            }
+        },"json");
+        return false; 
+    }); 
+})
+function spec(){};
+spec.prototype.add = function() {
+    //生成一个唯一值
+    var d = new Date();
+    var ids = 'id'+d.getTime()+Math.floor(Math.random()*1000);
+    html = '<tr class="tr-list">';
+    html = html +'  <td><input type="text" autocomplete="off"  class="form-control input-sm input-200 spec_value" name="spec_value[]" /></td>';
+
+    html = html +'  <td>';
+    html = html +'      <i class="fa fa-long-arrow-up" title="向上移动" onclick="s.order(this, \'asc\');" class="oper" ></i>';
+    html = html +'      <i class="fa fa-long-arrow-down" title="向下移动" onclick="s.order(this, \'desc\');" class="oper"></i>';
+    html = html +'      <i class="fa fa-times" title="删除此值" onclick="s.del(this);" class="oper" ></i>';
+    html = html +'  </td>';
+    html = html +'  </tr>';
+    $('.ftable').append(html);
+ 
+}
+spec.prototype.del = function(_this) {
+    element = _this;
+    bpop.add('确定要删除此项值吗？', 2, function(){$(element).parents('.tr-list').remove()});
+
+}
+spec.prototype.order = function(_this, type) {
+    if (type == 'asc') {
+        if ($(_this).parents('.tr-list').prev('.tr-list').length > 0) {
+            //对调位置
+            $(_this).parents('.tr-list').prev('.tr-list').before($(_this).parents('.tr-list'));
+        }
+    }else {
+        if ($(_this).parents('.tr-list').next('.tr-list').length > 0) {
+            //对调位置
+            $(_this).parents('.tr-list').next('.tr-list').after($(_this).parents('.tr-list'));
+        }
+    }
+}
+var s = new spec();
+</script>
+
+</body>
+</html>

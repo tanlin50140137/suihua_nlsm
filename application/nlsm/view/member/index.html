@@ -1,0 +1,173 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-warning btn-flat" onclick="add();"><i class="fa fa-plus"></i> 添加会员</a>
+        <a href="javascript:;" class="btn btn-sm btn-info btn-flat" onclick="message();"><i class="fa fa-plus"></i> 消息发送</a>
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Member/index" id="search">
+                <input type="hidden" class="sort" name="sort" value="{$sort}">
+                <input type="hidden" class="order" name="order" value="{$order}">
+                <input type="hidden" class="level_id" name="level_id" value="{$level_id}">
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <div class="box-tab">
+            <a href="javascript:;" data-id="0" {if condition="!$level_id"}class="cur"{/if}>全部<span class="to">{$count}</span></a>
+            {volist name="level" id="vo"}
+            <a href="javascript:;" data-id="{$vo.id}" {if condition="$level_id == $vo.id"}class="cur"{/if}>{$vo.name}<span class="to">{$vo.usernum}</span></a>
+            {/volist}     
+        </div>
+        <table id="table" class="table table-bordered table-hover table-striped">
+            <tr>
+                <th width="60" class="sort blue">ID</th>
+                <th>用户头像</th>
+                <th>用户账号</th>
+                <th>用户昵称</th>
+                <th>会员等级</th>
+                <th>上级会员</th>
+                <th>注册IP</th>
+                <th><a href="javascript:;" class="sort blue" onclick="order('create_time',this);" {if condition="$sort == 'create_time'"}sort="{$order}"{else /}sort="desc"{/if}>注册时间</a></th>
+                <th><a href="javascript:;" class="sort blue" onclick="order('money',this);" {if condition="$sort == 'money'"}sort="{$order}"{else /}sort="asc"{/if}>账户余额</a></th>
+                <th><a href="javascript:;" class="sort blue" onclick="order('point',this);" {if condition="$sort == 'point'"}sort="{$order}"{else /}sort="asc"{/if}>账户券分</a></th>
+                <th>累计销售</th>
+                <th>本月销售</th>
+                <th width="50">状态</th>
+                <th width="130">操作</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="13">暂无会员数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.id}" data-id="{$vo.id}">
+                <td>{$vo.id}</td>
+                <td><a href="javascript:;" onclick="edit('{$vo.id}');"><img alt="image"  src="{$vo.userface}" width="50"></a></td>
+                <td><a href="javascript:;" onclick="edit('{$vo.id}');" class="blue">{$vo.username}</a></td>
+                <td>{$vo.nickname}</td>
+                <td>{$vo.level_name}</td>
+                <td>{$vo.prevname}{if condition="$vo['prevnick']"}/{$vo.prevnick}{/if}</td>
+                <td>{$vo.registe_ip}</td>
+                <td>{$vo.create_time}</td>
+                <td><a href="javascript:;" style="color:red;" onclick="dpop.add('80%', '80%', '余额详情', '__MODULE__/Member/money?id={$vo.id}', true, false);">￥{$vo.money}</a></td>
+                <td><a href="javascript:;" class="blue" onclick="dpop.add('80%', '80%', '券分详情', '__MODULE__/Member/integral?id={$vo.id}', true, false);">{$vo.point}</a></td>
+                <td>{$vo.total}</td>
+                <td>{$vo.month}</td>
+                <td>
+                    {if condition="$vo.is_state == 1"}
+                        <input type="button" value="启用" class="btn btn-xs btn-success state" val="2">
+                    {else/}
+                        <input type="button" value="停用" class="btn btn-xs btn-danger state btn-flat" val="1" />
+                    {/if}
+                </td>
+                <td>
+                    <div class="tpl-table-black-operation">
+                        <a href="javascript:;" onclick="edit('{$vo.id}');">
+                            <i class="fa fa-pencil"></i> 编辑
+                        </a>
+                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="dataDel('__MODULE__/Member/delete','{$vo.id}',Reload,true)">
+                            <i class="fa fa-trash"></i> 删除
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script src="/public/plugins/layer/layer.min.js"></script>
+<script>
+    //修改状态
+    $(function(){
+        //搜索状态
+        $(".box-tab a").click(function(){
+            bpop.addLoading(true);
+            var state = $(this).attr('data-id');
+            $(".order").val('desc');
+            $(".level_id").val(state);
+            $("#search").submit();
+        });
+        $('#table .state').click(function(event) {
+            var _this = $(this);
+            var value = parseInt(_this.attr('val'));
+            var id = _this.parents('.tr').attr('data-id');
+            bpop.addLoading(true);
+            $.post('__MODULE__/Member/state', {'id':id,'state':value}, function(data) {
+                if (data.success == true) {
+                    bpop.clean();
+                    if (value == 1) {
+                        _this.attr('val', 2);
+                        _this.val('启用').removeClass('btn-danger').addClass('btn-success');
+                    }else {
+                        _this.attr('val', 1);
+                        _this.val('停用').removeClass('btn-success').addClass('btn-danger');
+                    }
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+    })
+    //排序
+    function order(sort, obj){
+        bpop.addLoading(true);
+        if(sort){
+            order = $(obj).attr('sort');
+        }else{
+            sort = 'id';
+            order = 'desc';
+        }
+        $(".order").val(order);
+        $(".sort").val(sort);
+        $("#search").submit();
+    }
+
+    //修改会员信息
+    function edit(id){
+        dpop.add('80%', '80%', '修改会员信息', '__MODULE__/Member/edit?id='+id, true, Reload);
+    }
+    //添加会员
+    function add(){
+        dpop.add('80%', '80%', '添加会员', '__MODULE__/Member/add', true, Reload);
+    }
+    //发送消息
+    function message(){
+        dpop.add('80%', '80%', '发送消息', '__MODULE__/Member/message', true, Reload);
+    }
+</script>
+</body>
+</html>

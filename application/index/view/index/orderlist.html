@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>订单列表</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/orderList.css">
+	
+</head>
+
+<body style="background: #fff;">
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div id='header'>
+        <div>
+            <a href='javascript:;' onclick="tohtml('user');"></a>
+            <h2>订单列表</h2>
+        </div>
+    </div>
+</div>
+<div id="orderList_container">
+	<div id='screen'>
+        <div>
+            <ul>
+                <li>全部</li>
+                <li>待付款</li>
+                <li>待发货</li>
+                <li>待收货</li>
+                <li>待评价</li>
+            </ul>
+        </div>
+    </div>
+    <div id='content'>
+        <!-- 没有数据时display: block; -->
+        <div class="null-data" style="display: none;"></div>
+        <div class='order_list'>
+            <ul></ul>
+        </div>
+
+        
+    </div>
+
+</div>
+
+</body>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+<script>
+	var page = 1;
+	var iscroll = 1;
+    var is_state = geturldata('is_state');
+
+    $(function(){
+    	if(is_state=='1'){
+            $('#screen ul li').eq(1).css('color','#38aee3').css('borderBottom','2px solid #38aee3')
+        }else if(is_state=='2'){
+            $('#screen ul li').eq(2).css('color','#38aee3').css('borderBottom','2px solid #38aee3')
+        }else if(is_state=='3'){
+            $('#screen ul li').eq(3).css('color','#38aee3').css('borderBottom','2px solid #38aee3')
+        }else if(is_state=='7'){
+            $('#screen ul li').eq(4).css('color','#38aee3').css('borderBottom','2px solid #38aee3')
+        }else{
+            $('#screen ul li').eq(0).css('color','#38aee3').css('borderBottom','2px solid #38aee3')
+        }
+        //顶部导航切换
+        $('#screen ul li').click(function(){
+            $('#screen ul li').removeAttr('style');
+            $(this).css('color','#38aee3').css('border-bottom','2px solid #38aee3');
+            switch($(this).index()){
+                case 0:
+                    is_state = 0;
+                break;
+                case 1:
+                    is_state = 1;
+                break;
+                case 2:
+                    is_state = 2;
+                break;
+                case 3:
+                    is_state = 3;
+                break;
+                case 4:
+                    is_state = 7;
+                break;
+            }
+            $('.null-data').hide();
+            $('.order_list ul').html('');
+            getOrder();
+        })
+
+        getOrder();
+        //滚动到底部
+		$('.shop_container #shop').scroll(function(){
+		　　var scrollTop = $(this).scrollTop();
+		　　var scrollHeight = $('.shop_container #shop ul').height();
+		　　var windowHeight = $(this).height();
+		　　if( Math.ceil(scrollTop + windowHeight)+10 >= scrollHeight && iscroll == 1){
+				//查询下一页数据
+				page = page + 1;
+				getOrder();
+		　　}
+		});
+    })
+
+    //获取订单列表
+    function getOrder(typeid,keyword){
+    	iscroll = 2;
+
+    	$("#loading").show();
+    	$.post(serverurl+'/api/app/myorder',{'is_state':is_state,'page':page,'limit':10,'appkey':localStorage.appkey,'token':token},function(data){
+            if(data.info == 'appkey验证失败！'){
+                api.openWin({
+                    name: 'login',
+                    url: 'login.html',
+                });
+            }
+
+            $("#loading").hide();
+            if(data.list.length>0){
+        		iscroll = 1;
+        		var html = '';
+                for(x in data.list){
+                    if(data.list[x].is_state==1){
+                        html = html + "<li>\
+                            <h5>"+data.list[x].order_id+"<span>待付款</span></h5>\
+                            <div class='goods_details' name='"+data.list[x].order_id+"'>\
+                                <em style='background:url("+data.list[x].goods[0].goods_logo+") no-repeat center center / cover'></em>\
+                                <h4>"+data.list[x].goods[0].goods_name+"</h4>\
+                                <h6>￥"+data.list[x].goods[0].goods_price+"<br/><span>x "+data.list[x].goods[0].goods_number+"</span></h6>\
+                            </div>\
+                            <p><span>共"+data.list[x].goods.length+"件商品</span><b>合计：￥<i>"+data.list[x].payprice+"</i>(含运费￥"+data.list[x].freight_price+")</b></p>\
+                            <div class='btn_box'>\
+                                <button name='"+data.list[x].order_id+"' class='btn_float_left'>取消订单</button>\
+                                <button name='"+data.list[x].order_id+"' class='btn_float_right active_btn'>立即付款</button>\
+                            </div>\
+                        </li>"
+                    }else if(data.list[x].is_state==3){
+                        html = html + "<li>\
+                            <h5>"+data.list[x].order_id+"<span>待收货</span></h5>\
+                            <div class='goods_details' name='"+data.list[x].order_id+"'>\
+                                <em style='background:url("+data.list[x].goods[0].goods_logo+") no-repeat center center / cover'></em>\
+                                <h4>"+data.list[x].goods[0].goods_name+"</h4>\
+                                <h6>￥"+data.list[x].goods[0].goods_price+"<br/><span>x "+data.list[x].goods[0].goods_number+"</span></h6>\
+                            </div>\
+                            <p><span>共"+data.list[x].goods.length+"件商品</span><b>合计：￥<i>"+data.list[x].payprice+"</i>(含运费￥"+data.list[x].freight_price+")</b></p>\
+                            <div class='btn_box'>\
+                                <button name='"+data.list[x].order_id+"' class='btn_float_left'>申请退货</button>\
+                                <button name='"+data.list[x].order_id+"' class='btn_float_right active_btn'>确认收货</button>\
+                            </div>\
+                        </li>"
+                    }else if(data.list[x].is_state==2){
+                        html = html + "<li>\
+                            <h5>"+data.list[x].order_id+"<span>待发货</span></h5>\
+                            <div class='goods_details' name='"+data.list[x].order_id+"'>\
+                                <em style='background:url("+data.list[x].goods[0].goods_logo+") no-repeat center center / cover'></em>\
+                                <h4>"+data.list[x].goods[0].goods_name+"</h4>\
+                                <h6>￥"+data.list[x].goods[0].goods_price+"<br/><span>x "+data.list[x].goods[0].goods_number+"</span></h6>\
+                            </div>\
+                            <p><span>共"+data.list[x].goods.length+"件商品</span><b>合计：￥<i>"+data.list[x].payprice+"</i>(含运费￥"+data.list[x].freight_price+")</b></p>\
+                            <div class='btn_box'>\
+                                <button name='"+data.list[x].order_id+"' class='btn_float_right active_btn'>查看详情</button>\
+                            </div>\
+                        </li>"
+                    }else if(data.list[x].is_state==6){
+                        html = html + "<li>\
+                            <h5>"+data.list[x].order_id+"<span style='color:#ccc;'>已取消</span></h5>\
+                            <div class='goods_details' name='"+data.list[x].order_id+"'>\
+                                <em style='background:url("+data.list[x].goods[0].goods_logo+") no-repeat center center / cover'></em>\
+                                <h4>"+data.list[x].goods[0].goods_name+"</h4>\
+                                <h6>￥"+data.list[x].goods[0].goods_price+"<br/><span>x "+data.list[x].goods[0].goods_number+"</span></h6>\
+                            </div>\
+                            <p><span>共"+data.list[x].goods.length+"件商品</span><b>合计：￥<i>"+data.list[x].payprice+"</i>(含运费￥"+data.list[x].freight_price+")</b></p>\
+                        </li>"
+                    }else if(data.list[x].is_state==7){
+                        html = html + "<li>\
+                            <h5>"+data.list[x].order_id+"<span>待评价</span></h5>\
+                            <div class='goods_details' name='"+data.list[x].order_id+"'>\
+                                <em style='background:url("+data.list[x].goods[0].goods_logo+") no-repeat center center / cover'></em>\
+                                <h4>"+data.list[x].goods[0].goods_name+"</h4>\
+                                <h6>￥"+data.list[x].goods[0].goods_price+"<br/><span>x "+data.list[x].goods[0].goods_number+"</span></h6>\
+                            </div>\
+                            <p><span>共"+data.list[x].goods.length+"件商品</span><b>合计：￥<i>"+data.list[x].payprice+"</i>(含运费￥"+data.list[x].freight_price+")</b></p>\
+                            <div class='btn_box'>\
+                                <button name='"+data.list[x].order_id+"' class='btn_float_right active_btn'>立即评价</button>\
+                            </div>\
+                        </li>"
+                    }else if(data.list[x].is_state==9){
+                        html = html + "<li>\
+                            <h5>"+data.list[x].order_id+"<span>已完成</span></h5>\
+                            <div class='goods_details' name='"+data.list[x].order_id+"'>\
+                                <em style='background:url("+data.list[x].goods[0].goods_logo+") no-repeat center center / cover'></em>\
+                                <h4>"+data.list[x].goods[0].goods_name+"</h4>\
+                                <h6>￥"+data.list[x].goods[0].goods_price+"<br/><span>x "+data.list[x].goods[0].goods_number+"</span></h6>\
+                            </div>\
+                            <p><span>共"+data.list[x].goods.length+"件商品</span><b>合计：￥<i>"+data.list[x].payprice+"</i>(含运费￥"+data.list[x].freight_price+")</b></p>\
+                            <div class='btn_box'>\
+                                <button name='"+data.list[x].order_id+"' class='btn_float_right active_btn'>查看详情</button>\
+                            </div>\
+                        </li>"
+                    }
+                }
+                $('.order_list ul').append(html);
+                
+                $('.goods_details').click(function(){
+                 	api.openWin({
+			            name: 'orderdetail',
+                        reload:true,
+			            url:"orderdetail.html?id="+$(this).attr('name')
+			        });
+                })
+
+                //绑定按钮点击
+                $('.btn_float_left').click(function(){
+                    var oid=$(this).attr('name')
+                    if($(this).text()=='取消订单'){
+                        if(confirm('是否取消订单')){
+                            $.ajax({
+                                url:serverurl+'/api/app/cancel_order',
+                                type:'post',
+                                data:{
+                                    'appkey':localStorage.appkey,
+                                    'token':token,
+                                    id:oid
+                                },
+                                success:function(data){
+                                    layer.msg(data.info);
+                                    api.openWin({
+                                        name: 'orderlist',
+                                        reload:true,
+                                        url:'orderlist.html'
+                                    });
+                                }
+                            })
+                        }
+                        
+                    }else if($(this).text()=='申请退货'){
+                        api.openWin({
+                            name: 'returns',
+                            url:"returns.html?id="+oid
+                        });
+                    }
+
+                })
+                $('.btn_float_right').click(function(){
+                    var oid=$(this).attr('name')
+                    switch($(this).text()){
+                        case '立即付款':
+                            api.openWin({
+                                name: 'orderdetail',
+                                url:"orderdetail.html?id="+oid
+                            });
+                        break;
+                        case '确认收货':
+                            if(confirm('确认您是否已经收到了宝贝')){
+                                $.ajax({
+                                    url:serverurl+'/api/app/finish_order',
+                                    type:'post',
+                                    data:{
+                                        'appkey':localStorage.appkey,
+                                        'token':token,
+                                        'id':oid
+                                    },
+                                    success:function(data){
+                                        layer.msg(data.info);
+                                        api.openWin({
+                                            name: 'orderlist',
+                                            reload:true,
+                                            url:'orderlist.html'
+                                        });
+                                    }
+                                })
+                            }
+                        break;
+                        case '立即评价':
+                            api.openWin({
+                                name: 'comment',
+                                url:"comment.html?id="+oid+""
+                            });
+                        break;
+                        case '查看详情':
+                            api.openWin({
+                                name: 'orderdetail',
+                                url:"orderdetail.html?id="+oid
+                            });
+                        break;
+                    }   
+                })
+            }else if(page == 1){
+               $('.null-data').show();
+            }
+            
+        },"json");
+    }
+</script>
+</html>

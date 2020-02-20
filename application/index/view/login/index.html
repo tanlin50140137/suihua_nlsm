@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>会员登陆</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/login.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+
+<body>
+<div id="worry"></div>
+ <div id='Login_container'>
+	<div id='content'>
+	<a href='javascript:;' id="back"></a>
+		<div class="app_logo" style="background:url(/public/image/logo.jpg) no-repeat center center / cover"></div>
+		<input type='text' class="login_name" placeholder='请输入手机号'/>
+		<input type='password'  class='login_password' placeholder='请输入密码'/>
+		<div class='login_btn'>登录</div>
+		<!-- <a href='{:url("Weixin/index")}'><div class='down'>微信登陆</div></a> -->
+		<div class='login_more'><a href='javascript:;'>忘记密码？</a><a href='javascript:;'>立即注册</a></div>
+	</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+apiready = function() {
+
+
+	$(function(){
+		$('#back').on('touchstart',function(){
+			var url = document.referrer;
+			if(url == "http://<?php echo $_SERVER['HTTP_HOST'];?>/index/user/personal.html"){
+				window.location.href='{:url("Index/index")}';
+			}else{
+				window.history.back();
+			}
+		})
+
+		$('.login_more a').eq(0).click(function(){
+			api.openWin({
+	            name: 'forget',
+	            url: './forget.html',
+	        });
+		})
+		$('.login_more a').eq(1).click(function(){
+			api.openWin({
+	            name: 'register',
+	            url: './register.html',
+	        });
+		})
+
+		// $('.login_btn').on('click',function(){
+		// 	if($('.login_name').val()!='' && $('.login_password').val()!=''){
+		// 		$.ajax({
+		// 			url:serverurl+'/api/app/login',
+		// 			type:'post',
+		// 			data:{
+		// 				mobile:$('.login_name').val(),
+		// 				password:$('.login_password').val(),
+		// 				token:localStorage.token
+		// 			},
+		// 			success:function(data){
+		// 				if(data.success){
+		// 					{:session('Callback',null)}
+		// 					localStorage.appkey = data.list.appkey;
+		// 					api.openWin({
+		// 			            name: 'user',
+		// 			            reload:true,
+		// 			            url: '{$url}',
+		// 			        });
+		// 				}else{
+		// 					alertFade(data.info);
+		// 				}
+		// 			}
+		// 		})
+		// 	}else{
+		// 		alertFade('手机号码或密码不能为空');
+		// 	}
+		// })
+	})
+}
+</script>

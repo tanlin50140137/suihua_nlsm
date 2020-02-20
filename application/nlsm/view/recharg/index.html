@@ -1,0 +1,139 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>充值套餐列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-warning btn-flat" onclick="add();"><i class="fa fa-plus"></i> 添加套餐</a>
+        
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Recharg/index">
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped">
+            <tr>
+                <th width="30"><input type="checkbox" class="checkbox" value="del" /></th>
+                <th width="40" class="sort blue">ID</th>
+                <th>套餐名称</th>
+                <th>套餐价格</th>
+                <th>每月充值</th>
+                <th>店长返利金额</th>
+                <th>经理返利金额</th>
+                <th>总监返利金额</th>
+                <th>会员直推返利</th>
+                <th>店长直推返利</th>
+                <th>经理直推返利</th>
+                <th>总监直推返利</th>
+                <th width="50">状态</th>
+                <th width="130">操作</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="14">暂无套餐数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.id}" data-id="{$vo.id}">
+                <td><input type="checkbox" class="idlist" value="{$vo.id}"></td>
+                <td>{$vo.id}</td>
+                <td><a href="javascript:;" onclick="edit('{$vo.id}');" class="blue">{$vo.name}</a></td>
+                <td>{$vo.price}</td>
+                <td>{$vo.yuecong}</td>
+                <td>{$vo.dianfan}%</td>
+                <td>{$vo.jingfan}%</td>
+                <td>{$vo.zongfan}%</td>
+                <td>{$vo.huitui}%</td>
+                <td>{$vo.diantui}%</td>
+                <td>{$vo.jingtui}%</td>
+                <td>{$vo.zongtui}%</td>
+                <td>
+                    {if condition="$vo.is_state == 1"}
+                        <input type="button" value="上架" class="btn btn-xs btn-success state" val="2">
+                    {else/}
+                        <input type="button" value="下架" class="btn btn-xs btn-danger state btn-flat" val="1" />
+                    {/if}
+                </td>
+                <td>
+                    <div class="tpl-table-black-operation">
+                        <a href="javascript:;" onclick="edit('{$vo.id}');">
+                            <i class="fa fa-pencil"></i> 编辑
+                        </a>
+                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="dataDel('__MODULE__/Recharg/delete','{$vo.id}',Reload,true)">
+                            <i class="fa fa-trash"></i> 删除
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    <a href="javascript:;" class="btn btn-sm btn-danger btn-flat" onclick="dataDel('__MODULE__/Recharg/delete', false, Reload,true)"><i class="fa fa-trash-o"></i> 删除选中项</a>
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+    //修改状态
+    $(function(){
+        $('#table .state').click(function(event) {
+            var _this = $(this);
+            var value = parseInt(_this.attr('val'));
+            var id = _this.parents('.tr').attr('data-id');
+            bpop.addLoading(true);
+            $.post('__MODULE__/Recharg/state', {'id':id,'state':value}, function(data) {
+                if (data.success == true) {
+                    bpop.clean();
+                    if (value == 1) {
+                        _this.attr('val', 2);
+                        _this.val('上架').removeClass('btn-danger').addClass('btn-success');
+                    }else {
+                        _this.attr('val', 1);
+                        _this.val('下架').removeClass('btn-success').addClass('btn-danger');
+                    }
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+    })
+
+    //修改充值套餐信息
+    function edit(id){
+        dpop.add('80%', '80%', '修改充值套餐信息', '__MODULE__/Recharg/edit?id='+id, true, Reload);
+    }
+    //添加充值套餐
+    function add(){
+        dpop.add('80%', '80%', '添加充值套餐', '__MODULE__/Recharg/add', true, Reload);
+    }
+</script>
+</body>
+</html>

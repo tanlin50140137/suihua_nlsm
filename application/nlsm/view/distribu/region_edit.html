@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>地区管理</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body>
+<form action="" id="form">
+<div class="box box-solid header-fixed">
+    <div class="box-body">
+        <div class="input-group">
+            	<input type="hidden" name="id" value="{$list['region_id']}" class="region_id" />
+                <input class="form-control region_name" value="{$list['region_name']}" type="text" autocomplete="off"  placeholder="输入地址新增" />
+                <span class="input-group-btn">
+                    <button class="btn btn-warning btn-flat" type="submit">提交更新</button>
+                </span>
+            
+        </div>
+    </div>
+</div>
+</form>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+<script>
+//修改地区信息
+$("#form").submit(function(){
+    var region_name = $('.region_name').val();
+    var region_id = $('.region_id').val();
+    bpop.addLoading(true);
+    $.post('__MODULE__/Distribu/region_edit', { 'region_name' : region_name, 'region_id' : region_id,'parent_id':"{$list['parent_id']}"}, function(data) {
+        if (data.success == true) {
+            bpop.tip(data.info, 1, 1);
+        }else {
+            bpop.tip(data.info, 2, 1);
+        }
+    }, 'JSON');
+    return false;
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>我的收藏</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/myCollect.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>我的收藏</h2>
+    </div>
+</div>
+
+<div id='myCollect_container'>
+        
+    <div id='screen'>
+        <div>
+            <ul>
+                <li style='color:#38aee3;border-bottom:2px solid #38aee3'>收藏商品</li>
+                <li>收藏店铺</li>
+            </ul>
+        </div>
+    </div>
+    <div id='content'>
+        
+        <div class='collect_goods_list'>
+                <!-- 没有数据时display: block; -->
+                <div class="null-data" style="display: none;"></div>
+                <ul>        
+                    
+                </ul>
+            </div>
+
+            <div class='collect_shops_list' style="display: none">
+                <!-- 没有数据时display: block; -->
+                <div class="null-data" style="display: none;"></div>
+                <ul>
+                    
+                </ul>
+            </div>
+
+    </div>
+</div>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+</body>
+
+<script>
+$(function(){
+        
+        $('#screen ul li').click(function(){
+            $('#screen ul li').removeAttr('style');
+            $(this).css('color','#38aee3').css('border-bottom','2px solid #38aee3');
+            if($(this).index()==0){
+                $('.collect_goods_list').show();
+                $('.collect_shops_list').hide();
+            }else{
+                $('.collect_shops_list').show();
+                $('.collect_goods_list').hide();
+            }
+
+        })
+
+        //»ñÈ¡ÎÒµÄÊÕ²Ø
+        $.ajax({
+                url:serverurl+'/api/app/mycollect',
+                type:'post',
+                data:{
+                    appkey:localStorage.appkey,
+                    token:token,
+                },success:function(data){
+                    $("#loading").hide();
+                    if(data.info == 'appkey验证失败！'){
+                        api.openWin({
+                            name: 'login',
+                            url: 'login.html',
+                        });
+                    }
+                    $('.null-data').show();
+                    if(data.list.goods.length>0){
+                        for(var i=0;i<data.list.goods.length;i++){
+                            $('.collect_goods_list ul').append("<li name='"+data.list.goods[i].goods_id+"'><em style='background:url("+data.list.goods[i].goods_logo+") no-repeat center center / cover'></em><h4>"+data.list.goods[i].goods_name+"</h4><b>￥"+data.list.goods[i].goods_price+"</b><i>£¤"+data.list.goods[i].market_price+"</i><span>已售"+data.list.goods[i].goods_salse+"件</span></li>")
+                        }
+                        $('.collect_goods_list ul li').click(function(){
+                            api.openWin({
+                                name: 'goods',
+                                url: "goods.html?id="+$(this).attr('name')+""
+                            });
+                        })
+                        $('.collect_goods_list .null-data').hide();
+                    }
+                    
+                    if(data.list.business.length>0){
+                        for(var i=0;i<data.list.business.length;i++){
+                            $('.collect_shops_list ul').append("<li name='"+data.list.business[i].id+"'><em style='background:url("+data.list.business[i].logo+") no-repeat center center / cover'></em><span class='shop_right'><h3>"+data.list.business[i].name+"</h3><b><i></i><strong>销量："+data.list.business[i].goods_salse+"</strong></b><span class='text_container'>"+data.list.business[i].remark+"</span></span></li>")
+                        }
+                        $('.collect_shops_list ul li').click(function(){
+                            api.openWin({
+                                name: 'business_detail',
+                                url: "business_detail.html?id="+$(this).attr('name')+""
+                            });
+                        })
+                        $('.collect_shops_list .null-data').hide();
+                    }
+                }
+            })
+    })
+</script>
+</html>

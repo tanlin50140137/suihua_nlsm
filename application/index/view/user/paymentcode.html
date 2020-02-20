@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>修改支付密码</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/paymentCode.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/isLogin.js"></script>
+
+<body>
+<div id="worry"></div>
+<div id='paymentCode_container'>
+	<div class="content">
+		<div class="top" id='paymentCode_top'>
+			<div>
+    			<div class="head">
+					<a href='javascript:;' class="back" ></a>
+					<h2>修改支付密码</h2>
+				</div>
+    		</div>
+		</div>
+		<div class="cash" id='paymentCode_form'>
+			<div>
+	    			<ul>
+						<li>
+							<span class="notes_left1"></span>
+							<input type="text" placeholder="请输入手机号码" id='user_phone' disabled="disabled"/>
+							<div class="claer"></div>
+						</li>
+						<li>
+							<span class="notes_left2"></span>
+							<input type="text" placeholder="请输入验证码"  id='user_code'/>
+							<div class="code_btn">获取验证码</div>
+
+							<div class="claer"></div>
+						</li>
+						<li>
+							<span class="notes_left3"></span>
+							<input type="password" placeholder="请输入新的支付密码" id='user_password'/>
+							<div class="claer"></div>
+							<p>密码由6-32位英文字母、数字或特殊符号组成</p>
+						</li>
+					</ul>
+					<button type="button" class="tj_btn" id="paymentCodeBtn">确定</button>
+	    		</div>
+		</div>
+		<div class="explain" id='paymentCode_text'></div>
+	</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+apiready = function() {
+	$(function(){
+		$('.back').on('touchstart',function(){
+			api.closeWin()
+		})
+		//获取用户手机
+		$.ajax({
+			url:serverurl+'/api/app/detail',
+			type:'post',
+			data:{
+				appkey:localStorage.appkey,
+		        token:localStorage.token
+			},
+			success:function(data){
+				$('#user_phone').val(data.list.username);
+			}
+		})
+
+
+		//获取验证码
+		$('.code_btn').on('click',function(){
+			var timer;
+			var _self = $(this);
+			if($('#user_phone').val()!=''){
+			$.ajax({
+				url:serverurl+'/api/app/sendCode',
+				type:'post',
+				data:{
+					mobile:$('#user_phone').val(),
+					token:localStorage.token
+				},
+				success:function(data){
+					timerNum = 60;
+					if(data.info=="验证码发送成功！"){
+						_self.css('background','#ededed').css('color','#999').css('pointer-events','none')
+						timer = setInterval(function(){
+							timerNum--;
+							_self.text(timerNum+'s');
+							if(timerNum==0){
+								clearInterval(timer);
+								_self.text('获取验证码')
+								_self.removeAttr('style');
+							}
+						},1000)
+
+					}else{
+						alertFade(data.info);
+					}
+				}
+			})
+		}
+		})
+
+
+		//修改支付密码
+		$('#paymentCodeBtn').click(function(){
+			if($('#user_phone').val()!='' && $('#user_code').val()!='' && $('#user_password').val()!='' ){
+				if($('#user_password').val().length>5){
+					$.ajax({
+						url:serverurl+'/api/app/paypassword ',
+						type:'post',
+						data:{
+							mobile:$('#user_phone').val(),
+							password:$('#user_password').val(),
+							code:$('#user_code').val(),
+							token:localStorage.token
+						},
+						success:function(data){
+							if(data.success){
+								alertFade(data.info,function(){
+									api.openWin({
+						                name: 'personal',
+						                url:'{:url("User/personal")}'
+						            });
+								});
+
+							}else{
+								alertFade(data.info);
+							}
+						}
+					})
+				}else{
+					alertFade('支付密码最少为6个字符')
+				}
+
+			}else{
+				alertFade('请填写相关信息')
+			}
+		})
+	})
+}
+</script>

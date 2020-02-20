@@ -1,0 +1,120 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员等级</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+{include file="Statisti/menu"}
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Statisti/recharg">
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="d4311" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})" class="form-control input-sm time start_time" name="start_time" type="text" autocomplete="off"  placeholder="开始时间" value="{$start_time}"/>
+                </div>
+                ~
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="d4312" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})" class="form-control input-sm time end_time" name="end_time" type="text" autocomplete="off"  placeholder="结束时间" value="{$end_time}"/>
+                </div>
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    
+    <div class="am-g tpl-g">
+        <div class="goods-info">
+            <span class="block">订单总数：<strong>{$count.count}</strong></span>
+            <span class="block">已支付订单：<strong>{$count.normal}</strong></span>
+            <span class="block">未支付订单：<strong>{$count.disable}</strong></span>
+        </div>
+        <!-- 内容区域 -->
+        <div class="row-content am-cf">
+            
+            <div class="widget am-cf">
+                <div class="widget-head am-cf">
+                        <div class="widget-function am-fr">
+                            <a href="javascript:;" class="am-icon-cog"></a>
+                        </div>
+                    </div>
+                <div class="widget-body am-fr">
+                    <div style="height: 600px" id="tpl-echarts-A">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/public/plugins/My97DatePicker/WdatePicker.js"></script>
+<script src="/public/static/js/echarts.min.js"></script>
+<script>
+    var echartsA = echarts.init(document.getElementById('tpl-echarts-A'));
+        option = {
+            title: {
+                text: ''
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['已支付订单','未支付订单']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: [{$list['data']}]
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {volist name="$list['list']" id="vo"}
+                {
+                    name:'{$vo.name}',
+                    type:'line',
+                    stack: '总量',
+                    data:[{$vo.list}],
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name: '最小值'}
+                        ]
+                    }
+                },
+                {/volist}
+            ]
+        };
+
+
+        echartsA.setOption(option);
+</script>
+</section>
+</body>
+</html>

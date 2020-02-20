@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品分类</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload()"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-info btn-flat" onclick="add();"><i class="fa fa-plus"></i> 添加分类</a>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped" role="grid">
+            <tr>
+                <th width="30"><input type="checkbox" class="checkbox" value="del" /></th>
+                <th width="50">ID</th>
+                <th>分类名称</th>
+                <th>分类图标</th>
+                <th>分类描述</th>
+                <th width="70">排序</th>
+                <th width="50">首页</th>
+                <th width="50">状态</th>
+                <th width="130">操作</th>
+            </tr>
+            {if condition="empty($list)"}
+                <tr class="tr odd"><td colspan="13">暂无商品分类数据～！</td></tr>
+            {/if}
+            {volist name="list" id="vo"}
+            <tr class="tr tr-{$vo.id}" id="{$vo.id}" level="{$vo.pid}">
+                <td><input type="checkbox" class="idlist" value="{$vo.id}"></td>
+                <td>{$vo.id}</td>
+                <td>
+                    <span class="level-{$vo.level}"></span><span class="jian" onclick="listDown(this)"></span><a href="javascript:;" onclick="edit('{$vo.id}');" class="blue">{$vo.name}</a>
+                </td>
+                <td><a href="javascript:;" onclick="edit('{$vo.id}');"><img alt="image" src="{$vo.logo}" width="50"></a></td>
+                <td>{$vo.remark}</td>
+                <td>
+                    <input type="button" value="↑" class="btn btn-xs btn-default" onclick="order('desc', '{$vo.id}')" />&nbsp;
+                    <input type="button" value="↓" class="btn btn-xs btn-default" onclick="order('asc', '{$vo.id}')" />
+                </td>
+                <td>
+                    {if condition="$vo.is_hot == 1"}
+                        <input type="button" value="显示" class="btn btn-xs btn-success is_hot" val="2">
+                    {else/}
+                        <input type="button" value="隐藏" class="btn btn-xs btn-danger is_hot" val="1" />
+                    {/if}
+                </td>
+                <td>
+                    {if condition="$vo.is_state == 1"}
+                        <input type="button" value="启用" class="btn btn-xs btn-success state" val="2">
+                    {else/}
+                        <input type="button" value="停用" class="btn btn-xs btn-danger state btn-flat" val="1" />
+                    {/if}
+                </td>
+                <td>
+                    <div class="tpl-table-black-operation">
+                        <a href="javascript:;" onclick="edit('{$vo.id}');">
+                            <i class="fa fa-pencil"></i> 编辑
+                        </a>
+                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="dataDel('__MODULE__/Goods/type_del','{$vo.id}',Reload,true)">
+                            <i class="fa fa-trash"></i> 删除
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+<div class="footer">
+    <a href="javascript:;" class="btn btn-sm btn-danger btn-flat" onclick="dataDel('__MODULE__/Goods/type_del', false, Reload,true)"><i class="fa fa-trash-o"></i> 删除选中项</a>
+</div>
+</section>
+</body>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+<script>
+    function listDown(_this) {
+        var id = $(_this).parents('.tr').attr('id');
+        if (!$(_this).is('.jian')) {
+            $(_this).addClass('jian').removeClass('jia');
+            lower_show_hide(id, 'jia');
+        }else {
+            $(_this).addClass('jia').removeClass('jian');
+            lower_show_hide(id, 'jian');
+        }
+    }
+    function lower_show_hide(id, type) {
+        if (id) {
+            var len = $('.tr').size();
+            var idlist = Array();
+            h = 0;
+            var cls = type == 'jia' ? 'jian' : 'jia';
+            for(i = 0; i < len; i++) {
+                if ($('.tr').eq(i).attr('level') == id && $('.tr').eq(i).attr('id') != id) {
+                    if (type == 'jia') {
+                        $('.tr').eq(i).show().find('.jia').addClass('jian').removeClass('jia');
+                    }else {
+                        $('.tr').eq(i).hide().find('.jian').addClass('jia').removeClass('jian');
+                    }
+                    idlist[h] = $('.tr').eq(i).attr('id');
+                    h++;
+                }
+            }
+            if (idlist.length > 0) {
+                for(x in idlist) {
+                    lower_show_hide(idlist[x], type);
+                }
+            }
+        }
+    }
+
+    //修改状态
+    $(function(){
+        $('#table .state').click(function(event) {
+            var _this = $(this);
+            var value = parseInt(_this.attr('val'));
+            var id = _this.parents('.tr').attr('id');
+            bpop.addLoading(true);
+            $.post('__MODULE__/Goods/type_state', {'id':id,'state':value}, function(data) {
+                if (data.success == true) {
+                    bpop.clean();
+                    if (value == 1) {
+                        _this.attr('val', 2);
+                        _this.val('启用').removeClass('btn-danger').addClass('btn-success');
+                    }else {
+                        _this.attr('val', 1);
+                        _this.val('停用').removeClass('btn-success').addClass('btn-danger');
+                    }
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+        $('#table .is_hot').click(function(event) {
+            var _this = $(this);
+            var value = parseInt(_this.attr('val'));
+            var id = _this.parents('.tr').attr('id');
+            bpop.addLoading(true);
+            $.post('__MODULE__/Goods/type_hot', {'id':id,'state':value}, function(data) {
+                if (data.success == true) {
+                    bpop.clean();
+                    if (value == 1) {
+                        _this.attr('val', 2);
+                        _this.val('显示').removeClass('btn-danger').addClass('btn-success');
+                    }else {
+                        _this.attr('val', 1);
+                        _this.val('隐藏').removeClass('btn-success').addClass('btn-danger');
+                    }
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+    })
+    //排序
+    function order(order, id) {
+        bpop.addLoading(true);
+        $.post('__MODULE__/Goods/type_order',{'order':order,'id':id}, function(data) {
+            if (data.success == true) {
+                window.location.reload();
+            }else {
+                bpop.tip(data.info, 2, 1);
+            }
+        },'json');
+    }
+
+    //修改商品分类信息
+    function edit(id){
+        dpop.add('80%', '80%', '修改商品分类信息', '__MODULE__/Goods/type_edit?id='+id, true, Reload);
+    }
+    //添加商品分类
+    function add(){
+        dpop.add('80%', '80%', '添加商品分类', '__MODULE__/Goods/type_add', true, Reload);
+    }
+</script>
+</html>

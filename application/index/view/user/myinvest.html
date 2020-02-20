@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>我的投资</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/myInvest.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/isLogin.js"></script>
+
+<body>
+	<div id='loading'><img src='/public/skin/image/loading.png' alt=''></div>
+<div id="worry"></div>
+<div id='MyInvest'>
+<div class='invest_content'>
+	<div id='header'>
+		<div class="header">
+			<div>
+				<a href="javascript:;"></a>
+				<h2>我的投资</h2>
+			</div>
+		</div>
+	</div>
+	<div id='screen'>
+		<div>
+			<ul>
+				<li style='color:#38aee3;border-bottom:2px solid #38aee3'>已投资</li>
+				<li>待投资</li>
+			</ul>
+		</div>
+	</div>
+	<div id='cont'>
+			<div class="profit_deta state1">
+				<ul class="participation"></ul>
+			</div>
+	</div>
+	<ul class="nav">
+		<li>
+			<a href="javascript:;">
+				<em></em>
+				<span>首页</span>
+			</a>
+		</li>
+		<li class="active">
+			<a href="javascript:;">
+				<em></em>
+				<span>我的投资</span>
+			</a>
+		</li>
+
+	</ul>
+</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+apiready = function(){
+	$('.nav li').eq(0).click(function(){
+		api.openWin({
+				name: 'invest',
+				url:"{:url('Index/invest')}"
+		});
+	})
+
+
+
+	$(function(){
+		$('#header a').on('touchstart',function(){
+			api.closeWin()
+		})
+		//顶部导航切换
+		$('#screen ul li').click(function(){
+			$('#screen ul li').removeAttr('style');
+			$(this).css('color','#38aee3').css('border-bottom','2px solid #38aee3');
+			if($(this).index()==0){
+				getOrder(2)
+			}else{
+				getOrder(1)
+			}
+		})
+	getOrder(2)
+	//获取订单列表
+	function getOrder(status){
+		$('#loading').fadeIn(50);
+		$.ajax({
+				url:serverurl+'/api/app/invest_order',
+				type:'post',
+				data:{
+					token:localStorage.token,
+					appkey:localStorage.appkey,
+					is_state:status
+				},
+				success:function(data){
+						console.debug(data);
+						$('.participation').html('');
+						if(data.list.length > 0){
+							for(i in data.list){
+								var investOrderListStr = "<li>\
+																						<em style='background:url("+data.list[i].logo+") no-repeat center center / cover'></em>\
+																						<h3><i>"+data.list[i].name+"</i><b>"+returnState(data.list[i].is_state)+"</b></h3>\
+																						<samp>每股单价：<i>￥"+data.list[i].price+"</i></samp>\
+																						<samp>购买数量：<i>"+data.list[i].number+"股</i></samp>\
+																						<samp>总金额：<i>￥"+data.list[i].payprice+"</i></samp>\
+																						<span>参与日期："+data.list[i].create_time+"</span>\
+																					</li>"
+												$('.participation').append(investOrderListStr);
+							}
+							function returnState(num){
+								if(num==1){
+									return '待支付'
+								}else{
+									return '已支付'
+								}
+							}
+						}else{
+							$('.participation').html("<center>暂无投资的项目</center>")
+						}
+						$('#loading').fadeOut(100);
+				}
+		})
+	}
+
+
+	})
+}
+</script>

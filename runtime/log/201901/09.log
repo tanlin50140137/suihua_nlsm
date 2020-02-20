@@ -1,0 +1,23 @@
+---------------------------------------------------------------
+[ 2019-01-09T12:23:10+08:00 ] 127.0.0.1 GET /applet
+[ info ] 127.0.0.1/applet [运行时间：1.118064s][吞吐率：0.89req/s] [内存消耗：1,490.59kb] [文件加载：34]
+[ info ] [ LANG ] F:\web\www\nlsm\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'applet',
+    1 => NULL,
+    2 => NULL,
+  ),
+)
+[ info ] [ HEADER ] array (
+  'accept' => '*/*',
+  'user-agent' => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 2.0.50727)',
+  'host' => '127.0.0.1',
+  'connection' => 'Keep-Alive',
+  'cache-control' => 'no-cache',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ LOG ] INIT File

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>订单详情</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/orderDetails.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' onclick="tohtml('orderlist');"></a>
+        <h2>订单详情</h2>
+    </div>
+</div>
+<div id='OrderDetails_container'>
+    <div id='user_site'>
+        <div>
+            <p><span>收货</span><i></i></p>
+            <p><span>地址</span></p>
+        </div>
+    </div>
+    <div id='content'>
+        <div class='order_list'>
+            <ul>        
+                <li>    
+    
+                </li>
+            </ul>
+            <div class='payBox'>
+                <p>支付方式<span></span></p>
+                <p>优惠券<span>未使用</span></p>
+            </div>
+            <h3>结算详情</h3>
+            <div class='message'>
+                <p>商品总计：<span></span></p>
+                <p>运费：<span></span></p>
+                <input type='text' placeholder='备注留言'/>
+            </div>
+            <div class='orderTime'>
+                <p>订单编号：</p>
+                <p>创建时间：</p>
+            </div>
+            <div class='config_pay'>
+                <b>合计：￥0</b>
+                <div class='config_pay_btn'>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+</body>
+
+<script>
+    var order_id = geturldata('id');
+    var couponID = '';
+        var goodsCinfirmList = [];
+        var payType = '';
+    $(function(){
+        $.ajax({
+            url:serverurl+'/api/app/order_detail',
+            type:'post',
+            data:{
+                'appkey':localStorage.appkey,
+                'token':token,
+                'id':order_id
+            },
+            success:function(data){
+                $("#loading").hide();
+                if(data.info == 'appkey验证失败！'){
+                    api.openWin({
+                        name: 'login',
+                        url: 'login.html',
+                    });
+                }
+
+                $('#user_site div').html("<p><span>收货</span><samp class='user_name'>"+data.list.username+"</samp><i><samp class='user_mobile'>"+data.list.mobile+"</samp></i></p><p><span>地址</span><samp class='user_city'>"+data.list.city + '-' + data.list.address+"</samp></p>")
+                for(var i= 0;i<data.list.goods.length;i++){
+                    var goodsDOM = "<div class='goods_details' onclick='tohtml(\"goods.html?id="+data.list.goods[i].goods_id+"\");'>\
+                            <em style='background:url("+data.list.goods[i].goods_logo+") no-repeat center center / cover'></em>\
+                            <h4>"+data.list.goods[i].goods_name+"</h4>\
+                            <h6>￥"+data.list.goods[i].goods_price+"<br/></h6>\
+                            <span>x "+data.list.goods[i].goods_number+"</span>\
+                            <p>"+returnSpec(data.list.goods[i].spec_value)+"</p>\
+                        </div>"
+                    $('.order_list ul li').append(goodsDOM)
+                }
+
+                function returnSpec(val){
+                    if(val){
+                        return "规格：<i>"+val+"</i>"
+                    }else{
+                        return ""
+                    }
+                }
+
+                for(var i=0;i<data.list.goods.length;i++){
+                    goodsCinfirmList.push({
+                        'goods_id':data.list.goods[i].goods_id,
+                        'goods_number':data.list.goods[i].goods_number,
+                        'spec_value':data.list.goods[i].spec_value || ''
+                    })
+                }
+
+                $('.payBox p').eq(0).children('span').text(data.list.paytype)
+                payType = data.list.paytype;
+                $('.payBox p').eq(1).children('span').text('已优惠￥'+data.list.couprice)
+                couponID = data.list.coupon;
+                $('.message p:eq(0) span').text(data.list.total_price)
+                $('.message p:eq(1) span').text(data.list.freight_price)
+                $('.message input').val(data.list.remark)
+                $('.orderTime p').eq(0).text('订单编号：'+data.list.order_id)
+                $('.orderTime p').eq(0).after('<span>快递单号编号：'+data.list.logistino+'</span>')
+                $('.orderTime p').eq(1).text('创建时间：'+data.list.create_time)
+                // $('.config_pay_btn button').eq(0).text()
+                $('.config_pay b').text('合计：￥'+data.list.total_price)
+
+                if(data.list.is_state==1){
+                    $('.config_pay_btn').html("<button>取消订单</button><button>立即付款</button>")
+                    $('.config_pay_btn button').eq(0).click(function(){
+                        $.ajax({
+                            url:serverurl+'/api/app/cancel_order',
+                            type:'post',
+                            data:{
+                                'appkey':localStorage.appkey,
+                                'token':token,
+                                'id':order_id
+                            },
+                            success:function(data){
+                                layer.msg(data.info);
+                                api.openWin({
+                                    name: 'orderlist',
+                                    reload:true,
+                                    url:'orderlist.html',
+                                });
+                            }
+                        })
+                    })
+
+                    $('.config_pay_btn button').eq(1).click(function(){
+                        var paytype = $('.payBox p').eq(0).children('span').text();
+                        $.ajax({
+                            url:serverurl+'/api/app/payorder',
+                            type:'post',
+                            data:{
+                                'appkey':localStorage.appkey,
+                                'token':token,
+                                'paytype':paytype,
+                                'id':order_id
+                            },
+                            success:function(data){
+                                if(data.success){
+                                    window.location.href = "/index/payment/payorder?act=order&id="+data.order_id+"&appkey="+localStorage.appkey;
+                                }else{
+                                    layer.msg(data.info);
+                                    if(data.info == 'appkey验证失败！'){
+                                        api.openWin({
+                                            name: 'login',
+                                            url: 'login.html',
+                                        });
+                                    }
+                                }
+                            }
+                        })
+                    })
+                }else if(data.list.is_state==2){
+                    $('.config_pay_btn').html("")
+                }else if(data.list.is_state==3){
+                    $('.config_pay_btn').html("<button>确认收货</button>")
+                    $('.config_pay_btn button').click(function(){
+                        if(confirm('确认您是否已经收到了宝贝')){
+                            $.ajax({
+                                url:serverurl+'/api/app/finish_order',
+                                type:'post',
+                                data:{
+                                    'appkey':localStorage.appkey,
+                                    'token':token,
+                                    'id':order_id
+                                },
+                                success:function(data){
+                                    layer.msg(data.info);
+                                    api.openWin({
+                                        name: 'orderlist',
+                                        reload:true,
+                                        url:'orderlist.html',
+                                    });
+                                }
+                            })
+                        }
+                        
+                    })
+                }else if(data.list.is_state==7){
+                    $('.config_pay_btn').html("<button class='commentBtn'>立即评价</button>")
+                    $('.commentBtn').click(function(){
+                        api.openWin({
+                            name: 'comment',
+                            url:"comment.html?id="+order_id
+                        });
+                    })
+                    
+                }
+
+                if(data.list.is_state == 1){
+                    //ajax请求订单支付状态
+                    var t = setInterval(function(){
+                        $.ajax({
+                            url:serverurl+'/api/app/getstate',
+                            type:'post',
+                            data:{
+                                'appkey':localStorage.appkey,
+                                'token':token,
+                                'order_id':order_id
+                            },
+                            success:function(data){
+                                if(data.list != 1){
+                                    window.location.reload();
+                                }
+                            }
+                        })
+                    }, 1000);
+                }
+
+            }
+        })
+
+
+    })
+</script>
+</html>

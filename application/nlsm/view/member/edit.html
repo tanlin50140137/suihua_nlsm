@@ -1,0 +1,280 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑会员</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+
+<div class="box box-solid">
+   <form action=" " method="post" id="form">
+   <input type="hidden" name="id" value="{$list.id}">
+    <div class="box box-solid getform">
+        <div class="box-body">
+            <table class="tab-goods">
+                <tr>
+                    <td class="td-r">会员头像：</td>
+                    <td>
+                        <div class="image-item">
+                            <img src="{$list.userface}" height="200px" class="logo" />
+                            <input id="file" type="file" class="hide form-control pinput file" name="userface" />
+                            <input type="hidden" class="form-control input-sm pinput" name="userface" value="{$list.userface}" />
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td class="td-r">会员昵称：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="nickname" value="{$list.nickname}" />
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">会员密码：</td>
+                    <td>
+                        <input type="password" id="password" class="form-control input-sm pinput" name="password" value="" />
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">电子邮箱：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="email" value="{$list.email}" />
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">用户等级：</td>
+                    <td colspan="3">
+                        <select type="select" class="pinput input-sm form-control level_id input-200" name="level_id">
+                            {volist name="level" id="vo"}
+                                <option value="{$vo.id}" {if condition="$vo.id == $list.level_id"}selected{/if}>{$vo.name}</option>
+                            {/volist}
+                        </select>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">会员简介：</td>
+                    <td colspan="3">
+                        <textarea type="textarea" class="form-control pinput" name="remark">{$list.remark}</textarea>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">会员状态：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="is_state" class="is_state pinput hide" {if condition="$list.is_state == 1"}checked{/if}>
+                                </div> 
+                                <i></i> 启用
+                            </label>
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="is_state" class="is_state pinput hide" {if condition="$list.is_state == 2"}checked{/if}>
+                                </div> 
+                                <i></i> 禁用
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="tr-th">
+                    <th colspan="2"><span class="th-text">详细信息</span></th>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">真实姓名：</td>
+                    <td colspan="3">
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="truename" value="{$list.truename}" />
+                    </td>
+                </tr>
+                
+                <tr class="rtd">
+                    <td class="td-r">出生日期：</td>
+                    <td colspan="3">
+                        <input id="d4311" class="form-control input-sm pinput birthday" name="birthday" type="text" autocomplete="off"  placeholder="开始时间" value="{$list.birthday}" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})"/>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">身份证号：</td>
+                    <td colspan="3">
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="card" value="{$list.card}" />
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">用户性别：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="0" name="sex" class="sex pinput hide" {if condition="$list.sex == 0"}checked{/if}>
+                                </div> 
+                                <i></i> 保密
+                            </label>
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="sex" class="sex pinput hide" {if condition="$list.sex == 1"}checked{/if}>
+                                </div> 
+                                <i></i> 男
+                            </label>
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="sex" class="sex pinput hide" {if condition="$list.sex == 2"}checked{/if}>
+                                </div> 
+                                <i></i> 女
+                            </label>
+                            
+                        </div>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">支付宝账号：</td>
+                    <td colspan="3">
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="alipay" value="{$list.alipay}" />
+                    </td>
+                </tr>
+                <tr class="tr-th">
+                    <th colspan="2"><span class="th-text">其它信息</span></th>
+                </tr>
+                {if condition="!empty($list['openid'])"}
+                    <tr class="rtd">
+                        <td class="td-r">微信openid：</td>
+                        <td colspan="3">
+                            {$list['openid']}
+                        </td>
+                    </tr>
+                {/if}
+                <tr class="rtd">
+                    <td class="td-r">会员券分：</td>
+                    <td colspan="3">
+                        {$list['point']} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="blue" href="javascript:;" data-toggle="tooltip" data-placement="top" title="" onclick="dpop.add('60%', '60%', '修改券分', '__MODULE__/Member/point?id={$list.id}', true, Reload, true);" data-original-title="修改券分">[点击修改]</a>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">账户余额：</td>
+                    <td colspan="3">
+                        {$list['money']} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="blue" href="javascript:;" data-toggle="tooltip" data-placement="top" title="" onclick="dpop.add('60%', '60%', '修改余额', '__MODULE__/Member/money_edit?id={$list.id}', true, Reload);" data-original-title="修改余额">[点击修改]</a>
+                    </td>
+                </tr>
+                
+                <tr class="rtd">
+                    <td class="td-r">注册时间：</td>
+                    <td colspan="3">
+                        {$list['create_time']}
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">注册IP地址：</td>
+                    <td colspan="3">
+                        {$list['registe_ip']}
+                    </td>
+                </tr>
+                <tr class="tr-th">
+                    <th colspan="2"><span class="th-text">团队信息</span></th>
+                </tr>
+                <tr>
+                    <td class="td-r">上级会员：</td>
+                    <td class="red form-inline" colspan="9">
+                        {$list.prevname}
+                        <a href="javascript:;" class="blue" onclick="$('.referdiv').show(); $(this).hide();">[+更改上级]</a>
+                        <div class="referdiv" style="display:none;">
+                            <input type="text" autocomplete="off"  class="form-control input-sm input-100 refer_id" value="{$list.pid}">
+                            <span class="btn btn-sm btn-info btn-flat" onclick="parent();">确定</span>
+                            <span class="help-block">请在输入框中填写用户ID，<span class="red">请慎重修改</span></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">我的好友：</td>
+                    <td colspan="9" style="line-height:30px;">
+                        团队好友：<span class="badge bg-red">{$number}</span> 位&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a class="blue" href="javascript:;" onclick="dpop.add('80%', '80%', '查看团队好友', '__MODULE__/Member/subordinate?id={$list.id}', true, false);">[点击查看]</a><br>
+                        {volist name="count" id="vo"}
+                            {$key}级好友： <span class="badge bg-red">{$vo}</span> 位&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a class="blue" href="javascript:;" onclick="dpop.add('80%', '80%', '查看{$key}级好友', '__MODULE__/Member/subordinate?id={$list.id}&level={$key}', true, false);">[点击查看]</a><br>
+                        {/volist}     
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="footer">
+        <button class="btn btn-primary btn-sm btn-flat" type="submit">保存修改</button>
+    </div>
+</form>
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+<!-- 选项框插件 -->
+<link href="/public/plugins/iCheck/custom.css" rel="stylesheet">
+<script src="/public/plugins/iCheck/icheck.min.js"></script>
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+<script type="text/javascript" src="/public/plugins/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $(document).ready(function(){$(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",})});
+</script>
+<script>
+    
+    //保存修改
+    $(function(){
+        $("#form").submit(function(){  
+            var password = $("#password").val();    //密码
+            if(password.length>1 && password.length<6  || password.length>18){
+                bpop.tip('请输入6-18位数之间会员密码！', 2, 1);return false;
+            }
+            var formData = new FormData($("#form")[0]); 
+            bpop.addLoading(true);
+            $.ajax({ 
+                url: '__MODULE__/Member/edit', 
+                type: 'POST',
+                data: formData, 
+                async: false, 
+                cache: false, 
+                contentType: false, 
+                processData: false, 
+                success: function (data) { 
+                    if (data.success == true) {
+                        bpop.tip(data.info, 1, 1);
+                    }else{
+                        bpop.tip(data.info, 2, 1);
+                    }
+                }, 
+                dataType:'json' 
+            });
+            return false; 
+        }); 
+    })
+
+     //修改会员上级
+    function parent() {
+        pid = $('.refer_id').val();
+        if (!pid || pid == '{$list.pid}'){
+            return false;
+        }
+        bpop.add('确定要更改层级关系吗？此操作不可逆', 2, function(){
+            bpop.addLoading(true);
+            $.post('__MODULE__/Member/superior',{'id':'{$list.id}','pid':pid,'token':localStorage.token}, function(data) {
+                if (data.success == true) {
+                    bpop.tip(data.info, 1, 2);
+                    setTimeout(function(){
+                        window.location.reload();
+                    },1000);
+                }else {
+                    bpop.tip(data.info, 2, 1);
+                }
+            }, 'JSON');
+        })
+    }
+</script>
+</body>
+</html>

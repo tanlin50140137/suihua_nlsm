@@ -1,0 +1,124 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>优惠券类型</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="__MODULE__/Coupon/type" class="btn btn-sm btn-warning btn-flat"><i class="fa fa-save"></i> 优惠券类型</a>
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Coupon/index">
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped">
+            <tr>
+                <th width="30"><input type="checkbox" class="checkbox" value="del" /></th>
+                <th width="60" class="sort blue">ID</th>
+                <th>所属商家</th>
+                <th>优惠券编号</th>
+                <th>优惠券名称</th>
+                <th>优惠券金额</th>
+                <th>最小订单金额</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>所属会员</th>
+                <th>使用订单</th>
+                <th>使用日期</th>
+                <th>状态</th>
+                <th width="50">操作</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="14">暂无优惠券数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.id}" data-id="{$vo.id}">
+                <td><input type="checkbox" class="idlist" value="{$vo.id}" /></td>
+                <td>{$vo.id}</td>
+                <td>{$vo.busname}</td>
+                <td>{$vo.number}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.money}</td>
+                <td>{$vo.min_price}</td>
+                <td>{$vo.start_time}</td>
+                <td>{$vo.end_time}</td>
+                <td>{$vo.nickname}</td>
+                <td>{$vo.order_id}</td>
+                <td>{$vo.usetime}</td>
+                <td>{$vo.state}</td>
+                <td>
+                    {if condition="$vo.is_state == 1"}
+                        <input type="button" value="冻结" class="btn btn-xs btn-success state" val="{$vo.is_state}">
+                    {else/}
+                        <input type="button" value="解冻" class="btn btn-xs btn-danger state btn-flat" val="{$vo.is_state}" />
+                    {/if}
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    <a href="javascript:;" class="btn btn-sm btn-danger btn-flat" onclick="dataDel('__MODULE__/Coupon/delete', false, Reload,true)"><i class="fa fa-trash-o"></i> 删除选中项</a>
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+<script>
+    //修改状态
+    $(function(){
+        $('#table .state').click(function(event) {
+            var _this = $(this);
+            var value = parseInt(_this.attr('val'));
+            var id = _this.parents('.tr').attr('data-id');
+            bpop.addLoading(true);
+            $.post('__MODULE__/Coupon/state', {'idlist':id,'state':value}, function(data) {
+                if (data.success == true) {
+                    bpop.clean();
+                    if (value == 1) {
+                        _this.attr('val', 4);
+                        _this.val('解冻').removeClass('btn-success').addClass('btn-danger');
+                        _this.parent().prev().html('<span style="color:red;">已冻结</span>');
+                    }else {
+                        _this.attr('val', 1);
+                        _this.val('冻结').removeClass('btn-danger').addClass('btn-success');
+                        _this.parent().prev().html('未使用');
+                    }
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+    })
+
+</script>
+</body>
+</html>

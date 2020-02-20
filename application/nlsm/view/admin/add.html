@@ -1,0 +1,204 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加管理员</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+    <!-- 个人编写新增css -->
+    <style>
+        .state{float:right;}
+        .state .fa-toggle-on{color:#1AB394;}
+        .state .fa-toggle-off{color:red;}
+        .indent {margin-left: 15px;}
+        .list-group-item:hover{background: #f5f5f5};
+    </style>
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+
+<div class="box box-solid">
+   <form action=" " method="post" id="form">
+    <div class="box box-solid getform">
+        <div class="box-body">
+            <table class="tab-member">
+                
+                <tr>
+                    <td class="td-r">用户头像：</td>
+                    <td>
+                        <div class="image-item">
+                            <img src="/public/image/userface.jpg" height="200px" class="logo" />
+                            <input id="file" type="file" class="hide form-control pinput file" name="userface" />
+                            <input type="hidden" class="form-control input-sm pinput" name="userface" value="/public/image/userface.jpg" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">用户账号：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  id="username" class="form-control input-sm pinput" name="username" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">用户昵称：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="nickname" value="" />
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">用户密码：</td>
+                    <td>
+                        <input type="password" id="password" class="form-control input-sm pinput" name="password" value="" />
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">用户备注：</td>
+                    <td colspan="3">
+                        <textarea type="textarea" class="form-control pinput" name="remark"></textarea>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">用户状态：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="1" name="is_state" class="is_state pinput hide" checked>
+                                </div> 
+                                <i></i> 启用
+                            </label>
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="2" name="is_state" class="is_state pinput hide">
+                                </div> 
+                                <i></i> 禁用
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr class="tr-th">
+                    <th colspan="2"><span class="th-text">赋予权限信息</span></th>
+                </tr>
+                <tr class="tr-th">
+                    <th colspan="2">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-content">
+                                <div class="showAction tooltip-demo">
+                                    <!--  这里开始遍历  -->
+                                    {volist name="powerlist" id="vo"}
+                                        <li class="list-group-item nodatede-treeview6" data-id="{$vo.id}" data-state="{$vo.is_state}" pid={$vo.pid}>
+                                            <span class="icon"><i class="click-collapse glyphicon glyphicon-chevron-down"></i></span>
+                                            <span class="icon"><i class="glyphicon glyphicon-star-empty"></i></span>{$vo.name}
+                                            <button type="button" class="btn btn-sm btn-flat state" data-toggle="tooltip" data-placement="top" title="修改状态">启用
+                                                <i class="fa fa-toggle-on" ></i>
+                                            </button>
+                                        </li>
+                                        {volist name="$vo.list" id="v"}
+                                            <li class="list-group-item nodatede-treeview6" data-id="{$v.id}" data-state="{$v.is_state}" pid={$v.pid}>
+                                                <span class="indent"></span>
+                                                <span class="icon"><i class="click-collapse glyphicon glyphicon-chevron-right"></i></span>
+                                                <span class="icon"><i class="glyphicon glyphicon-star-empty"></i></span>{$v.name}
+                                                <button type="button" class="btn btn-sm btn-flat state" data-toggle="tooltip" data-placement="top" title="修改状态">启用
+                                                        <i class="fa fa-toggle-on" ></i>
+                                                </button>
+                                            </li>
+                                        {/volist}
+                                    {/volist}
+                                </div>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="footer">
+        <button class="btn btn-primary btn-sm btn-flat" type="submit">添加会员</button>
+    </div>
+    <input type="hidden" class="power" name="power">
+</form>
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+<!-- 选项框插件 -->
+<link href="/public/plugins/iCheck/custom.css" rel="stylesheet">
+<script src="/public/plugins/iCheck/icheck.min.js"></script>
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+    $(document).ready(function(){$(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",})});
+</script>
+<script>
+   
+    //保存修改
+    $(function(){
+        $("#form").submit(function(){  
+            // 验证用户输入数据
+            var username = $("#username").val();    //用户名
+            var password = $("#password").val();    //密码
+            if(username.length<1){
+                bpop.tip('请输入用户账号！', 2, 1);return false;
+            }else if(password.length<6  || password.length>18){
+                bpop.tip('请输入6-18位数之间会员密码！', 2, 1);return false;
+            }
+            var power = new Array();
+            $(".list-group-item").each(function(){
+                if($(this).attr('data-state') == 1){
+                    power.push($(this).attr('data-id'));
+                }
+            });
+            if(power.length < 1){
+                bpop.tip('请选择赋予管理员权限！', 2, 1);return false;
+            }
+            $(".power").val(power);
+
+            var formData = new FormData($("#form")[0]); 
+            bpop.addLoading(true);
+            $.ajax({ 
+                url: '__MODULE__/Admin/add', 
+                type: 'POST',
+                data: formData, 
+                async: false, 
+                cache: false, 
+                contentType: false, 
+                processData: false, 
+                success: function (data) { 
+                    if (data.success == true) {
+                        bpop.tip(data.info, 1, 1);
+                    }else{
+                        bpop.tip(data.info, 2, 1);
+                    }
+                }, 
+                dataType:'json' 
+            });
+            return false; 
+        }); 
+
+        //修改权限状态
+        $(".state").click(function(){
+            var id = $(this).parent().attr('data-id');
+            var state = $(this).parent().attr('data-state');
+            /* 成功执行这里   显示到页面上 */
+            if(state == 1){
+                $(this).parent().attr('data-state',2);
+                $(this).html('禁用 <i class="fa fa-toggle-off"></i>');
+                $('li[pid^="'+id+'"]').attr('data-state',2);
+                $('li[pid^="'+id+'"]').find('.state').html('禁用 <i class="fa fa-toggle-off"></i>');
+            }else{
+                $(this).parent().attr('data-state',1);
+                $(this).html('启用 <i class="fa fa-toggle-on"></i>');                    
+                $('li[pid^="'+id+'"]').attr('data-state',1);
+                $('li[pid^="'+id+'"]').find('.state').html('启用 <i class="fa fa-toggle-on"></i>');
+            }
+        })
+    })
+</script>
+</body>
+</html>

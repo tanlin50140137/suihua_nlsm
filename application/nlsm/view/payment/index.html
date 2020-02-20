@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>支付方式列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped" role="grid">
+            <tr>
+                <th>ID</th>
+                <th>Logo</th>
+                <th>支付名称</th>
+                <th>接口地址</th>
+                <th>状态</th>
+                <th width="60">排序</th>
+                <th width="70">操作</th>
+            </tr>
+            {volist name="list" id="vo"}
+                <tr class="tr tr-2" data-id="{$vo.id}" data-name="{$vo.name}">
+                    <td>{$vo.id}</td>
+                    <td><img src="{$vo.logo}" class="img-30"></td>
+                    <td><strong>{$vo.paytype}</strong></td>
+                    <td>http://<?php echo $_SERVER['HTTP_HOST'];?>/index/payment/</td>
+                    <td>
+                        {if condition="$vo.is_state == 1"}
+                            <input type="button" value="启用" class="btn btn-xs btn-success state" val="2">
+                        {else/}
+                            <input type="button" value="停用" class="btn btn-xs btn-danger state btn-flat" val="1" />
+                        {/if}
+                    </td>
+                    <td>
+                        <input type="button" value="↑" class="btn btn-xs btn-default btn-flat order" onclick="order(this);" data-type="desc">&nbsp;
+                        <input type="button" value="↓" class="btn btn-xs btn-default btn-flat order" onclick="order(this);" data-type="asc">
+                    </td>
+                    <td>
+                        <div class="tpl-table-black-operation">
+                            <a href="javascript:;" onclick="setting('{$vo.name}')">
+                                <i class="fa fa-pencil"></i> 配置
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+</body>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+    //排序
+    function order(event) {
+        var type = $(event).attr('data-type');
+        var objParentTR = $(event).parent().parent(); 
+        var name = objParentTR.attr('data-name');
+        bpop.addLoading(true);
+        $.post('__MODULE__/Payment/sort', {'name':name,'order':type}, function(data) {
+            if (data.success == true) {
+                bpop.clean();
+                if(type == 'desc'){
+                    var prevTR = objParentTR.prev(); 
+                    if (prevTR.length > 0 && prevTR.attr('data-name') != undefined) { 
+                        prevTR.insertAfter(objParentTR); 
+                    }
+                }else{
+                    var nextTR = objParentTR.next(); 
+                    if (nextTR.length > 0) { 
+                        nextTR.insertBefore(objParentTR); 
+                    } 
+                }
+            }else {
+                bpop.tip(data.info, 2, 1);
+            }
+        },'json');
+    }
+
+    //修改状态
+    $(function(){
+        $('#table .state').click(function(event) {
+            var _this = $(this);
+            var value = parseInt(_this.attr('val'));
+            var name = _this.parents('.tr').attr('data-name');
+            bpop.addLoading(true);
+            $.post('__MODULE__/Payment/state', {'name':name,'state':value}, function(data) {
+                if (data.success == true) {
+                    bpop.clean();
+                    if (value == 1) {
+                        _this.attr('val', 2);
+                        _this.val('启用').removeClass('btn-danger').addClass('btn-success');
+                    }else {
+                        _this.attr('val', 1);
+                        _this.val('停用').removeClass('btn-success').addClass('btn-danger');
+                    }
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+    })
+
+    //支付配置
+    function setting(name){
+        dpop.add('80%', '80%', '编辑支付配置信息', '__MODULE__/Payment/'+name, true, Reload);
+    }
+</script>
+</html>

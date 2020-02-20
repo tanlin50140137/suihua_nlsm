@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>收货地址</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/mySite.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>收货地址</h2>
+    </div>
+</div>
+<div id='MySite_container'>
+    <div class="content" id='container_content'>
+        <!-- 没有数据时display: block; -->
+        <div class="null-data" style="display: none;"></div>
+        <div>
+            <a onclick="tohtml('address');">添加新地址</a>
+            <ul>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+</body>
+
+<script>
+$(function(){
+    //获取会员收货地址
+    $.post(serverurl+'/api/app/address',{'appkey':localStorage.appkey,'token':token},function(data){
+        $("#loading").hide();
+        if(data.list.length>0){
+            var html1 = '';
+            var html2 = '';
+            for(x in data.list){
+                if(data.list[x].is_state != 1){
+                    html1 = html1 + '<li><b>'+data.list[x].username+'</b><strong>'+data.list[x].mobile+'</strong><p>'+data.list[x].city.replace(/-/g,'') + '' + data.list[x].address+'</p><button name="'+data.list[x].id+'"></button></li>';
+                }else{
+                    html2 = '<li><b>'+data.list[x].username+'</b><strong>'+data.list[x].mobile+'</strong><em>默认</em><p>'+data.list[x].city.replace(/-/g,'') + '' + data.list[x].address+'</p><button name="'+data.list[x].id+'"></button></li>';
+                }
+            }
+            $('#container_content ul').html(html2 + html1);
+            //进入编辑
+            $('#container_content ul li button').click(function(){
+                api.openWin({
+                    name: 'editaddress',
+                    reload:true,
+                    url:"editaddress.html?id="+$(this).attr('name')
+                });
+            })
+            //选择默认
+            $('#container_content ul li').click(function(){
+                $.ajax({
+                    url:serverurl+'/api/app/edit_address',
+                    type:'post',
+                    data:{
+                        'appkey':localStorage.appkey,
+                        'token':token,
+                        'id':$(this).children('button').attr('name'),
+                        'is_state':1
+                    },success:function(data){
+                        if(data.success){
+                            window.location.reload();
+                        }else{
+                            layer.msg(data.info);
+                            if(data.info == 'appkey验证失败！'){
+                                api.openWin({
+                                    name: 'login',
+                                    url: 'login.html',
+                                });
+                            }
+                        }
+                    }
+                })
+            })
+
+        }else{
+            if(data.info == 'appkey验证失败！'){
+                api.openWin({
+                    name: 'login',
+                    url: 'login.html',
+                });
+            }
+            $(".null-data").show();
+        }
+    },"json");
+    
+})
+</script>
+</html>

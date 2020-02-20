@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>配送运费</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-info btn-flat" onclick="dpop.add('80%', '80%', '新建配送运费', '__MODULE__/Distribu/freight_add', true, Reload);"><i class="fa fa-plus"></i> 新建配送运费</a>
+    </div>
+
+</div>
+
+<div class="box box-solid">
+    <div class="box-body list">
+        {if condition="empty($list)"}
+            <tr class="tr odd"><td colspan="13">暂无运费模版～！</td></tr>
+        {/if}
+        {volist name="list" id="vo"}
+        <div class="dy" id="{$vo.id}">
+            <div class="dy-title">
+                <span class="name">{$vo.name} - {$vo.typename} ({$vo.create_time}创建)<i class="fa fa-check-circle green" title="启用" data-toggle="tooltip" data-placement="top"></i></span>
+                <div class="dy-r">
+                    <a href="javascript:;" class="blue" onclick="event.stopImmediatePropagation();dpop.add('80%', '80%', '新建配送运费', '__MODULE__/Distribu/freight_edit?id={$vo.id}',  true, Reload);">编辑</a>
+                    &nbsp;&nbsp;
+                    <a href="javascript:;" class="blue" onclick="event.stopImmediatePropagation();dataDel('__MODULE__/Distribu/freight_del','{$vo.id}',Reload,true)">删除</a>
+                    <i class="fa fa-caret-down"></i>
+                </div>
+            </div>
+            <div class="row" style="display: none;">
+                <div class="col-xs-10">配送范围</div>
+                <div class="col-xs-2">配送运费</div>
+            </div>
+            {volist name="$vo['value']" id="v"}
+            <div class="row dy-list" style="display: none;"><div class="col-xs-10">{$v.namelist}</div><div class="col-xs-1">￥{$v.price}</div></div>
+            {/volist}
+        </div>
+        {/volist}
+    </div>
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+    $('.dy-title').click(function(event) {
+        $(this).parent().toggleClass('dy-open');
+        $(this).siblings('.row').toggle();
+        $(this).find('.dy-r .fa').toggleClass('fa-caret-up');
+    });
+</script>
+</body>
+</html>

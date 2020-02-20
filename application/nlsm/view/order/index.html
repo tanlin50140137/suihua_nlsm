@@ -1,0 +1,157 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload()"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-danger btn-flat" onclick="dataDel('__MODULE__/Order/delete', false, Reload,true)"><i class="fa fa-trash-o"></i> 删除选中项</a>
+        <a href="javascript:;" class="btn btn-sm btn-primary btn-flat" onclick="excel();"><i class="fa fa-file-excel-o"></i> 导出订单</a>
+        
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Order/index" id="search">
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="d4311" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})" class="form-control input-sm time start_time" name="start_time" type="text" autocomplete="off"  placeholder="开始时间" value="{$start_time}"/>
+                </div>
+                ~
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="d4312" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})" class="form-control input-sm time end_time" name="end_time" type="text" autocomplete="off"  placeholder="结束时间" value="{$end_time}"/>
+                </div>
+                <select name="field" class="form-control input-sm field">
+                    <option value="order_id" {if condition="$field == 'order_id'"}selected{/if}>订单号</option>
+                    <option value="username" {if condition="$field == 'username'"}selected{/if}>收货人</option>
+                    <option value="address" {if condition="$field == 'address'"}selected{/if}>收货地址</option>
+                    <option value="mobile" {if condition="$field == 'mobile'"}selected{/if}>收货人电话</option>
+                    <option value="remark" {if condition="$field == 'remark'"}selected{/if}>订单备注</option>
+                </select>
+                <input type="hidden" class="is_state" name="is_state" value="{$is_state}">
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <div class="box-tab">
+            <a href="javascript:;" data-id="0" {if condition="$is_state == '0'"}class="cur"{/if}>全部<span class="to">{$count[0]}</span></a>
+            <a href="javascript:;" data-id="1" {if condition="$is_state == '1'"}class="cur"{/if}>待付款<span class="to">{$count[1]}</span></a>
+            <a href="javascript:;" data-id="2" {if condition="$is_state == '2'"}class="cur"{/if}>待发货<span class="to">{$count[2]}</span></a>
+            <a href="javascript:;" data-id="3" {if condition="$is_state == '3'"}class="cur"{/if}>已发货<span class="to">{$count[3]}</span></a>
+            <a href="javascript:;" data-id="4" {if condition="$is_state == '4'"}class="cur"{/if}>退货中<span class="to">{$count[4]}</span></a>
+            <a href="javascript:;" data-id="5" {if condition="$is_state == '5'"}class="cur"{/if}>已退货<span class="to">{$count[5]}</span></a>
+            <a href="javascript:;" data-id="6" {if condition="$is_state == '6'"}class="cur"{/if}>已取消<span class="to">{$count[6]}</span></a>
+            <a href="javascript:;" data-id="7" {if condition="$is_state == '7'"}class="cur"{/if}>待评论<span class="to">{$count[7]}</span></a>
+            <a href="javascript:;" data-id="8" {if condition="$is_state == '8'"}class="cur"{/if}>已过期<span class="to">{$count[8]}</span></a>
+            <a href="javascript:;" data-id="9" {if condition="$is_state == '9'"}class="cur"{/if}>已完成<span class="to">{$count[9]}</span></a>
+        </div>
+        <table id="table" class="table table-bordered table-hover table-striped">
+            <tr>
+                <th width="30"><input type="checkbox" class="checkbox" value="del" /></th>
+                <th>订单号</th>
+                <th>会员名</th>
+                <!-- <th>购买商品</th> -->
+                <th>订单总额</th>
+                <th>收货人</th>
+                <th>收货人电话</th>
+                <th>支付方式</th>
+                <th>支付金额</th>
+                <th>下单时间</th>
+                <th>状态</th>
+                <th width="130">操作</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="13">暂无订单数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.order_id}" data-id="{$vo.order_id}">
+                <td><input type="checkbox" class="idlist" value="{$vo.order_id}" /></td>
+                <td><a href="javascript:;" onclick="read('{$vo.order_id}','{$vo.uid}');" class="blue">{$vo.order_id}</a></td>
+                <td>{$vo.nickname}</td>
+                <!-- <td>
+                    {volist name="$vo['goods']" id="v"}
+                        {$v.goods_name}【{$v.spec_value} x {$v.goods_number}】<br/>
+                    {/volist}
+                </td> -->
+                <td>{$vo.total_price}</td>
+                <td>{$vo.username}</td>
+                <td>{$vo.mobile}</td>
+                <td>{$vo.paytype}</td>
+                <td><font color="red">{$vo.payprice}</font></td>
+                <td>{$vo.create_time}</td>
+                <td>{$vo.state} {if condition="$vo['is_cancel'] == 2"}<font color="red">【已退款】</font>{/if}</td>
+                <td>
+                    <div class="tpl-table-black-operation">
+                        <a href="javascript:;" onclick="read('{$vo.order_id}','{$vo.uid}');">
+                            <i class="fa fa-pencil"></i> 修改
+                        </a>
+                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="dataDel('__MODULE__/Order/delete','{$vo.order_id}',Reload,true)">
+                            <i class="fa fa-trash"></i> 删除
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script src="/public/plugins/layer/layer.min.js"></script>
+<script type="text/javascript" src="/public/plugins/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $(function(){
+        //搜索状态
+        $(".box-tab a").click(function(){
+            var state = $(this).attr('data-id');
+            $(".is_state").val(state);
+            $("#search").submit();
+        });
+    })
+    //查看订单详细信息
+    function read(id,uid){
+        dpop.add('100%', '100%', '查看订单详细信息', '__MODULE__/Order/read?id='+id+'&uid='+uid, true, Reload);
+    }
+    //导出订单
+    function excel() {
+        var idlist = Array();
+        $('body .idlist:checked').each(function() {
+            idlist.push($(this).val());
+        });
+        idlist = idlist.join(',');
+        if (idlist.length <= 0) {
+            bpop.tip('请选中后再导出！', 2, 1);
+            return false;
+        }
+        window.open('__MODULE__/Order/excel?idlist='+idlist);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>店铺详情</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/shopsDetails.css">
+    <link rel="stylesheet" href="./css/swiper-4.1.0.min.css">
+	
+</head>
+
+<body style="background: #fff;">
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' data-id="1"></a>
+        <h2></h2>
+    </div>
+</div>
+
+<div id='ShopsDetails_container'>
+    <div class='details'>
+        <div>
+            <b></b>
+            <i><samp></samp>人收藏</i>
+            <button>收藏店铺</button>
+        </div>
+    </div>
+    <div id='screen'>
+        <div>
+            <ul>
+                <li style="color:#ED5564;filter: grayscale(0%);">全部商品</li>
+                <li>推荐商品</li>
+                <li>新上商品</li>
+            </ul>
+        </div>
+    </div>
+    <div id='content'>
+        
+        <div class='Shop_goods_list state1'>
+            <div class='advertising_img'>
+                <div class="swiper-container">
+                    <div class="swiper-wrapper"></div>
+                </div>
+            </div>
+            <ul></ul>
+        </div>
+        <div class="null"><span>没有商品数据...</span></div>
+    </div>
+    <ul id="shopNav">
+        <li>店铺介绍</li>
+        <li>免费领券</li>
+        <li><a>联系客服</a></li>
+    </ul>
+    <div id="shop_personal">
+        <div id="shopContent">
+            <ul>
+                <li><span>所在地</span><b></b></li>
+                <li><span>开店时间</span><b></b></li>
+                <li><span>店铺简介</span><b></b></li>
+                <li><span>联系电话</span><b></b></li>
+                <li><span>店铺详情</span><b></b></li>
+            </ul>
+        </div>
+    </div>
+    <div id="couponBox">
+        <span id="coupon_shadow"></span>
+        <ul>
+            <h3>领取店铺代金券</h3>
+            <span id="coupon_close"></span>
+        </ul>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/swiper-4.1.0.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+<script>
+    var id = geturldata('id');
+    var collect_num = 0;
+    $(function(){
+        //获取商家信息
+        $.post(serverurl+'/api/app/business_detail',{'id':id,'token':token},function(data){
+            $("#loading").hide();
+
+            collect_num = data.list.collect_num;
+
+            $('.details b').css('background',"url("+data.list.logo+") center center / cover")
+            $('.header h2').html(data.list.name)
+            $('.details i').children('samp').html(data.list.collect_num);
+            $('.details button').attr('name',data.list.id)
+            $('#shopNav li').eq(2).children('a').attr('href',"mqqwpa://im/chat?chat_type=wpa&uin="+data.list.qq+"&version=1&src_type=web&web_src=bjhuli.com")
+
+            if(data.list.collect > 0){
+                $('.details button').html('取消收藏');
+            }
+            if(data.list.image.length>0){
+                var html = "";
+                for(x in data.list.image){
+                    html = html + '<div class="swiper-slide"  style="background:url('+data.list.image[x]+') no-repeat center center / cover"></div>';
+                }
+                $('.advertising_img .swiper-wrapper').html(html);
+
+                var mySwiper = new Swiper ('.swiper-container', {
+                    autoplay:true
+                })
+            }
+            
+            getGoodsList('','');
+
+            //收藏店铺
+            $('.details button').click(function(){
+                $.post(serverurl+'/api/app/business_collect',{'id':id,'appkey':localStorage.appkey,'token':token},function(data){
+                    if(data.info=='收藏成功'){
+                        layer.msg(data.info);
+                        $('.details button').html('取消收藏')
+                        $('.details i samp').html(collect_num + 1)
+                        collect_num = collect_num + 1;
+                    }else if(data.info=='取消收藏成功'){
+                        layer.msg(data.info);
+                        $('.details button').html('收藏店铺')
+                        $('.details i samp').html(collect_num - 1)
+                        collect_num = collect_num - 1;
+                    }else if(data.info == 'appkey验证失败！'){
+                        api.openWin({
+                            name: 'login',
+                            url: 'login.html',
+                        });
+                    }else{
+                        layer.msg('收藏失败');
+                    }
+                },"json");
+            })
+
+            //顶部导航切换
+            $('#screen ul li').click(function(){
+                $(".null").hide();
+                $(".Shop_goods_list ul").html('');
+
+                $('#screen ul li').removeAttr('style');
+                $(this).css('color','#ED5564').css('filter',' grayscale(0%)');
+                if($(this).index()==0){
+                    getGoodsList('','')
+                    $('.advertising_img').show();
+                }else if($(this).index()==1){
+                    getGoodsList(1,'')
+                    $('.advertising_img').hide();
+                }else{
+                    getGoodsList('',1)
+                    $('.advertising_img').hide();
+                }
+            })
+
+            //店铺简介
+            $('#shopContent ul li').eq(0).children('b').text(data.list.city)
+            $('#shopContent ul li').eq(1).children('b').text(data.list.create_time)
+            $('#shopContent ul li').eq(2).children('b').text(data.list.remark)
+            $('#shopContent ul li').eq(4).children('b').html(data.list.content)
+            $('#shopContent ul li').eq(3).children('b').text(data.list.mobile)
+
+            $('#shopNav li').eq(0).on('touchstart',function(){
+                $(".header a").attr('data-id','2');
+                $(".header h2").html("店铺介绍");
+                $('#shop_personal').fadeIn(200)
+            })
+
+            $(".header a").click(function(){
+                if($(this).attr('data-id') == 1){
+                    api.closeWin();
+                }else{
+                    $('.header h2').html(data.list.name)
+                    $('#shop_personal').fadeOut(200)
+                    $(".header a").attr('data-id','1');
+                }
+            });
+
+            // 获取店铺能领取的优惠券
+            $.post(serverurl+'/api/app/coupon',{'bus_id':id,'token':token},function(data){
+                if(data.list.length>0){
+                    var html = "";
+                    for(x in data.list){
+                        html = html + '<li>\
+                                          <span>'+data.list[x].name+'</span>\
+                                          <p>'+data.list[x].end_time+'前可使用</p>\
+                                          <button name="'+data.list[x].id+'">领取</button>\
+                                        </li>';
+                    }
+                    $('#coupon_close').after(html);
+
+                    $('#shopNav li').eq(1).on('touchstart',function(){
+                        $('#couponBox').fadeIn(200)
+                    })
+                    $('#coupon_close').on('touchstart',function(){
+                        $('#couponBox').fadeOut(200)
+                    })
+
+                    //领取优惠卷
+                    $('#couponBox ul li button').click(function(){
+                        var cid = $(this).attr('name');
+                        $.post(serverurl+'/api/app/receive',{'id':cid,'appkey':localStorage.appkey,'token':token},function(data){
+                            layer.msg(data.info);
+                            if(data.info == 'appkey验证失败！'){
+                                api.openWin({
+                                    name: 'login',
+                                    url: 'login.html',
+                                });
+                            }
+                        },"json");
+                    })
+                }
+            },"json");
+        },"json");
+    })
+
+    //获取商家旗下的所有商品
+   function getGoodsList(recom,hot){
+        $("#loading").show();
+        $.post(serverurl+'/api/app/goods_list',{'bus_id':id,'is_recom':recom,'is_hot':hot,'token':token},function(data){
+            $("#loading").hide();
+
+            if(data.list.length>0){
+                var html = "";
+                for(x in data.list){
+                    html = html + "<li name='"+data.list[x].goods_id+"'> \
+                                        <em style='background:url("+data.list[x].goods_logo+") no-repeat center center / contain'></em>\
+                                        <h4>"+data.list[x].goods_name+"</h4>\
+                                        <b>￥"+data.list[x].goods_price+"</b><i>￥"+data.list[x].market_price+"</i>\
+                                        <span>已售"+data.list[x].goods_salse+"件</span>\
+                                    </li>";
+                }
+                $(".Shop_goods_list ul").html(html);
+
+                $(".Shop_goods_list ul li").click(function(){
+                    api.openWin({
+                        name: 'goods',
+                        reload:true,
+                        url:"goods.html?id="+$(this).attr('name')
+                    });
+                })
+            }else{
+                $(".null").show();
+            }
+        },"json");
+   }
+</script>
+</html>

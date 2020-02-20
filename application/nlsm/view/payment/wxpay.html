@@ -1,0 +1,150 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微信支付</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+<div class="box box-solid">
+   <form action=" " method="post" id="form">
+    <div class="box box-solid getform">
+        <div class="box-body">
+            <table class="tab-member">
+                <tr>
+                    <th colspan="4">微信公众号</th>
+                </tr>
+                <tr>
+                    <td class="td-r">公众号账号：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="account" value="{$list.account}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">公众号AppID：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="appid" value="{$list.appid}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">AppSecret：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="appsecret" value="{$list.appsecret}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">商户号MCHID：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="mchid" value="{$list.mchid}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">支付密钥KEY：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="key" value="{$list.key}" />
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">ssl_cert证书：</td>
+                    <td colspan="3">
+                        <input style="float:left;" type="file" class="form-control input-sm input-400" name="sslcert">
+                            {if condition="!empty($list['sslcert'])"}
+                                <span style="float:left;color: #008000;line-height:30px;">&nbsp;&nbsp;&nbsp;已上传</span>
+                            {/if}
+                        <input type="hidden" name="sslcert" value="{$list.sslcert}"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="4">微信开放平台</th>
+                </tr>
+                <tr>
+                    <td class="td-r">开放者账号：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="wxaccount" value="{$list.wxaccount}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">应用AppID：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="wxappid" value="{$list.wxappid}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">应用AppSecret：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="wxappsecret" value="{$list.wxappsecret}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">商户号MCHID：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="openmchid" value="{$list.openmchid}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">支付密钥KEY：</td>
+                    <td>
+                        <input type="text" autocomplete="off"  class="form-control input-sm pinput" name="openkey" value="{$list.openkey}" />
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">ssl_cert证书：</td>
+                    <td colspan="3">
+                        <input style="float:left;" type="file" class="form-control input-sm input-400" name="opensslcert">
+                            {if condition="!empty($list['opensslcert'])"}
+                                <span style="float:left;color: #008000;line-height:30px;">&nbsp;&nbsp;&nbsp;已上传</span>
+                            {/if}
+                        <input type="hidden" name="opensslcert" value="{$list.opensslcert}"/>
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="footer">
+        <button class="btn btn-primary btn-sm btn-flat" type="submit">保存修改</button>
+    </div>
+</form>
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+    //保存修改
+    $(function(){
+        $("#form").submit(function(){  
+            var formData = new FormData($("#form")[0]); 
+            bpop.addLoading(true);
+            $.ajax({ 
+                url: '__MODULE__/Payment/wxpay', 
+                type: 'POST',
+                data: formData, 
+                async: false, 
+                cache: false, 
+                contentType: false, 
+                processData: false, 
+                success: function (data) { 
+                    if(data.success == true){
+                        bpop.tip(data.info, 1, 1);
+                    }else{
+                        bpop.tip(data.info, 2, 1);
+                    }
+                }, 
+                dataType:'json' 
+            });
+            return false; 
+        }); 
+    })
+</script>
+</body>
+</html>

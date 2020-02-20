@@ -1,0 +1,199 @@
+#Help{
+    position: fixed;
+    z-index: 99999;
+    display: block;
+    width: 100%;
+    height:calc(100%);
+    overflow: hidden;
+    background: #f6f6f6;
+    top: 73px;
+}
+
+
+#Help #header{
+    width: 100%;
+    height: 50px;
+    background: #2b91d4;
+    text-align: center;
+    color: #fff;
+    position: relative;
+
+}
+#Help #header a{
+    display: block;
+    width: 12px;
+    height: 22px;
+    background: url(../image/icon/back.png) no-repeat center center / contain;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 25px;
+}
+
+
+#Help #header h2{
+    font-weight: normal;
+    line-height: 50px;
+}
+#Help #screen {
+    overflow: hidden;
+    background: #fff;
+}
+#Help .nav{
+    bottom: 0;
+    height: 57px;
+    border-top: 1px solid #ddd;
+    z-index: 99999;
+    background: #fff;
+    position: fixed;
+    width: 100%;
+}
+#Help .nav li{
+    width: 33.33333%;
+    height: 57px;
+    text-align: center;
+    float: left;
+    display: block;
+}
+#Help .nav li a{
+    display: block;
+    box-sizing: border-box;
+    -wibkit-sizing: border-box;
+    padding-top: 10%;
+    margin: 0 auto;
+}
+#Help .nav li.active a span{
+    color: #2b91d4;
+}
+#Help .nav li span{
+    font-size: 13px;
+    width: 100%;
+    color: #666;
+    display: block;
+    line-height: 13px;
+}
+#Help .nav li em{
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-bottom: 1%;
+}
+#Help .nav li:first-child em{
+    background: url(../image/icon/index.png) no-repeat;
+    background-size: contain;
+}
+#Help .nav li:nth-child(2) em{
+    background: url(../image/icon/invest-active.png) no-repeat;
+    background-size: contain;
+}
+#Help .nav li:last-child em{
+    background: url(../image/icon/profit.png) no-repeat;
+    background-size: contain;
+}
+#Help #screen {
+    overflow: hidden;
+    background: #fff;
+}
+#Help #screen ul li{
+    display: block;
+    width: 33.33%;
+    float: left;
+    text-align: center;
+    padding: 10px 0px;
+    color: #666;
+    font-size: 4.3vw;
+    border-bottom: 2px solid #fff;
+    -webkit-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+    height: 100px;
+    background: url('../image/icon/help_icon.png') no-repeat center 20px;
+    background-size: 50%;
+    line-height: 180px;
+}
+.wrap{
+    width: 100%;
+    height: 100%;
+}
+#Help .invest_content{
+    width: 100%;
+    height: calc(100% - 50px);
+    position: absolute;
+    overflow: scroll;
+    margin-bottom: 30px;
+}
+#Help .header{
+    width: 100%;
+    height: 50px;
+    background: #2b91d4;
+    position: fixed;
+    z-index: 999;
+    color: #fff;
+    text-align: center;
+}
+#Help .header h2{
+    font-weight: 400;
+    line-height: 50px;
+}
+#Help .header a{
+    background: url(../image/icon/back.png) no-repeat;
+    background-size: contain;
+    display: block;
+    width: 12px;
+    height: 22px;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+}
+#Help .cont{
+    width: 100%;
+    height: calc(100% - 50px);
+    overflow: scroll;
+    margin-top:20px;
+}
+#Help .top{
+    width: 100%;
+    height: 145px;
+    background: #2b91d4;
+    text-align: center;
+    color: #fff;
+}
+#Help .top strong{
+    font-weight: 400;
+    font-size: 65px;
+    line-height: 85px;
+    padding-top: 15px;
+    display: block;
+}
+#Help .top span{
+    font-size: 15px;
+    display: block;
+}
+#Help .profit_deta{
+    width: 100%;
+    height: calc(100% - 195px);
+    overflow: scroll;
+    margin:10px 0px;
+}
+#Help .profit_deta .participation li{
+    display: block;
+    width:100%;
+    height: 45px;
+    box-sizing: border-box;
+    line-height: 40px;
+    padding-left: 5%;
+    border-bottom: 1px solid #ededed;
+    background: url('../image/icon/right_arrow.png') no-repeat 94% center #fff;
+    background-size: 2.5%;
+
+}
+#Help .profit_deta .participation li a{
+    display: block;
+    color: #333;
+}

@@ -1,0 +1,42 @@
+{
+    "status": 1,
+    "msg": "ok",
+    "data": [
+        {
+            "name": "销售部",
+            "nums": 36,
+            "id": 1,
+            "item": [
+                {
+                    "id": "100001",
+                    "name": "郭敬明",
+                    "face": "/static/upload/userface/a7d0e7a977456f60aa36706acc7f5fb5.jpg"
+                }
+            ]
+        },
+        {
+            "name": "大学同窗",
+            "nums": 16,
+            "id": 2,
+            "item": [
+                {
+                    "id": "1000033",
+                    "name": "苏醒",
+                    "face": "/static/upload/userface/a7d0e7a977456f60aa36706acc7f5fb5.jpg"
+                }
+            ]
+        },
+        {
+            "name": "H+后台主题",
+            "nums": 38,
+            "id": 3,
+            "item": [
+                {
+                    "id": "100006",
+                    "name": "柏雪近在它香",
+                    "face": "/static/upload/userface/a7d0e7a977456f60aa36706acc7f5fb5.jpg"
+                }
+            ]
+        }
+    ]
+}

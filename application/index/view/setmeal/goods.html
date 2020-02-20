@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+<title>奖品领取</title>
+<script type="text/javascript" src="/public/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/index/index/js/layer/layer.min.js"></script>
+<style>
+	*, :after, :before {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	main{padding-top: 3em;}
+	table {
+		border-spacing: 0;
+		border-collapse: collapse;
+		text-align: center;
+	}
+	
+	.draw {
+		width: 560px;
+		height: 600px;
+		margin: 0 auto;
+		padding:51px;
+		background-image: url(/index/index/images/bg.png);
+		background-repeat: no-repeat;
+		background-size: 100%;
+	}
+	
+	.draw .item {
+		width: 150px;
+		height: 150px;
+		background-image: url(/index/index/images/bg1.png);
+		background-repeat: no-repeat;
+		background-size: 96%;
+	}
+	
+	.draw .item.active {
+		background-image: url(/index/index/images/bg2.png);
+		background-repeat: no-repeat;
+		background-size: 100%;
+	}
+	
+	.draw .img {
+		display: table-cell;
+		width: 150px;
+		height: 61px;
+		vertical-align: middle;
+		text-align: center;
+	}
+	
+	.draw .img img {
+		vertical-align: top;
+	}
+	
+	.draw .gap {
+		width: 5px;
+	}
+	
+	.draw .gap-2 {
+		height: 5px;
+	}
+	
+	.draw .name {
+		display: block;
+		margin-top: 10px;
+		font-size: 14px;
+	}
+	
+	.draw .draw-btn {
+		display: block;
+		height: 150px;
+		line-height: 150px;
+		border-radius: 20px;
+		font-size: 25px;
+		font-weight: 700;
+		text-decoration: none;
+		background-image: url(/index/index/images/bg3.png);
+		background-repeat: no-repeat;
+		background-size: 96%;
+	}
+	.headerWrapper{
+		position: absolute;
+		top: 133px;
+    	left: 35%;
+	}
+	.headerWrapper img{
+		width:120px;
+	}
+	a{
+		text-decoration:none;
+	}
+	.home{
+		text-align: center;
+		width: 100%;
+		color: #fff;
+		margin-top: 10%;
+		cursor: pointer;
+	    background-color: #44b549;
+	    background-image: -moz-linear-gradient(top,#44b549 0,#44b549 100%);
+	    background-image: -webkit-gradient(linear,0 0,0 100%,from(#44b549),to(#44b549));
+	    background-image: -webkit-linear-gradient(top,#44b549 0,#44b549 100%);
+	    background-image: -o-linear-gradient(top,#44b549 0,#44b549 100%);
+	    background-image: linear-gradient(to bottom,#44b549 0,#44b549 100%);
+	    border-color: #44b549;
+	    color: #fff;
+	    height: 33px;
+	    line-height: 33px;
+	    width: 150px;
+	    margin-left: 30%;
+	}
+</style>
+
+</head>
+<body ng-app="mainApp" ng-controller="indexCtrl" style="background: #f02d2f;">
+
+<div class="headerWrapper container-fluid">
+	<img src="{$list.logo}" alt="">
+</div>
+
+<div id='info' style = "display : block;margin-top:100px;">
+   <a href=""><img src="/index/index/images/tk_img.png" width="100%"></a>
+   <a href="/"><div class="home">进入商城</div></a>
+</div>
+</body>
+</html>

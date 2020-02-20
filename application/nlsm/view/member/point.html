@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改会员券分</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+</head>
+<body>
+
+<div class="box box-solid">
+    <div class="box-body">
+   	<form action=" " method="post" id="form">
+		<table class="tab-member form-inline">
+			<tr>
+				<th colspan="4">调节券分</th>
+			</tr>
+			<tr>
+				<td class="td-r">可用券分：</td>
+				<td class="red">{$point}</td>
+			</tr>
+			<tr>
+				<td class="td-r">调整券分：</td>
+				<td class="red">
+					<input type="number" step="0.01" class="form-control input-sm input-200 point" placeholder="输入券分！" /> * 输入负值即可减少券分；
+				</td>
+			</tr>
+			<tr>
+				<td class="td-r">调节说明：</td>
+				<td>
+					<textarea type="textarea" class="form-control pinput remark" name="remark" datatype="0,255" rule="length" errorms="描述请在255以内！" style="width:400px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="td-r"></td>
+				<td>
+					<button class="btn btn-primary btn-sm btn-flat" type="submit">确认调节</button>
+				</td>
+			</tr>
+		</table>
+    </div>
+</div>
+</form>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("#form").submit(function(){  
+		uid = '{$id}';
+		point = $('.point').val();
+		remark = $('.remark').val();
+		if (point == '' || point == 0) {
+			bpop.tip('请输入正确的券分数量！', 2, 1);
+			return false;
+		}
+		bpop.add('确定要对券分进行调节吗？', 2, function(){
+	        bpop.addLoading(true);
+	        $.post('__MODULE__/Member/point',{'id':uid,'point':point,'remark':remark}, function(data) {
+	            if (data.success == true) {
+	                bpop.tip(data.info, 1, 2);
+	                setTimeout(function(){
+	                    window.location.reload();
+	                },1000);
+	            }else {
+	                bpop.tip(data.info, 2, 1);
+	            }
+	        }, 'JSON');
+	    })
+		return false; 
+    }); 
+})
+</script>
+</body>
+</html>

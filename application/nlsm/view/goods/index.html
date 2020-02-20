@@ -1,0 +1,168 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-warning btn-flat" onclick="add();"><i class="fa fa-plus"></i> 添加商品</a>
+        
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Goods/index" id="search">
+                <select name="typeid" class="form-control input-sm typeid">
+                    <option value="">全部商品</option>
+                    {volist name="type" id="vo"}
+                        <option value="{$vo['id']}" {if condition="$typeid == $vo['id']"}selected{/if}>{$vo['html']}{$vo['name']}</option>
+                    {/volist}
+                </select>
+                <input type="hidden" class="is_state" name="is_state" value="{$is_state}">
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <div class="box-tab">
+            <a href="javascript:;" data-id="0" {if condition="!$is_state"}class="cur"{/if}>全部<span class="to">{$count[0]}</span></a>
+            <a href="javascript:;" data-id="1" {if condition="$is_state == '1'"}class="cur"{/if}>已上架<span class="to">{$count[1]}</span></a>
+            <a href="javascript:;" data-id="2" {if condition="$is_state == '2'"}class="cur"{/if}>已下架<span class="to">{$count[2]}</span></a>
+            <a href="javascript:;" data-id="3" {if condition="$is_state == '3'"}class="cur"{/if}>审核中<span class="to">{$count[3]}</span></a>
+        </div>
+        <table id="table" class="table table-bordered table-hover table-striped">
+            <tr>
+                <th width="30"><input type="checkbox" class="checkbox" value="del" /></th>
+                <th width="50" class="sort blue">ID</th>
+                <th>商品图片</th>
+                <th width="220">商品名称</th>
+                <th>商品分类</th>
+                <th>商品价格</th>
+                <th>商品折扣</th>
+                <th>成本价格</th>
+                <th>直推返利</th>
+                <th>VIP价格</th>
+                <th>商品库存</th>
+                <th>商品排序</th>
+                <th>时间</th>
+                <th width="50">状态</th>
+                <th width="130">操作</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="13">暂无商品数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.goods_id}" data-id="{$vo.goods_id}">
+                <td><input type="checkbox" class="idlist" value="{$vo.goods_id}"></td>
+                <td>{$vo.goods_id}</td>
+                <td><a href="javascript:;" onclick="edit('{$vo.goods_id}');"><img alt="image" src="{$vo.goods_logo}" width="50"></a></td>
+                <td><a href="javascript:;" onclick="edit('{$vo.goods_id}');" class="blue">{$vo.goods_name}</a></td>
+                <td>{$vo.typename}</td>
+                <td>{$vo.goods_price}</td>
+                <td>{$vo.discount}折</td>
+                <td>{$vo.costs_price}</td>
+                <td>{$vo.huitui}%</td>
+                <td>{$vo.vip_price}</td>
+                <td>{$vo.goods_number}</td>
+                <td><input type="text" autocomplete="off"  class="form-control input-sm srot" value="{$vo.sort}" style="width:50px;"></td>
+                 <td>{$vo.create_time}</td>
+                <td>
+                    <select class="input-sm is_state" {if condition="$vo.is_state == 2"}style="color:#ccc;"{elseif condition="$vo.is_state == 3"/}style="color:red;"{/if}>
+                        <option value="1" {if condition="$vo.is_state == 1"}selected{/if} style="color:#444;">已上架</option>
+                        <option value="2" {if condition="$vo.is_state == 2"}selected{/if} style="color:#444;">已下架</option>
+                        <option value="3" {if condition="$vo.is_state == 3"}selected{/if} style="color:#444;">审核中</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="tpl-table-black-operation">
+                        <a href="javascript:;" onclick="edit('{$vo.goods_id}');">
+                            <i class="fa fa-pencil"></i> 修改
+                        </a>
+                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="dataDel('__MODULE__/Goods/delete','{$vo.goods_id}',Reload,true)">
+                            <i class="fa fa-trash"></i> 删除
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    <a href="javascript:;" class="btn btn-sm btn-danger btn-flat" onclick="dataDel('__MODULE__/Goods/delete', false, Reload,true)"><i class="fa fa-trash-o"></i> 删除选中项</a>
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+<script>
+    //修改状态
+    $(function(){
+        //搜索状态
+        $(".box-tab a").click(function(){
+            bpop.addLoading(true);
+            var state = $(this).attr('data-id');
+            $(".is_state").val(state);
+            $("#search").submit();
+        });
+
+        $('#table .is_state').change(function(event) {
+            var id = $(this).parents('.tr').attr('data-id');
+            var value = parseInt($(this).find(":selected").val());
+            bpop.addLoading(true);
+            $.post('__MODULE__/Goods/state', {'id':id,'state':value}, function(data) {
+                if (data.success == true) {
+                    window.location.reload();
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+        //修改排序
+        $('#table .srot').change(function(){
+            var id = $(this).parents('.tr').attr('data-id');
+            var value = parseInt($(this).val());
+            bpop.addLoading(true);
+            $.post('__MODULE__/Goods/order', {'id':id,'sort':value}, function(data) {
+                if (data.success == true) {
+                    window.location.reload();
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+    })
+
+    //修改商品信息
+    function edit(id){
+        dpop.add('80%', '80%', '修改商品信息', '__MODULE__/Goods/edit?id='+id, true, Reload);
+    }
+    //添加商品
+    function add(){
+        dpop.add('80%', '80%', '添加商品', '__MODULE__/Goods/add', true, Reload);
+    }
+</script>
+</body>
+</html>

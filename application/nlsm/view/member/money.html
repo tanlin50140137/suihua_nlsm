@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员余额详情列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+</head>
+<body>
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Member/money" id="search">
+               <!--  <select name="type" class="form-control input-sm type">
+                    <option value="" >全部记录</option>
+                    <option value="会员提现" {if condition="$type == '会员提现'"}selected{/if}>会员提现</option>
+                    <option value="商品购买" {if condition="$type == '商品购买'"}selected{/if}>商品购买</option>
+                    <option value="话费充值" {if condition="$type == '话费充值'"}selected{/if}>话费充值</option>
+                    <option value="会员转账" {if condition="$type == '会员转账'"}selected{/if}>会员转账</option>
+                </select> -->
+                <input type="hidden" name="id" value="{$id}">
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped" role="grid">
+            <tr>
+                <th>余额来源</th>
+                <th>来源说明</th>
+                <th>金额数量</th>
+                <th>来源订单</th>
+                <th width="140">时间</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="13">暂无余额数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.id}" id="{$vo.id}">
+                <td>{$vo.type}</td>
+                <td>{$vo.remark}</td>
+                <td>{$vo.money}</td>
+                <td>{$vo.order_id}</td>
+                <td>{$vo.create_time}</td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+</body>
+</html>

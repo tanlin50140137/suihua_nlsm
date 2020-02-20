@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>购物车</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/shoppingCart.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<link rel="stylesheet" href="/public/skin/css/main.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/fastclick.js"></script>
+<body>
+<div id="worry"></div>
+<div id='shoppingCart'>
+       <div id='header'>
+       	<div>
+			<a href='javascript:;'></a>
+			<h2>购物车</h2>
+			<span>编辑</span>
+		</div>
+       </div>
+       <div id='goods'>
+       	<div>
+			<ul>
+
+			</ul>
+		</div>
+       </div>
+       <div id='result'>
+       		<div id='selectAll'>
+       			<div>
+					<input name="goodss" type="checkbox" value="" id='checkboxAll'  />
+					<label for="checkboxAll"></label>
+					<span>全选</span>
+				</div>
+       		</div>
+       		<div id='money'>
+       			<div>
+					<h3>总计：<span>0.00</span></h3>
+				</div>
+       		</div>
+       		<div id='settle'>结算</div>
+
+       </div>
+	</div>
+
+	{include file="Common/footer"}
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+apiready = function(){
+	$(function(){
+		getDate();
+		FastClick.attach(document.body);
+		$('#header a').on('touchstart',function(){
+			api.closeWin()
+		})
+
+		
+
+		if(localStorage.appkey){
+				$.ajax({
+		            url:serverurl+'/api/app/detail',
+		            type:'post',
+		            data:{
+		                appkey:localStorage.appkey,
+		                token:localStorage.token
+		            },
+		            success:function(data){
+		            	if(data.info == "appkey验证失败！"){
+		                    alertFade("登录异常，请重新登录！",function(){
+		                    	localStorage.appkey = '';
+		                   		api.openWin({
+					                name: 'login',
+					                url:'login.html'
+					            });
+		                    });
+		                }else{
+		                	getDate();
+		                }
+		            }
+		        })
+			}else{
+				alertFade("请先登录！",function(){
+                	localStorage.appkey = '';
+               		api.openWin({
+		                name: 'login',
+		                url:'login.html'
+		            });
+                });
+			}
+
+		localStorage.shop_list = [];
+		var shops = [];
+		
+
+		//点击编辑
+		$('#header span').click(function(){
+			if($(this).text()=='编辑'){
+				$('#goods ul li').css('margin-left','-35px');
+				$(this).text('完成')
+			}else{
+				$('#goods ul li').removeAttr('style')
+				$(this).text('编辑')
+			}
+		})
+
+
+		//点击结算
+		$('#settle').click(function(){
+			// if(){}
+			// console.debug($("input:checkbox[name=goods]:checked").length)
+			if($("input:checkbox[name=goods]:checked").length>0){
+				var s = $("input[type='checkbox'][name=goods]");
+				s.each(function(i) {
+					if(this.checked){
+						shops.push({
+	                        'shops_id':s.eq(i).parent().attr("name"),
+	                        'shops_num':s.eq(i).attr('num'),
+	                        'shops_price':s.eq(i).val(),
+	                        'shops_img':s.eq(i).next().next().attr('style'),
+	                        'shops_name':s.eq(i).next().next().next().children('h3').text(),
+	                        'shops_busid':s.eq(i).next().next().next().children('h3').attr('name'),
+	                        'spec_value':s.eq(i).next().next().next().children('b').children('i').text()
+	                    })
+	                    localStorage.shop_list = JSON.stringify(shops);
+					}
+				})
+				api.openWin({
+	                name: 'confirmOrder',
+	                url:'{:url("User/confirmorder")}'
+	            });
+			}else{
+				alertFade('没有选中商品')
+			}
+
+		})
+
+		//选择商品数量
+		function goodsNumFun(){
+			$('.subtract').click(function(){
+				$(this).next().text($(this).next().text()-1)
+				$(this).parent().parent().parent().prevAll('input').attr('num',$(this).next().text());
+
+				if($(this).next().text()-1+1 <=1){
+					$(this).next().text(1)
+					$(this).parent().parent().parent().prevAll('input').attr('num',1);
+				}
+
+				if($(this).parent().parent().parent().prevAll('input').is(':checked')) {
+					$('#money h3 span').text((Number($('#money h3 span').text()) - (Number($(this).parent().parent().parent().prevAll('input').val()))).toFixed(2));
+				}
+
+			})
+
+			$('.add').click(function(){
+				$(this).prev().text($(this).prev().text()-1+2)
+				$(this).parent().parent().parent().prevAll('input').attr('num',$(this).prev().text());
+
+				if($(this).parent().parent().parent().prevAll('input').is(':checked')) {
+					$('#money h3 span').text((Number($('#money h3 span').text()) + (Number($(this).parent().parent().parent().prevAll('input').val()))).toFixed(2));
+				}
+
+			})
+		}
+
+
+
+		//获取用户购物车
+		function getDate(){
+			$.ajax({
+	            url:serverurl+'/api/app/mycart',
+	            type:'post',
+	            data:{
+	                appkey:localStorage.appkey,
+	                token:localStorage.token
+	            },
+	            success:function(data){
+	            	// alert(data.list.length);
+	            	$('#goods ul').html('');
+	            	if(data.list.length>0){
+	            		for(var i=0;i<data.list.length;i++){
+	            			var goodsStr = "<li name="+data.list[i].goods_id+">\
+								<input name='goods' class='selectGoods' type='checkbox' value='"+data.list[i].goods_price+"' id='checkbox"+i+"' num='"+data.list[i].goods_number+"'/>\
+								<label for='checkbox"+i+"'></label>\
+								<em style='background:url("+data.list[i].goods_logo+") no-repeat center center / cover' name="+data.list[i].goods_id+"></em>\
+								<span class='shop_right'>\
+									<h3 name='"+data.list[i].bus_id+"'>"+data.list[i].goods_name+"</h3>\
+									<b><i>"+data.list[i].spec_value+"</i></b> \
+									<p>\
+										<strong>￥"+data.list[i].goods_price+"</strong>\
+										<span class='goods_num'>\
+											<button class='subtract'>-</button>\
+											<b>"+data.list[i].goods_number+"</b>\
+											<button class='add'>+</button>\
+										</span>\
+									</p>\
+								</span>\
+								<h6 name="+data.list[i].goods_id+" product="+data.list[i].product_id+">删除</h6>\
+							</li>"
+						$('#goods ul').append(goodsStr);
+	            		}
+	            		goodsNumFun();
+	            		selectGoods();
+	            		removeCart();
+	            		//查看详情
+	            		$('#goods ul li em').click(function(){
+	            			api.openWin({
+				                name: 'goods_details',
+				                url:"goods_details.html?goodsId="+$(this).attr('name')+""
+				            });
+	            		})
+	            	}else{
+	            		$('#goods ul').html("<center>购物车空空如也</center>")
+	            	}
+
+	            }
+	        })
+		}
+
+		//操作商品
+		function selectGoods(){
+    		var s = $("input[type='checkbox']");
+    		var priceAll = 0;
+			    s.each(function(i) {
+			    		$(this).click(function(){
+			    			if(this.getAttribute('id')=='checkboxAll'){
+					    		if(this.checked==true){
+					    			var priceAll = 0;
+					    			s.prop("checked", true);
+					    			console.debug(s.length);
+					    			for(var i=0;i<s.length-1;i++){
+					    				// console.debug(s.eq(i).val())
+					    				// console.debug(s.eq(i).attr('num'))
+					    				priceAll += Number(s.eq(i).val()) * Number(s.eq(i).attr('num'));
+					    			}
+					    			$('#money h3 span').text(priceAll.toFixed(2));
+					    		}else{
+					    			s.prop("checked", false);
+					    			$('#money h3 span').text(0.00);
+					    		}
+					    	}else{
+
+					    		if(this.checked==true){
+				                    $('#money h3 span').text((Number($('#money h3 span').text()) + (Number(this.value)*this.getAttribute('num'))).toFixed(2));
+				                    if($("input:checkbox[name=goods]:checked").length == $('#goods ul li').length){
+						    			$("input:checkbox[name=goodss]").prop("checked", true);
+						    		}
+				                }else{
+				                	$('#money h3 span').text((Number($('#money h3 span').text()) - (Number(this.value)*this.getAttribute('num'))).toFixed(2));
+				                	if($("input:checkbox[name=goods]:checked").length != $('#goods ul li').length){
+					    			$("input:checkbox[name=goodss]").prop("checked", false);
+					    		}
+				                }
+					    	}
+
+
+			             });
+
+
+		        });
+		}
+
+
+		//删除购物车
+		function removeCart(){
+			$('#goods ul li h6').click(function(){
+				var cid = $(this).attr('name');
+				var cnum = Number($(this).prev().children('p').children('span').children('b').text());
+				var cproduct = $(this).attr('product');
+    			$.ajax({
+		            url:serverurl+'/api/app/del_cart',
+		            type:'post',
+		            data:{
+		                appkey:localStorage.appkey,
+		                token:localStorage.token,
+		                goods_id:cid,
+		                goods_number:cnum,
+		                product_id:cproduct
+		            },
+		            success:function(data){
+		            	if(data.info =='删除成功！'){
+		            		alertFade(data.info);
+		            		getDate();
+		            		$('#header span').text('编辑');
+		            	}else{
+		            		alertFade(data.info);
+		            	}
+		            }
+		        })
+    		})
+		}
+
+	})
+}
+</script>

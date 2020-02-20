@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>添加地址</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/addSite.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/isLogin.js"></script>
+<script type="text/javascript" src="/public/skin/js/distpicker.data.js"></script>
+<script type="text/javascript" src="/public/skin/js/distpicker.js"></script>
+<script type="text/javascript" src="/public/skin/js/api.js"></script>
+<body>
+<div id="worry"></div>
+	<div id='AddSite_container'>
+		<div class="cash_content">
+			<div class="top" id='WithdrawDeposit_top'>
+				<div>
+	    			<div class="head">
+						<a href='javascript:;' class="back" ></a>
+						<h2>添加地址</h2>
+					</div>
+	    		</div>
+			</div>
+			<div class="cash" id='WithdrawDeposit_form'>
+				<div>
+	    			<ul>
+						<li>
+							<span class="notes_left">收货人姓名</span>
+							<input type="text" id='userName'/>
+							<div class="claer"></div>
+						</li>
+						<li class="txz">
+							<span class="notes_left">手机号码</span>
+							<input type="text" id='userPhone'/>
+							<div class="claer"></div>
+						</li>
+						<li class="cityd">
+							<strong class="fr" data-toggle="distpicker">
+				                <select></select>
+				                <select></select>
+				                <select></select>
+				            </strong>
+							<div class="claer"></div>
+						</li>
+						<li class="code">
+							<span class="notes_left">详细地址</span>
+							<input type="text" id='userCitys'/>
+							<div class="claer"></div>
+						</li>
+					</ul>
+					<button type="button" class="tj_btn" id="addSiteBtn">保存</button>
+	    		</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+apiready = function() {
+
+	$(function(){
+		$('.back').on('touchstart',function(){
+		api.closeWin()
+	})
+		$('#addSiteBtn').click(function(){
+			if($('#userName').val()!='' && $('#userPhone').val()!='' && $('#userCitys').val()!=''){
+				var city1 = $("select:eq(0) option:checked").text();
+	            var city2 = $("select:eq(1) option:checked").text();
+	            var city3 = $("select:eq(2) option:checked").text();
+				var city = city1 +'-'+ city2 +'-'+ city3;
+				$.ajax({
+					url:serverurl+'/api/app/add_address',
+					type:'post',
+					data:{
+						appkey:localStorage.appkey,
+						token:localStorage.token,
+						mobile:$('#userPhone').val(),
+						username:$('#userName').val(),
+						address:$('#userCitys').val(),
+						city:city
+					},success:function(data){
+						if(data.success){
+							window.history.back();location.reload();
+						}else{
+							alertFade(data.info);
+						}
+					}
+				})
+			}else{
+				alertFade('请完善收货信息')
+			}
+		})
+	})
+}
+</script>

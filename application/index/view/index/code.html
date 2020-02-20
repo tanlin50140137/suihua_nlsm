@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>推广二维码</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/code.css"  />
+
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>推广二维码</h2>
+
+    </div>
+</div>
+<div id='Generalize_container'>
+
+    <div class="contet">
+        <div class="cont_top">
+            <div class="appLogo">
+
+            </div>
+            <div class="text">
+                <span>让天下</span>
+                <p>没有不懂互联网的老板</p>
+            </div>
+        </div>
+        <div class="cont_c">
+            <div class="user">
+                <div class="user_img"></div>
+                <p class="userId"></p>
+                <p class="not">颠覆思维，我为爱买买阳光代言</p>
+            </div>
+            <div class="qr_img" id="output">
+            </div>
+            <p class="ca">长按此图识别二维码</p>
+        </div>
+        <div class="footer">
+            <p>颠覆传统，只需一小时</p>
+            <!-- <span></span> -->
+        </div>
+        </div>
+</div>
+
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+<script type="text/javascript" src="./js/jquery.qrcode.min.js"></script>
+</body>
+
+<script>
+$(function(){
+    //获取会员信息
+    $.post(serverurl+'/api/app/detail',{'appkey':localStorage.appkey,'token':token},function(data){
+        $("#loading").hide();
+        if(data.list){
+            $('#userFace').css('background','url('+data.list.userface+') no-repeat center center / cover')
+            $('.userName').html(data.list.nickname)
+            $('.userMobile').html(data.list.level_name)
+
+            $('.user_img').css('background','url('+data.list.userface+') center center / cover')
+            $('.userId').text('我是：'+data.list.nickname)
+
+            jQuery(function(){
+                jQuery('#output').qrcode(serverurl+"/index/login/register.html?pid="+data.list.id);
+            })
+
+        }else{
+            api.openWin({
+                name: 'login',
+                url:'login.html'
+            });
+        }
+    },"json");
+})
+</script>
+</html>

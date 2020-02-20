@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>投资项目</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/partake.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/isLogin.js"></script>
+
+<body>
+<div id='loading'><img src='/public/skin/image/loading.png' alt=''></div>
+<div id="worry"></div>
+ <div id='Partake'>
+	<div class='invest_content'>
+		<div id='header'>
+			<div class="header">
+				<div>
+					<a href="javascript:;"></a>
+					<h2>我要参与</h2>
+				</div>
+			</div>
+		</div>
+		<div id='cont'>
+			<div class="cont">
+				<div class="cont_info">
+					<h4>本店投资公告</h4>
+					<p>参与项目:<span></span></p>
+					<p>总股数：<span></span></p>
+					<p>目前认购股数：<span></span></p>
+					<p>每股单价：<span></span></p>
+				</div>
+				<div class="cont_body">
+					<h4>我要持股</h4>
+					<div class="nr">
+						<input type="number" step="0.01" placeholder="请输入持股数量" /><span>股(可购买50股)</span>
+						<p>合计：<i>￥0.00</i></p>
+					</div>
+					<div class="explain">
+						<input type="checkbox" id='isexplain' style="float: left;margin-top: 5px;margin-left: 40%"><h5 style="float: left;margin-left: 10px;"></h5><br>
+						<div class="content"></div>
+					</div>
+				<div class="btn"><a href="javascript:;">支付投资</a></div>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="payTypeBox" style="display: none;">
+	<div id='header2'>
+		<div>
+			<a href='javascript:;'></a>
+			<h2>支付方式</h2>
+		</div>
+	</div>
+	<div class="payment-container payment">
+				<a href="javascript:;" name='1' class='payType'><img src="/public/skin/image/payment1.png"><i>微信支付</i></a>
+				<a href="javascript:;" name='2' class='payType'><img src="/public/skin/image/payment2.png"><i>支付宝支付</i></a>
+		</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+apiready = function() {
+	var MaxNum = 0;
+	var total = 0.00;
+	var payType = '';
+	var pauNum = 0;
+	function GetQueryString(val) {
+	　　var s = '/'+val+'\\=([^&]+)/ig';
+	    var re = new RegExp(eval(s));
+	    var result = re.exec(window.location.href);
+	    if(result && result.length > 0)
+	        return result[1];
+	}
+
+	$(function(){
+		$('#header a').on('touchstart',function(){
+			var url = document.referrer;
+			if(url){
+				window.history.back();
+			}else{
+				window.history.go(-4);
+			}
+		})
+		$('#header2 a').on('touchstart',function(){
+			$('#payTypeBox').fadeOut(500)
+		})
+
+		//选择支付方式后调起支付
+		$('.payType').click(function(){
+
+			payType = $(this).children('i').text();
+			pauNum = $(this).attr('name')
+			$('#payTypeBox').fadeOut(200)
+			$.ajax({
+				url:serverurl+'/api/app/add_invest',
+				type:'post',
+				data:{
+					token:localStorage.token,
+					appkey:localStorage.appkey,
+					id:GetQueryString('investId'),
+					number:$('.nr input').val(),
+					paytype:payType
+				},
+				success:function(data){
+					if(data.success){
+						window.location.href = "/index/payment/payorder?act=invest&id="+data.order_id;
+					}else{
+						alertFade(data.info)
+					}
+				}
+			})
+		})
+
+//获取投资数据
+		$.ajax({
+					url:serverurl+'/api/app/invest_detail',
+					type:'post',
+					data:{
+							token:localStorage.token,
+							appkey:localStorage.appkey,
+							id:GetQueryString('investId')
+					},
+					success:function(data){
+						console.debug(data.list);
+						$('.cont_img').css('background','url('+data.list.logo+') no-repeat center center / cover');
+						$('.cont_info p').eq(0).children('span').text(data.list.name);
+						$('.cont_info p').eq(1).children('span').text(data.list.count+"股");
+						$('.cont_info p').eq(2).children('span').text(data.list.number+"股");
+						$('.cont_info p').eq(3).children('span').text(data.list.price)
+						MaxNum = data.list.count - data.list.number;
+						$('.nr span').text("股(最多可购买"+MaxNum+"股)");
+						$('.nr input').on('input',function(){
+							if($(this).val() > MaxNum){
+								$(this).val(MaxNum)
+							}
+							total = data.list.price * Number($('.nr input').val());
+							$('.nr p i').text(total);
+						})
+
+
+						$('#loading').fadeOut(100);
+
+						$('.btn').on('touchstart',function(){
+							if($('#isexplain').is(':checked')){
+								$('#payTypeBox').fadeIn(500);
+							}else{
+								alertFade('请确认投资协议后购买')
+							}
+							
+						})
+					}
+		})
+
+		//获取协议
+		$.ajax({
+					url:serverurl+'/api/app/article',
+					type:'post',
+					data:{
+							token:localStorage.token,
+							id:2
+					},
+					success:function(data){
+						console.debug(data);
+						$('.explain h5').text(data.list.title)
+						$('.explain .content').html(data.list.content)
+					}
+			})
+	})
+}
+</script>

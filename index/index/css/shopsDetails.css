@@ -1,0 +1,488 @@
+#ShopsDetails_container{
+    position: fixed;
+    z-index: 99999;
+    display: block;
+    width: 100%;
+    height:calc(100% );
+    overflow: hidden;
+    background: #f6f6f6;
+    top: 70px;
+}
+
+
+#ShopsDetails_container #header{
+    width: 100%;
+    height: 50px;
+    background: #2b91d4;
+    text-align: center;
+    color: #fff;
+    position: relative;
+
+}
+#ShopsDetails_container #header a{
+    display: block;
+    width: 12px;
+    height: 22px;
+    background: url(../image/icon/back.png) no-repeat center center / contain;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 25px;
+}
+
+
+
+#ShopsDetails_container #header h2{
+    font-weight: normal;
+    line-height: 50px;
+
+}
+ .details{
+    width: 100%;
+    height: 145px;
+}
+
+
+ .details > div{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+ .details b{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+
+
+}
+ .details em{
+    width: 77px;
+    height: 77px;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    z-index: 2;
+}
+ .details span{
+    position: absolute;
+    color: #fff;
+    left: 100px;
+    top: 35px;
+    z-index: 2;
+    text-shadow:1px 1px 3px #000;
+}
+
+ .details i{
+    color:#ededed;
+    position: absolute;
+    right: 10px;
+    bottom: 35px;
+    z-index: 2;
+    font-style: normal;
+    font-size: 3.5vw;
+    font-weight: bold;
+    text-shadow:1px 1px 3px #000;
+
+}
+ .details button{
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
+    border: none;
+    outline: none;
+    width: 83px;
+    height: 26px;
+    background: #2b91d4;
+    color: #fff;
+    z-index: 2;
+    border-radius: 5px;
+}
+
+#ShopsDetails_container #screen {
+    overflow: hidden;
+    background: #fff;
+    margin-bottom: 10px;
+}
+#ShopsDetails_container #screen ul li{
+    display: block;
+    width: 30%;
+    float: left;
+    text-align: center;
+    height:60px;
+    color: #666;
+    font-size: 3.6vw;
+    border-bottom: 2px solid #fff;
+    -webkit-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+    line-height: 90px;
+    filter: grayscale(100%);
+}
+#ShopsDetails_container #screen ul li:nth-child(1){
+    margin-right: 5%;
+    background: url('../image/icon/goods_r.png') no-repeat center 10px / 17%;
+}
+#ShopsDetails_container #screen ul li:nth-child(2){
+  background: url('../image/icon/sale_r.png') no-repeat center 10px / 17%;
+    margin-right: 5%;
+}
+#ShopsDetails_container #screen ul li:nth-child(3){
+    /*margin-right: 5%;*/
+      background: url('../image/icon/new_r.png') no-repeat center 10px / 17%;
+}
+
+
+#ShopsDetails_container #content{
+    padding-top: 0px; 
+    width: 100%;
+    height: calc(100% - 300px);
+    background: #f6f6f6;
+    overflow-y: scroll;
+
+}
+#ShopsDetails_container #content .Shop_goods_list .advertising_img{
+    width: 100%;
+    height: 153px;
+    box-sizing: border-box;
+    padding: 10px;
+    background: #fff;
+
+}
+
+
+#ShopsDetails_container #content .Shop_goods_list ul{
+    overflow: hidden;
+    width:92%;
+    padding: 4% 4%;
+}
+
+#ShopsDetails_container #content .Shop_goods_list ul li{
+    display: block;
+    width: 48%;
+    float: left;
+    height: 230px;
+    background: #fff;
+    margin-bottom: 4%;
+    position: relative;
+}
+#ShopsDetails_container #content .Shop_goods_list ul li:nth-of-type(even){
+    margin-left: 4%;
+}
+
+#ShopsDetails_container #content .Shop_goods_list ul li em{
+    display: block;
+    width: 100%;
+    height: 70%;
+    margin-bottom: 10px;
+}
+#ShopsDetails_container #content .Shop_goods_list ul li h4{
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* autoprefixer: off */
+    -webkit-box-orient: vertical;
+    font-weight: normal;
+    font-size: 12px;
+    padding: 0px 5px;
+    margin-bottom: 5px;
+}
+
+#ShopsDetails_container #content .Shop_goods_list ul li b{
+    font-weight: normal;
+    font-size: 13px;
+    color: #fe0000;
+}
+#ShopsDetails_container #content .Shop_goods_list ul li i{
+    color: #999;
+    font-style: normal;
+    font-size: 12px;
+    text-decoration:line-through;
+}
+#ShopsDetails_container #content .Shop_goods_list ul li span{
+    float: right;
+    color: #999;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-top: 5px;
+    transform: scale(.8) translateX(20%);
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+}
+
+.advertising_img .swiper-container{
+    width: 100%;
+    height: 100%;
+}
+.advertising_img .swiper-slide{
+    background: url('../image/icon/coupon.png') no-repeat top center / contain;
+    box-sizing: border-box;
+    padding: 5px 15px;
+}
+.advertising_img .swiper-slide h3{
+    color: #fff;
+    font-weight: normal;
+}
+.advertising_img .swiper-slide p{
+    font-size: 13px;
+    color: #f7f7f7;
+}
+.advertising_img .swiper-slide b{
+    font-weight: normal;
+    color: #666;
+    font-size: 13px;
+}
+
+
+#shopNav{
+  width: 100%;
+  height: 40px;
+  position: fixed;
+  z-index: 999;
+  bottom: 0px;
+  left:0px;
+  background: #fff;
+}
+#shopNav li{
+  float: left;
+  line-height: 35px;
+  display: block;
+  width: 33.33%;
+  text-align: center;
+  font-size: 3.8vw;
+  color: #666;
+  border-top: 1px solid #ededed;
+  border-right: 1px solid #ededed;
+  box-sizing: border-box;
+}
+#shopNav li:nth-child(3) a{
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: #666;
+}
+
+#shop_personal {
+  position: fixed;
+  z-index: 9999;
+  width: 100%;
+  height: calc(100%);
+  top: 220px;
+  left: 0px;
+  background: #fff;
+  display: none;
+}
+
+#shop_personal #header2{
+    width: 100%;
+    height: 50px;
+    background: #2b91d4;
+    text-align: center;
+    color: #fff;
+    position: relative;
+
+}
+#shop_personal #header2 a{
+    display: block;19
+    width: 12px;
+    height: 22px;
+    background: url(../image/icon/back.png) no-repeat center center / contain;
+    position: absolute;
+    left: 25px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 25px;
+}
+
+
+
+#shop_personal #header2 h2{
+    font-weight: normal;
+    line-height: 50px;
+    font-size: 20px;
+
+}
+#shopContent{
+  width: 100%;
+  position: absolute;
+  height: calc(100% - 170px);
+  background: #f6f6f6;
+  overflow-y: scroll;
+
+}
+#shopContent img{
+  max-width: 100% !important;
+}
+#shopContent ul{
+  overflow: hidden;
+  /*margin-top: 10px;*/
+}
+#shopContent ul li{
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  line-height: 50px;
+  background: #fff;
+  border-bottom: 1px solid #ededed;
+  box-sizing: border-box;
+  padding: 0px 5%;
+}
+#shopContent ul li span{
+  display: block;
+  width: 20%;
+  height: 100%;
+  color: #999;
+  float: left;
+  font-size: 3.8vw;
+}
+#shopContent ul li b{
+  display: block;
+  width: 80%;
+  height: 100%;
+  color: #666;
+  float: left;
+  font-size:4.3vw;
+  font-weight: normal;
+}
+#shopContent ul li:nth-child(3){
+  margin-bottom: 10px;
+  /*height: auto !important;*/
+  line-height: 21px !important;
+  font-size: 3.3vw !important;
+}
+#shopContent ul li:nth-child(3) b{
+
+  /*height: auto !important;*/
+  line-height: 21px !important;
+  font-size: 3.3vw !important;
+}
+#shopContent ul li:nth-child(6){
+  margin-bottom: 10px;
+  /*height: auto !important;*/
+  line-height: 21px !important;
+  font-size: 3.3vw !important;
+}
+#shopContent ul li:nth-child(6) b{
+
+  /*height: auto !important;*/
+  line-height: 21px !important;
+  font-size: 3.3vw !important;
+}
+#shopContent ul li:nth-child(1){
+  border-top: 1px solid #ededed;
+}
+#shopContent ul li:nth-child(4){
+  border-top: 1px solid #ededed;
+}
+#shopContent ul li:nth-child(5) a{
+  display: block;
+  width: 100%;
+  height: 50px;
+}
+
+
+#couponBox{
+  position: fixed;
+  z-index: 9999;
+  left:0px;
+  top: 0px;
+  width: 100%;
+  height:100%;
+  display: none;
+}
+#couponBox #coupon_shadow{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left:0px;
+  top: 0px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+#couponBox ul{
+  background: #fff;
+  overflow:hidden;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  z-index: 2;
+  max-height: 400px;
+  overflow-y: scroll;
+  padding-top: 40px;
+}
+#couponBox ul h3{
+  line-height: 40px;
+  font-weight: normal;
+  font-size: 4.3vw;
+  box-sizing: border-box;
+  padding-left: 3%;
+  border-bottom: 1px solid #ededed;
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 3;
+  background: #fff;
+}
+#couponBox ul #coupon_close{
+  display: block;
+  position: absolute;
+  right:10px;
+  top:8px;
+  width: 5vw;
+  height:5vw;
+  background: url('../image/icon/close.png') no-repeat center center / 70% #fff;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  z-index: 3;
+}
+
+#couponBox ul li{
+  width: block;
+  width: 100%;
+  height: 100px;
+  background: #fff;
+  border-bottom: 1px dashed #ededed;
+  box-sizing: border-box;
+  padding: 3%;
+  position: relative;
+}
+
+#couponBox ul li span{
+  display: block;
+  color: #ED5564;
+  font-weight: bold;
+  font-size: 4.2vw;
+  margin-bottom:1%;
+
+}
+#couponBox ul li p:nth-child(2){
+  color: #333;
+  font-size: 3.4vw;
+}
+#couponBox ul li p:nth-child(3){
+  color: #666;
+  font-size: 3vw;
+}
+#couponBox ul li button{
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  background: #fff;
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据库管理</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="nav-tabs-custom goods-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li><a href="__MODULE__/Admin/index">管理员列表</a></li>
+        <li class="active"><a href="__MODULE__/Database/index">数据库管理</a></li>
+    </ul>
+</div>
+<div class="box box-solid header-fixed">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-info btn-flat exports" onclick="exports()"><i class="fa fa-save"></i> 立即备份</a>
+        <a href="javascript:;" class="btn btn-sm btn-primary btn-flat" onclick="reopt('', 'optimize')"><i class="fa fa-table"></i> 优化表</a>
+        <a href="javascript:;" class="btn btn-sm btn-warning btn-flat" onclick="reopt('', 'repair')"><i class="fa fa-wrench"></i> 修复表</a>
+        <a href="__MODULE__/Database/index?type=import" class="btn btn-sm btn-danger btn-flat"><i class="fa fa-database"></i> 数据还原</a>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped">
+            <tr>
+                <th><input type="checkbox" class="checkbox" value="del" /></th>
+                <th>表名</th>
+                <th>表引擎</th>
+                <th>数据量</th>
+                <th>数据大小</th>
+                <th>创建时间</th>
+                <th width="120">操作</th>
+            </tr>
+            {if condition="!$list"}<tr class="tr"><td class="tc" colspan="8">暂无相关数据！</td></tr>{/if}
+            <!--顶级数据-->
+            {volist name="list" id="vo" key="k"}
+            <tr class="tr {eq name="mod" value="1"}odd{/eq}">
+                <td><input type="checkbox" class="idlist" value="{$vo.name}" /></td>
+                <td>{$vo.name}</td>
+                <td>{$vo.engine}</td>
+                <td>{$vo.rows}</td>
+                <td>{$vo.data_length}</td>
+                <td>{$vo.create_time}</td>
+                <td>
+                    <a href="javascript:;" class="green" onclick="reopt('{$vo.name}', 'optimize')">优化表</a>
+                    |
+                    <a href="javascript:;" class="green" onclick="reopt('{$vo.name}', 'repair')">修复表</a>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+
+//优化表，修复表
+function reopt(names, types) {
+    if (names != '') {
+        tables = names;
+    }else {
+        var idlist = Array();
+        $('body .idlist:checked').each(function() {
+            idlist.push($(this).val());
+        });
+        idlist = idlist.join(',');
+        if (!idlist) {
+            bpop.tip('请选中要操作的表！', 2, 1);return false;
+        }
+        idlist = idlist.split(',');
+        var tables = new Array();
+        for (x in idlist) {
+            tables.push(idlist[x]);
+        }
+    }
+    bpop.addLoading(true);
+    $.post('__MODULE__/Database/'+types, {'tables':tables}, function(data) {
+        if (data.success == true) {
+            bpop.tip(data.info, 1, 1);
+        }else{
+            bpop.tip(data.info, 2, 1);
+        }
+    },'json');
+}
+//数据库备份
+function exports(_this) {
+    var idlist = Array();
+        $('body .idlist:checked').each(function() {
+            idlist.push($(this).val());
+        });
+        idlist = idlist.join(',');
+    if (!idlist) {
+        bpop.tip('请选中要备份的表！', 2, 1);return false;
+    }
+    idlist = idlist.split(',');
+    var tables = new Array();
+    for (x in idlist) {
+        tables.push(idlist[x]);
+    }
+    bpop.addLoading(true);
+    $.post('__MODULE__/Database/export', {'tables':tables}, function(data) {
+        if (data.success == true) {
+            bpop.tip('正在备份！', 2, 1);
+            exportsdo(data);
+        }else {
+            bpop.tip(data.info, 2, 1);
+        }
+    }, 'JSON');
+}
+//执行备份请求
+function exportsdo(data) {
+    bpop.addLoading(true);
+    $.post('__MODULE__/Database/export',{'id':data.tab['id'],'start':data.tab['start']}, function(data) {
+        if (data.success == true) {
+            if (data.tab) {
+                bpop.clean();
+                exportsdo(data);
+            }else {
+                bpop.tip('备份完成！', 1, 1);
+            }
+        }else {
+            bpop.tip(data.info, 2, 1);
+        }
+    },'json');
+}
+</script>
+
+</body>
+</html>

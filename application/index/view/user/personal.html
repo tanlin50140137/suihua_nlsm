@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>个人资料</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/personal.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/isLogin.js"></script>
+
+<body>
+<div id="worry"></div>
+<div id='editSite_container'>
+	<div class="cash_content">
+		<div class="top" id='WithdrawDeposit_top'>
+			<div>
+	    		<div class="head">
+					<a href='javascript:;' class="back" ></a>
+					<h2>个人资料</h2>
+				</div>
+	    	</div>
+		</div>
+		<div class="cash" id='WithdrawDeposit_form'>
+				<div class="box_h">
+					<div class="box_h_small">
+						<span class="notes">我的头像</span>
+						<img src="/public/image/userface.jpg" alt="" id="user_face">
+						<div class="form_t">
+							<input type="file" accept="image/*" name="avater" id="userface-file" />
+						</div>
+
+						<div class="claer"></div>
+					</div>
+					<div class="notes_left" id="nickname">
+						<span class="notes">昵称</span>
+						<input type="text"  value="" />
+						<div class="claer"></div>
+					</div>
+					<div class="notes_left" id="usermail">
+						<span class="notes">邮箱</span>
+						<input type="text" value=""/>
+						<div class="claer"></div>
+					</div>
+					<div class="notes_left">
+						<span class="notes">性别</span>
+						<input type="radio" class="gender" name="payMethod" value="2" /><span class="genderText">女</span><input type="radio" class="gender" name="payMethod" value="1"/><span class="genderText">男</span>
+						<div class="claer"></div>
+					</div>
+					<div class="notes_left">
+						<a href="javascript:;" class="personal_modify"><span class="notes">修改密码</span></a>
+					</div>
+                    <div class="notes_left">
+                        <a href="javascript:;" class="paymentCode"><span class="notes">支付密码</span></a>
+                    </div>
+                    <div class="notes_left">
+                        <a href="javascript:;" class="alipays"><span class="notes">绑定支付宝</span></a>
+                    </div>
+
+				</div>
+		</div>
+
+		<button type="button" class="sc_btn" id="logoutBtn">退出登录</button>
+		<button type="button" class="tj_btn" id="personalBtn">保存</button>
+	</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+apiready = function() {
+	$(function(){
+        $('.back').on('touchstart',function(){
+            api.closeWin()
+        })
+        $('.personal_modify').click(function(){
+            api.openWin({
+                name: 'personal_modify',
+                url:'{:url("User/personal_modify")}'
+            });
+        })
+        $('.paymentCode').click(function(){
+            api.openWin({
+                name: 'paymentCode',
+                url:'{:url("User/paymentcode")}'
+            });
+        })
+        $('.alipays').click(function(){
+            api.openWin({
+                name: 'alipays',
+                url:'{:url("User/alipays")}'
+            });
+        })
+
+		if(localStorage.appkey){
+            $.ajax({
+            url:serverurl+'/api/app/detail',
+            type:'post',
+            data:{
+                appkey:localStorage.appkey,
+                token:localStorage.token
+            },
+            success:function(data){
+                if(data.info == "appkey验证失败！"){
+                    alertFade("登录异常，请重新登录！",function(){
+                        localStorage.appkey = '';
+                        api.openWin({
+                            name: 'login',  
+                            url:'{:url("Login/index")}'
+                        });
+                    });
+                }else{
+
+                    $('#user_face').attr('src',data.list.userface);
+                    $('#nickname input').val(data.list.nickname)
+                    $('#usermail input').val(data.list.email)
+                    if(data.list.sex==1){
+                    	$('.gender').eq(1).attr('checked','checked');
+                    }else if(data.list.sex==2){
+                    	$('.gender').eq(0).attr('checked','checked');
+                    }else{
+
+                    }
+                }
+            }
+        })
+        }else{
+            api.openWin({
+                name: 'login',
+                url:'{:url("Login/index")}'
+            });
+        }
+
+        //选择头像
+        $('#userface-file').change(function() {
+                event.preventDefault()
+                var files = event.target.files;
+
+                var myfiles = files
+                var i
+                for(i = 0; i < files.length; i++) {
+                    files[i].thumb = URL.createObjectURL(files[i])
+                }
+                files = Array.prototype.slice.call(files, 0)
+                files = files.filter(function(file) {
+                    // $("#file").val(file);
+                    // document.getElementById('file').value = file
+                    return /image/i.test(file.type)
+                })
+                $("#user_face").attr("src", (files[0].thumb));
+
+            })
+
+        //点击保存资料
+        $('#personalBtn').click(function(){
+            
+        	var formData = new FormData();
+
+                    formData.append("userface", document.getElementById('userface-file').files[0]);
+                    formData.append("token",localStorage.token);
+                    formData.append("appkey",localStorage.appkey);
+                    formData.append("nickname", $('#nickname input').val());
+                    formData.append("email", $('#usermail input').val());
+                    formData.append("sex",$('input[name="payMethod"]:checked').val());
+
+                    $.ajax({
+                        url      :serverurl+'/api/app/edit',
+                        type     :'post',
+                        dataType: 'JSON',
+                        contentType: false,
+                        processData: false,
+                        data     :formData,
+                        success  :function(data){
+                            if(data.success){
+                            	alertFade('修改成功',function(){
+                                    api.openWin({
+                                        name: 'user',
+                                        url:'{:url("User/index")}',
+                                        reload:true
+                                    });
+                            	})
+                            }else{
+                            	alertFade(data.info);
+                            }
+                        }
+                    });
+        })
+
+        //退出登录
+       	$('#logoutBtn').click(function(){
+       		if(confirm("确定退出登录吗？")){
+				localStorage.appkey = '';
+				api.openWin({
+                    name: 'login',
+                    url:'{:url("Login/logout")}'
+                });
+			}
+       	})
+
+	})
+}
+</script>

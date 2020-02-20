@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>广告图片</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-info btn-flat" onclick="dpop.add('80%', '80%','添加广告图片', '__MODULE__/Picture/add', true, Reload);"><i class="fa fa-plus"></i> 添加广告图片</a>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped" role="grid">
+            <tr>
+                <th width="50">ID</th>
+                <th>广告名称</th>
+                <th>广告图片</th>
+                <th width="130">操作</th>
+            </tr>
+            {volist name="list" id="vo"}
+            <tr class="tr tr-{$vo.id}" data-id="{$vo.id}">
+                <td>{$vo.id}</td>
+                <td><a href="javascript:;" class="blue" onclick="dpop.add('80%', '80%', '修改广告图片', '__MODULE__/Picture/edit?id={$vo.id}', true, Reload);">{$vo.name}</a></td>
+                <td>
+                {volist name="$vo.image" id="v"}
+                    <img src="{$v.logo}" alt="{$v.name}" width="70" style="margin-right: 5px;">
+                {/volist}
+                </td>
+                <td>
+                    <div class="tpl-table-black-operation">
+                        <a href="javascript:;" onclick="dpop.add('80%', '80%', '修改广告图片', '__MODULE__/Picture/edit?id={$vo.id}', true, Reload);">
+                            <i class="fa fa-pencil"></i> 编辑
+                        </a>
+                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="dataDel('__MODULE__/Picture/delete','{$vo.id}',Reload,true)">
+                            <i class="fa fa-trash"></i> 删除
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+
+    </div>
+</div>
+
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+</body>
+</html>

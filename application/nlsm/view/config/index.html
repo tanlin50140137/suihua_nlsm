@@ -1,0 +1,143 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>基本设置</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="nav-tabs-custom goods-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="__MODULE__/Config/index">平台设置</a></li>
+        <li><a href="__MODULE__/Config/notice">通知设置</a></li>
+        <li><a href="__MODULE__/Config/user">用户设置</a></li>
+    </ul>
+</div>
+<form action=" " method="post" id="form">
+<div class="box box-solid">
+
+	<div class="box box-solid getform">
+	    <div class="box-body">
+			<table class="tab-member">
+				<tr>
+					<th colspan="4">系统设置</th>
+				</tr>
+				<tr>
+					<td class="td-r">平台名称：</td>
+					<td>
+						<input type="text" autocomplete="off"  class="form-control input-sm pinput" name="name" value="{$list.name}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">logo图片：</td>
+					<td>
+						<div class="image-item">
+	                        <img src="{$list.logo}" height="200px" class="logo" style="background:#64b8de" />
+	                        <input id="file" type="file" class="hide form-control pinput file" name="logo" />
+	                        <input type="hidden" class="form-control input-sm pinput" name="logo" value="{$list.logo}" />
+	                    </div>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">QQ客服：</td>
+					<td>
+						<input type="text" autocomplete="off"  class="form-control input-sm pinput" name="qq" value="{$list.qq}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">服务热线：</td>
+					<td>
+						<input type="text" autocomplete="off"  class="form-control input-sm pinput" name="mobile" value="{$list.mobile}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">公司名称：</td>
+					<td>
+						<input type="text" autocomplete="off"  class="form-control input-sm pinput" name="address" value="{$list.address}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">公司邮箱：</td>
+					<td>
+						<input type="email" class="form-control input-sm pinput" name="email" value="{$list.email}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">平台描述：</td>
+					<td>
+						<textarea type="textarea" rows="8" class="form-control pinput" name="remark">{$list.remark}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">平台版本：</td>
+					<td>
+						<input type="text" autocomplete="off"  class="form-control input-sm pinput" name="version" value="{$list.version}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">官方微信：</td>
+					<td>
+						<input type="text" autocomplete="off"  class="form-control input-sm pinput" name="weixin" value="{$list.weixin}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">官方微博：</td>
+					<td>
+						<input type="text" autocomplete="off"  class="form-control input-sm pinput" name="weibo" value="{$list.weibo}" />
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">官方网站：</td>
+					<td>
+						<input type="text" autocomplete="off"  class="form-control input-sm pinput" name="url" value="{$list.url}" />
+					</td>
+				</tr>
+			</table>
+	    </div>
+	</div>
+	<div class="footer">
+		<button class="btn btn-primary btn-sm btn-flat" type="submit">保存修改</button>
+	</div>
+</div>
+</form>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+	
+	//保存修改
+	$(function(){
+		$("#form").submit(function(){  
+			var formData = new FormData($("#form")[0]); 
+			bpop.addLoading(true);
+			$.ajax({ 
+				url: '__MODULE__/Config/index', 
+				type: 'POST',
+				data: formData, 
+				async: false, 
+				cache: false, 
+				contentType: false, 
+				processData: false, 
+				success: function (data) { 
+	                if(data.success == true){
+	                    bpop.tip(data.info, 1, 1);
+	                }else{
+	                    bpop.tip(data.info, 2, 1);
+	                }
+				}, 
+				dataType:'json' 
+			});
+			return false; 
+		}); 
+	})
+</script>
+</body>
+</html>

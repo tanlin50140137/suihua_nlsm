@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, 
+    minimal-ui"/>
+	<title>收款二维码</title>
+</head>
+<link rel="stylesheet" href="/index/index/css/code.css">
+<link rel="stylesheet" href="/index/index/css/body.css">
+<script type="text/javascript" src="/index/index/js/jquery.min.js"></script>
+
+<body>
+
+<div id='Generalize_container'>
+	<div class="top" id='Generalize_content_top'>
+		<div>
+			<div class="head">
+				<a href='javascript:history.back(-1)' class="back" ></a>
+				<h2>收款二维码</h2>
+			</div>
+		</div>
+	</div>
+	<div class="contet">
+		<div class="cont_top">
+			<div class="appLogo">
+				
+			</div>
+			<div class="text">
+				<span>心自在，南领与你同在</span>
+				<p>您是那朵怒放的生命之花</p>
+			</div>
+		</div>
+		<div class="cont_c">
+			<div class="user">
+				<div class="user_img" style='background:url({$list.logo}) center center / cover'></div>
+				<p class="userId">{$list.name}</p>
+			</div>
+			<div class="qr_img">
+				<img src="{$code}" alt="二维码" width="100%" />
+			</div>
+			<p class="ca">扫一扫识别二维码，向商家转账</p>
+		</div>
+		<div class="footer">
+			<p>博士洁让我们一起来见证新的里程</p>
+		</div>
+		</div>	
+</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+	$(function(){
+	
+	})
+</script>

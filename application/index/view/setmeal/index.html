@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+<title>奖品领取</title>
+<link href="/index/index/css/WeUI/weui.min.css" rel="stylesheet" />
+<style>
+	body {
+		background: #E7244B;
+	}
+
+	.top {
+		width: 100%;
+	}
+	.weui-grids{
+		padding-left: 2px;
+	}
+
+	.weui-grid {
+		padding: 0;
+		width: 32%;
+	    background: #ff3333;
+	    text-align: center;
+	    margin: 2px;
+	}
+
+		.weui-grid:before {
+			border: 0;
+		}
+
+		.weui-grid:after {
+			border: 0;
+		}
+
+	.weui-grids:before {
+		border: 0;
+	}
+
+	a {
+		text-align: center;
+	}
+
+	.img {
+		width: 90%;
+		margin-top: 1vw;
+		height: 33.9vw;
+	}
+
+	.info {
+		display: none;
+		margin-top: 1vw;
+		width: 0;
+		height: 33.9vw;
+	}
+
+	.shelter {
+		opacity: 0.5;
+		filter: alpha(opacity=50);
+	}
+
+	.bottom {
+		width: 100%;
+	}
+	.weui-grids div {
+	    color: #ffee00;
+	    font-size: 13px;
+	    line-height: 25px;
+	    margin-top: -5px;
+	}
+	.tip{ text-align:center;display: none;}
+	.tip{ position: fixed; left:0; top:0; bottom:0; background: rgba(0,0,0,0.8); filter:alpha(opacity=90);  height: 100%; width: 100%; z-index: 100; color:#000;}
+	.pop{ width:600px; height:320px; background:#E7244B; /*border:8px solid #000; */border-radius:20px; margin:0 auto; margin-top:40px; position:relative;/*filter:Alpha(opacity=10);*/}
+
+	.pop .huode{
+		height: 60px;
+		background: #f8e9ff;
+		border-radius:20px;
+		text-align: center;
+		font:24px/60px "微软雅黑";
+		color: #9966cc;
+		
+	}
+
+	.pop a.clo{ position:absolute; top:.160px; right:.160px; width:52px; height:52px; background:url(/index/index/image/c.png) no-repeat; background-size:100%;}
+
+	.pop ul{ width:100%; margin:0 auto; background: #faf1fe;}
+	.pop ul li{ width:100%; font-size:14px; height:42px; line-height:42px; color:#9f6a21; } 
+	.pop ul li.sp{  border-radius:80px; font-size: 18px;}
+	.pop ul li span{ display:block; float:left; height:40px; font-size:18px; text-align:center;overflow:hidden; word-break:keep-all; white-space:nowrap; text-overflow:ellipsis; color: #420090;     }
+	.pop ul li span.idx{ width:50%;}
+	.pop ul li span.name{ width:50%;}
+
+
+	/*pop2*/
+	.pop2{ width: 80%;height: 250px;background:#E7244B; /*border:8px solid #000; */border-radius:20px; margin:0 auto; margin-top:20%; position:relative;}
+
+	.pop2 .huode{
+		height: 90px;
+		background: #e7244b;
+		border-radius:20px;
+		text-align: center;
+		font:24px/60px "微软雅黑";
+		color: #fff;
+	}
+
+	.pop2 a.clo2{ position:absolute;   
+		top:-10px;  
+		right: -5px;
+    	width: 25px;
+    	height: 52px; background:url(/index/index/image/c.png) no-repeat; background-size:100%;
+    }
+	.pop2 .kuang{
+		height: 44px;
+		font:18px/44px "微软雅黑";
+		color: #fff;
+		padding-bottom: 10px;
+		text-align: left;
+		width: 100%;
+	}
+	.pop2 .text1{
+		width: 60%;height: 40px;
+		
+		margin-right: 10px;
+		text-indent: 10px;
+		/*float: right;
+		display: block;*/
+	}
+	.pop2 .kuang2{
+		height: 92px;
+		font:18px/18px "微软雅黑";
+		color: #9966cc;
+		padding-bottom: 10px;
+		text-align: left;
+	}
+	.pop2 .kuang2 .textarea{
+		width: 468px;height: 86px;
+		
+		
+		text-indent: 1em;
+		/*float: right;
+		display: block;*/
+	}
+
+	.pop2 .queren{
+		height: 40px;
+		text-align: center;
+	}
+	.pop2 .queren2{
+		width: 90%;height: 40px;
+		background: #ff302a;
+		display: block;
+		color: #ffee00;
+		font: 18px/40px  "微软雅黑";
+		margin: 0 auto;
+		text-indent: 10px;
+		float: none;
+		cursor: pointer;
+		border: 0;
+	}
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+<img class="top" src="/index/index/ldimg/top.jpg" alt="">
+<div style="width:100%; height:10vw; line-height:6vw; text-align:center;"><span style="color:#fff; font-size:4vw;">请领取你的专属奖品</span></div>
+<div class="weui-grids" id="draw">
+	{volist name="list" id="vo"}
+	
+	<a href="javascript:;" data-id="{$vo.id}" class="weui-grid">
+		<img class="img" src="{$vo.logo}" alt="">
+		<div>点我领取</div>
+	</a>
+	{/volist} 
+	
+	
+</div>
+
+<div class="tip"  >
+			
+	<div class="pop2"style = "margin-top: 30%;"> <a href="javascript:;" class="clo2"></a>
+		<div class="huode">请填写资料</div>
+		<div class="kuang">&nbsp;&nbsp;
+			姓名：
+			<input type="text" name="name" class="text1 username" id="user"  value="" />
+		</div>
+		<div class="kuang">&nbsp;&nbsp;
+			手机：
+			<input type="number" name="mobile" class="text1 mobile" id="pswd" value="" />
+		</div>
+		<div class="queren"><input type="button" name="" class="queren2" value="领取" /></div>
+
+	</div>
+</div>
+
+<script type="text/javascript" src="/public/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/index/index/js/layer/layer.min.js"></script>
+<script>
+	var goodsid = 0;
+	$(function(){
+		if(localStorage.Setmealuser){
+			$("#user").val(localStorage.Setmealuser);
+			$("#pswd").val(localStorage.Setmealpswd);
+		}
+
+		$(".weui-grids a").click(function(){
+			goodsid = $(this).attr('data-id');
+			$(".tip").show();
+		})
+		$(".clo2").click(function(){
+			$(".tip").hide();
+		})
+
+		$(".queren2").click(function(){
+			var param = {};
+				param.id = '{$id}';
+				param.goods = goodsid;
+				param.mobile = $(".mobile").val();
+				param.username = $(".username").val();
+
+			localStorage.Setmealuser = $("#user").val();
+			localStorage.Setmealpswd = $("#pswd").val();
+
+			//Ajax post提交表单验证
+	        $.post("{:url('Setmeal/receive')}",param,function(data){
+	        	layer.msg(data.info);
+	            if(data.success == true){
+	            	
+	            	setTimeout(function(){
+	            		window.location.href="goods.html?id="+goodsid;
+	            	},1000);
+                }
+	        },"json");
+
+		});
+
+	})
+
+</script>
+</body>
+</html>

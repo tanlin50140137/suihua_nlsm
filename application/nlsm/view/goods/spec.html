@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品规格管理</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload()"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="javascript:;" class="btn btn-sm btn-info btn-flat" onclick="add();"><i class="fa fa-plus"></i> 添加规格</a>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped" role="grid">
+            <tr>
+                <th width="30"><input type="checkbox" class="checkbox" value="del" /></th>
+                <th>规格ID</th>
+                <th>规格名称</th>
+                <th>规格值</th>
+                <th width="70">排序</th>
+                <th width="50">状态</th>
+                <th width="130">操作</th>
+            </tr>
+            {if condition="empty($list)"}
+                <tr class="tr odd"><td colspan="13">暂无规格数据～！</td></tr>
+            {/if}
+            {volist name="list" id="vo"}
+            <tr class="tr tr-{$vo.id}" data-id="{$vo.id}">
+                <td><input type="checkbox" class="idlist" value="{$vo.id}" /></td>
+                <td>{$vo.id}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.spec_value}</td>
+                <td>
+                    <input type="button" value="↑" class="btn btn-xs btn-default" onclick="order('desc', '{$vo.id}')" />&nbsp;
+                    <input type="button" value="↓" class="btn btn-xs btn-default" onclick="order('asc', '{$vo.id}')" />
+                </td>
+                <td>
+                    {if condition="$vo.is_state == 1"}
+                        <input type="button" value="启用" class="btn btn-xs btn-success state" val="2">
+                    {else/}
+                        <input type="button" value="停用" class="btn btn-xs btn-danger state btn-flat" val="1" />
+                    {/if}
+                </td>
+                <td>
+                    <div class="tpl-table-black-operation">
+                        <a href="javascript:;" onclick="edit('{$vo.id}');">
+                            <i class="fa fa-pencil"></i> 编辑
+                        </a>
+                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="dataDel('__MODULE__/Goods/spec_del','{$vo.id}',Reload,true)">
+                            <i class="fa fa-trash"></i> 删除
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+</section>
+<div class="footer">
+    <a href="javascript:;" class="btn btn-sm btn-danger btn-flat" onclick="dataDel('__MODULE__/Goods/spec_del', false, Reload)"><i class="fa fa-trash-o"></i> 删除选中项</a>
+    <div class="page"></div>
+</div>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script src="/public/plugins/layer/layer.min.js"></script>
+<script>
+    //修改状态
+    $(function(){
+        $('#table .state').click(function(event) {
+            var _this = $(this);
+            var value = parseInt(_this.attr('val'));
+            var id = _this.parents('.tr').attr('data-id');
+            bpop.addLoading(true);
+            $.post('__MODULE__/Goods/spec_state', {'id':id,'state':value}, function(data) {
+                if (data.success == true) {
+                    bpop.clean();
+                    if (value == 1) {
+                        _this.attr('val', 2);
+                        _this.val('启用').removeClass('btn-danger').addClass('btn-success');
+                    }else {
+                        _this.attr('val', 1);
+                        _this.val('停用').removeClass('btn-success').addClass('btn-danger');
+                    }
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },'json');
+        });
+    })
+    //排序
+    function order(order, id) {
+        bpop.addLoading(true);
+        $.post('__MODULE__/Goods/spec_order',{'order':order,'id':id}, function(data) {
+            if (data.success == true) {
+                window.location.reload();
+            }else {
+                bpop.tip(data.info, 2, 1);
+            }
+        },'json');
+    }
+
+    //修改商品规格信息
+    function edit(id){
+        dpop.add('80%', '80%', '修改商品规格信息', '__MODULE__/Goods/spec_edit?id='+id, true, Reload);
+    }
+    //添加商品规格
+    function add(){
+        dpop.add('80%', '80%', '添加商品规格', '__MODULE__/Goods/spec_add', true, Reload);
+    }
+</script>
+</body>
+</html>

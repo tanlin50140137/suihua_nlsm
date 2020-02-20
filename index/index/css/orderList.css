@@ -1,0 +1,201 @@
+#orderList_container{
+    position: fixed;
+    z-index: 9999;
+    display: block;
+    width: 100%;
+    height:calc(100% - 23px);
+    overflow: hidden;
+    background: #f6f6f6;
+    top: 73px;
+}
+
+
+#orderList_container #header{
+    width: 100%;
+    height: 50px;
+    background: #2b91d4;
+    text-align: center;
+    color: #fff;
+    position: relative;
+
+}
+#orderList_container #header a{
+    display: block;
+    width: 12px;
+    height: 22px;
+    background: url(../image/icon/back.png) no-repeat center center / contain;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 25px;
+}
+
+
+#orderList_container #header h2{
+    font-weight: normal;
+    line-height: 50px;
+}
+#orderList_container #screen {
+    overflow: hidden;
+    background: #fff;
+}
+#orderList_container #screen ul li{
+    display: block;
+    width:20%;
+    float: left;
+    text-align: center;
+    padding: 10px 0px;
+    color: #666;
+    font-size: 4.3vw;
+    border-bottom: 2px solid #fff;
+}
+
+#orderList_container #content{
+    width: 100%;
+    height: calc(97% - 100px);
+    padding-top: 10px;
+    background: #f6f6f6;
+    overflow-y: scroll;
+    padding: 4% 0%;
+    -webkit-overflow-scrolling : touch;
+}
+#orderList_container #content .order_list ul {
+
+}
+#orderList_container #content .order_list ul li{
+    display: block;
+    width:100%;
+    float: left;
+    height: 200px;
+    background: #fff;
+    margin-bottom: 4%;
+    border-top: 1px solid #ededed;
+    border-bottom: 1px solid #ededed;
+
+}
+#orderList_container #content .order_list ul li > h5{
+    line-height: 32px;
+    background: #fff;
+    display: block;
+    width: 100%;
+    padding-left: 10%;
+    background: url('../image/icon/shop.png') no-repeat 14px 9px;
+    background-size: 5.5%;
+    font-weight: normal;
+    padding: 5px 4% 5px 12%;
+    box-sizing: border-box;
+}
+#orderList_container #content .order_list ul li > h5 span{
+    float: right;
+    color: #2b91d4;
+}
+
+#orderList_container #content .order_list ul li .goods_details{
+    width: 100%;
+    height: 80px;
+    background: #fafafa;
+    padding: 10px 4%;
+    box-sizing:border-box;
+    position: relative;
+
+}
+#orderList_container #content .order_list ul li .goods_details em{
+    display: block;
+    width: 59px;
+    height: 59px;
+    margin-bottom: 10px;
+    float: left;
+    margin-right: 5px;
+}
+#orderList_container #content .order_list ul li .goods_details h4{
+    width: 60%;
+    float: left;
+    line-height: 18px;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* autoprefixer: off */
+    -webkit-box-orient: vertical;
+    font-weight: normal;
+    font-size: 14px;
+    padding: 0px 5px;
+    margin-bottom: 5px;
+}
+#orderList_container #content .order_list ul li .goods_details h6{
+    position: absolute;
+    right: 10px;
+    top: 32px;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-weight: normal;
+    font-size: 13px;
+    color: #666;
+    line-height: 23px;
+}
+#orderList_container #content .order_list ul li .goods_details h6 span{
+    float: right;
+}
+#orderList_container #content .order_list ul li p{
+    display: block;
+    width: 96%;
+    height: 37px;
+    line-height: 37px;
+    text-align: right;
+    padding-right: 4%;
+    border-bottom: 1px solid #ededed;
+}
+#orderList_container #content .order_list ul li p span{
+    font-size: 14px;
+    margin-right: 10px;
+}
+#orderList_container #content .order_list ul li p b{
+    font-size: 14px;
+    font-weight: normal;
+}
+#orderList_container #content .order_list ul li p b i{
+    font-style: normal;
+    font-size: 16px !important;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#orderList_container #content .order_list ul li .btn_box{
+    width: 100%;
+    height: 42px;
+    position: relative;
+}
+#orderList_container #content .order_list ul li .btn_box button{
+    width: 70px;
+    height: 30px;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    top: 50%;
+    position: absolute;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    color: #666;
+}
+
+#orderList_container #content .order_list ul li .btn_box .btn_float_left{
+    right: 90px;
+
+}
+#orderList_container #content .order_list ul li .btn_box .btn_float_right{
+    right: 3%;
+
+}
+.active_btn{
+    border: 1px solid #2b91d4 !important;
+    color: #2b91d4 !important;
+}

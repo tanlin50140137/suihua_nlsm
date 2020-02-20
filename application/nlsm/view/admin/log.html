@@ -1,0 +1,81 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>操作日志</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+         <a href="javascript:;" class="btn btn-sm btn-warning btn-flat" onclick="dataDel('__MODULE__/Admin/logdel', 'all', Reload,true)"><i class="fa fa-trash-o"></i> 清空日志</a>
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Admin/log">
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped">
+            <tr>
+                <th width="30"><input type="checkbox" class="checkbox" value="del" /></th>
+                <th width="60" class="sort blue">ID</th>
+                <th>操作内容</th>
+                <th>操作IP</th>
+                <th>操作时间</th>
+                <th>操作会员</th>
+                <th width="70">操作</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="13">暂无日志数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.id}" id="{$vo.id}">
+                <td><input type="checkbox" class="idlist" value="{$vo.id}"></td>
+                <td>{$vo.id}</td>
+                <td>{$vo.remark}</td>
+                <td>{$vo.registe_ip}</td>
+                <td>{$vo.create_time}</td>
+                <td>{$vo.username}</td>
+                <td>
+                	<div class="tpl-table-black-operation">
+                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="dataDel('__MODULE__/Admin/logdel','{$vo.id}',Reload,true)">
+                            <i class="fa fa-trash"></i> 删除
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    <a href="javascript:;" class="btn btn-sm btn-danger btn-flat" onclick="dataDel('__MODULE__/Admin/logdel', false, Reload,true)"><i class="fa fa-trash-o"></i> 删除选中项</a>
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+</body>
+</html>

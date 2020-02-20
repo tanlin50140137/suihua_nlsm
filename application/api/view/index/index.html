@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="/public/static/js/jquery-1.8.3.min.js"></script>
+	<!-- 生成Ajax请求访问密钥 -->
+	<script src="/public/static/js/md5.js"></script>
+</head>
+<form action="./payment" id="form">
+	<input type="text" name="token" class="token"><br>
+	<input type="text" name="appkey" value="4bc033476f1347ca9dadf930a7aca866" ><br>
+	<input type="text" name="remark" value=""><br>
+	<input type="file" name="file"><br>
+	<input type="submit" value="提交">
+
+</form>
+<body>
+<script>
+	$(function(){
+		var myDate = new Date();
+		var year = myDate.getFullYear();
+		var month = myDate.getMonth() + 1;
+		if(month < 10){
+			month = '0' + month;
+		}
+		var day = myDate.getDate();
+		if(day < 10){
+			day = '0' + day;
+		}
+		var time = year+'/'+month+'/'+ day;
+		var token = md5(time+"/api/app");
+		
+		var param = {};
+			param.token = token;
+			param.appkey = 'd30adc6ca7619a5e7a3bf9dde3f082c7';
+			param.goods_id = '59';
+			param.spec_value = '';
+			param.goods_number = '1';
+
+	    $.post("/api/app/bustransfer",param,function(data){
+	        console.log(data);
+	    },"json");
+	})
+</script>
+</body>
+</html>

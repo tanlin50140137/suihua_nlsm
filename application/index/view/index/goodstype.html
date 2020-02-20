@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>商品分类</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/type.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div id='classify_container'>
+    <div class='header'>
+        <div>
+            <a href='javascript:;' class='close'></a>
+            <h2>商品分类</h2>
+        </div>
+    </div>
+    <div id='content'>
+        <div id='left'>
+            <div>
+                <ul>
+
+                </ul>
+                <div style="width:100%;height:120px;"></div>
+            </div>
+        </div>
+        <div id='right'>
+            <div>
+                <ul>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--底部-->
+<div style="width:100%;height:57px;"></div>
+<ul class='nav'>
+    <li><a><em></em><span>首页</span></a></li>
+    <li><a class="selected2"><em></em><span>分类</span></a></li>
+    <li><a><em></em><span>劵分区</span></a></li>
+    <li><a><em></em><span>购物车</span></a></li>
+    <li><a><em></em><span>我的</span></a></li>
+</ul>
+<!--底部 END-->
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+</body>
+
+<script>
+    var goods_type = '';
+    $(function(){
+        //获取商品分类
+        $.post(serverurl+'/api/app/goods_type',{'token':token},function(data){
+            $("#loading").hide();
+            goods_type = data.list;
+            if(data.list){
+                var html = '';
+                for(x in data.list){
+                    if(data.list[x].pid == 0){
+                        html = html + "<li name='"+data.list[x].id+"'>"+data.list[x].name+"</li>";
+                    }
+                    
+                }
+                $('#content #left ul').html(html);
+                $('#content #left ul li').eq(0).css('background','#fff').css('color','#05a1f4').css('border-left','2px solid #00a1fc');
+                //侧边栏导航切换
+                $('#content #left ul li').click(function(){
+                    $('#content #left ul li').removeAttr('style');
+                    $(this).css('background','#fff').css('color','#05a1f4').css('border-left','2px solid #00a1fc');
+                    $('h2').text($(this).text())
+                    sideLeftHandle($(this).attr('name'));
+                })
+                sideLeftHandle(data.list[0].id);//默认显示第一个分类
+                
+            }else{
+                layer.msg(data.info);
+            }
+        },"json");
+    })
+
+    function sideLeftHandle(cid){
+        if(goods_type){
+            var html = '';
+            for(x in goods_type){
+                if(goods_type[x].pid == cid){
+                    html = html + "<li name='"+goods_type[x].id+"'><em style='background:url("+goods_type[x].logo+") no-repeat center center / contain'></em><span>"+goods_type[x].name+"</span></li>";
+                }
+            }
+            $('#content #right ul').html(html);
+        }
+        //分类商品点击
+        $('#content #right ul li').click(function(){
+            api.openWin({
+                name: 'goods_list',
+                reload:true,
+                url:"goods_list.html?typeid="+$(this).attr('name')+""
+            });
+        })
+    }
+
+</script>
+</html>

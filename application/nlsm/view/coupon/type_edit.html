@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改优惠券类型</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<form role="form" class="getform form-horizontal" id="form">
+<input type="hidden" name="id" value="{$list.id}" />
+<div class="box box-solid">
+    <div class="box box-solid getform">
+        <div class="box-body">
+            <table class="tab-member">
+
+                <tr>
+                    <td class="td-r">类型名称：</td>
+                    <td>
+                        <div class="input-group col-xs-12 input-group-sm">
+                            <input type="text" autocomplete="off"  class="form-control input-sm pinput name" name="name" value="{$list.name}" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">前缀号码：</td>
+                    <td>
+                        <div class="input-group col-xs-12 input-group-sm">
+                            <input type="text" autocomplete="off"  class="form-control pinput prefix" name="prefix" datatype="1,50" rule="length" value="{$list.prefix}" />
+                            <span class="help-block">优惠券生成的流水号前缀号码！如：AB98522，只能是英文加数字</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">优惠金额：</td>
+                    <td>
+                        <div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="money" value="{$list.money}">
+                            <span class="input-group-addon">元</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-r">最小金额：</td>
+                    <td>
+                        <div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="min_price" value="{$list.min_price}">
+                            <span class="input-group-addon">元</span>
+                        </div>
+                        <span class="help-block">只有当订单商品达到最小金额才能使用该优惠券</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="td-r">有效时间：</td>
+                    <td>
+                        <div class="input-group col-xs-12 input-group-sm">
+                            <div class="input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input id="d4311" class="form-control input-sm pinput start_time" name="start_time" type="text" autocomplete="off"  placeholder="开始时间" value="{$list.start_time}" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})"/>
+                            </div>
+                            <div style="width:30px;float:left;text-align:center;line-height:30px;">~</div>
+                            <div class="input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input id="d4312" class="form-control input-sm pinput end_time" name="end_time" type="text" autocomplete="off"  placeholder="结束时间" value="{$list.end_time}" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})"/>
+                            </div>
+                        </div>
+                        <span class="help-block">只有在有效时间范围内才能使用该优惠券</span>
+                    </td>
+                </tr>
+                <tr class="rtd">
+                    <td class="td-r">所属商家：</td>
+                    <td colspan="3">
+                        <div class="checkbox i-checks">
+                            <label class="">
+                                <div class="icheckbox_square-green">
+                                    <input type="radio" value="0" name="bus_id" class="pinput bus_id" checked/>
+                                </div> 
+                                <i></i> 平台通用
+                            </label>
+                            {volist name="business" id="vo"}
+                                <label class="">
+                                    <div class="icheckbox_square-green">
+                                        <input type="radio" value="{$vo['id']}" name="bus_id" class="pinput bus_id" {if condition="$vo['id'] eq $list['bus_id']"}checked{/if}/>
+                                    </div> 
+                                    <i></i> {$vo['name']}
+                                </label>
+                            {/volist}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="footer">
+        <button class="btn btn-primary btn-sm btn-flat" type="submit">保存修改</button>
+    </div>
+</div>
+</form>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+<!-- 选项框插件 -->
+<link href="/public/plugins/iCheck/custom.css" rel="stylesheet">
+<script src="/public/plugins/iCheck/icheck.min.js"></script>
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+<script type="text/javascript" src="/public/plugins/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $(document).ready(function(){$(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",})});
+</script>
+<script>
+    $(function(){
+        $("#form").submit(function(){  
+            // 验证用户输入数据
+            var name = $(".name").val();    
+            if(name.length<1){
+                bpop.tip('请输入优惠券名称！', 2, 1);return false;
+            }
+            var param = $("#form").serialize();
+            bpop.addLoading(true);
+            //Ajax post提交表单验证
+            $.post("__MODULE__/Coupon/type_edit",param,function(data){
+                if(data.success == true){
+                    bpop.tip(data.info, 1, 1);
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+            },"json");
+            return false;  
+        }); 
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>意见反馈</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/feedback.css">
+</head>
+
+<body>
+<div id='loading' class="hide"><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>意见反馈</h2>
+    </div>
+</div>
+
+<div id='Feedback_container'>
+    <div class="content">
+        
+        <div class="cash" id='Feedback_form'>
+            <div>
+                    <ul>
+                        <li>
+                            <span class="notes_left1"></span>
+                            问题和意见
+                            <div class="claer"></div>
+                        </li>
+                        <li>
+                            <textarea id='inputContent' placeholder="请详细描述您的问题和意见....."></textarea>
+                            <div class="claer"></div>
+                        </li>
+                        <li>
+                            <span class="notes_left3"></span>
+                            联系方式
+                            <div class="claer"></div>
+                        </li>
+                        <li>
+                            <input type="text" placeholder="（邮箱/QQ/手机号任选一个）" id="mobileContent" />
+                            <div class="claer"></div>
+                        </li>
+                    </ul>
+                    <button type="button" class="tj_btn">提交</button>
+                </div>
+        </div>
+        <div class="explain" id='Feedback_text'></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+
+</body>
+
+<script>
+    $(function(){
+        
+        $('.tj_btn').click(function(){
+            if($('#inputContent').val()!='' && $('#mobileContent').val()!=''){
+                $("#loading").show();
+                $.ajax({
+                    url:serverurl+'/api/app/feedback',
+                    type:'post',
+                    data:{
+                        appkey:localStorage.appkey,
+                        token:token,
+                        remark:$('#inputContent').val(),
+                        mobile:$('#mobileContent').val()
+                    },
+                    success:function(data){
+                        $("#loading").hide();
+                        if(data.info == 'appkey验证失败！'){
+                            api.openWin({
+                                name: 'login',
+                                url: 'login.html',
+                            });
+                        }
+
+                        layer.msg(data.info);
+                        setTimeout(function(){
+                            api.openWin({
+                                name: 'user',
+                                url:'user.html'
+                            });
+                        },500);
+                    }
+                })
+            }else{
+                layer.msg("请正确填写信息");
+            }
+
+        })
+    })
+</script>
+</html>

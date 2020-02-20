@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>忘记密码</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/common.css"  />
+
+</head>
+
+<body>
+<div id='loading' class="hide"><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div id='classify_container'>
+    <div class='header'>
+        <div>
+            <a href='javascript:;' class="close"></a>
+            <h2>忘记密码</h2>
+        </div>
+    </div>
+    <div id='content'>
+        <div id='left'>
+            <div>
+                <ul>
+
+                </ul>
+            </div>
+        </div>
+        <div id='right'>
+            <div>
+                <ul>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="passport">
+    <div class="am-g">
+        <div class="am-u-md-8 am-u-sm-centered">
+                <div class="am-form-group am-form-icon">
+                    <input type="text" class="username am-form-field am-input-lg" name="username" placeholder="用户账号/手机！" />
+                </div>
+
+                <div class="am-form-group am-form-icon am-code">
+                        <input type="text" class="code am-form-field am-input-lg" placeholder="验证码" name="code"/>
+                </div>
+
+                <div class="am-code-but"><button class="am-btn am-btn-lg am-btn-block send">发送</button></div>
+
+
+                <div class="am-form-group am-form-icon">
+                    <input type="password" class="password am-form-field am-input-lg" placeholder="登陆密码" name="password"/>
+                </div>
+
+                <div class="am-form-group am-form-icon">
+                    <input type="password" class="password2 am-form-field am-input-lg" placeholder="确认密码" name="password"/>
+                </div>
+
+                <span class="am-btn am-btn-lg am-btn-danger am-btn-block forget">确　认</span>
+                
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+</body>
+
+<script>
+    $(function(){
+        $('.send').on('click',function(){
+            var username = $(".username").val();  
+            // 验证用户输入数据
+            if(username.length<1){
+                layer.msg('请输入账号/手机！');return false;
+            }  
+            var _this = $(this);
+                _this.attr('disabled',true);
+            var timenum = 60;
+            var time = setInterval(function(){
+                timenum--;
+                _this.text(timenum+'s');
+                if(timenum == 0){
+                    clearInterval(time);
+                    _this.text('获取验证码')
+                    _this.attr('disabled',false);
+                }
+            },1000);
+
+            $.post(serverurl+'/api/app/sendCode',{'mobile':username,'token':token},function(data){
+                if(data.success == false){
+                    layer.msg(data.info);
+                }
+            },"json");
+
+        })
+
+        $('.forget').on('click',function(){
+            var username = $(".username").val();    
+            var password = $(".password").val();    
+            var password2 = $(".password2").val();    
+            var code = $(".code").val();    
+            // 验证用户输入数据
+            if(username.length<1){
+                layer.msg('请输入账号/手机！');return false;
+            }else if(code.length<1){
+                layer.msg('请输入验证码！');return false;
+            }else if(password.length<1){
+                layer.msg('请输入登陆密码！');return false;
+            }else if(password != password2){
+                layer.msg('前后密码不一致！');return false;
+            }
+            //Ajax post提交表单验证
+            $("#loading").show();
+            $.post(serverurl+'/api/app/forget',{'mobile':username,'password':password,'code':code,'token':token},function(data){
+                $("#loading").hide();
+                if(data.success){
+                    api.openWin({
+                        name: 'login',
+                        url: 'login.html',
+                    });
+                }else{
+                    layer.msg(data.info);
+                }
+            },"json");
+        })
+    })
+</script>
+</html>

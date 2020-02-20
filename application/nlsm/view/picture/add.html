@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>广告列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+    <div class="box-body form-inline">
+        <div class="aitem-body">
+            <div class="aitem">
+                <div class="aitem-head">
+                    <div class="input-group col-xs-12 input-group-sm left">
+                        <div class="input-group col-xs-2 left" style="padding-left:20px;">广告名称：</div>
+                        <div class="input-group col-xs-10 left">
+                            <input type="text" autocomplete="off"  class="form-control input-sm pinput name" name="name" value="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="aitem-list">
+                    <div class="aitem-item">
+                        <div class="aitem-item-img image-item">
+                            <img src="/public/image/image.jpg" width="100%" class="image-img logo" />
+                            <input id="file" type="file" class="hide form-control pinput file" name="logo" />
+                        </div>
+                        <input type="text" autocomplete="off"  name="url" class="form-control input-sm url" placeholder="广告图片链接" value="">
+                        <input type="text" autocomplete="off"  name="name" class="form-control input-sm name" placeholder="广告图片名称" value="">
+                        <input type="text" autocomplete="off"  name="remark" class="form-control input-sm remark" placeholder="广告图片备注信息" value="">
+                        <input type="text" autocomplete="off"  name="sort" class="form-control input-sm sort" placeholder="广告图片排序" value="">
+                        <span class="item-close" title="清除此广告图片" onclick="$(this).parents('.aitem-item').remove();">x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <button type="button" class="btn btn-sm btn-info btn-flat" onclick="add();"><i class="fa fa-plus"></i> 添加广告图片</button>
+        <button type="button" onclick="submit();" class="btn btn-sm btn-danger btn-flat"><i class="fa fa-upload"></i> 提交更新</button>
+    </div>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+
+//添加广告图片
+function add() {
+    var html = '<div class="aitem-item"><div class="aitem-item-img image-item">';
+    html = html + '<img src="/public/image/image.jpg" width="100%" class="image-img logo" />';
+    html = html + '<input type="file" class="hide form-control pinput file" name="logo" /></div>';
+    html = html + '<input type="text" autocomplete="off"  name="url" class="form-control input-sm url" placeholder="广告图片链接" /><input type="text" autocomplete="off"  name="name" class="form-control input-sm name" placeholder="广告图片名称" />';
+    html = html + '<input type="text" autocomplete="off"  name="remark" class="form-control input-sm remark" placeholder="广告图片备注信息" /><input type="text" autocomplete="off"  name="aitem-goods" class="form-control input-sm sort" placeholder="广告图片排序" />';
+    html = html + '<span class="item-close" title="清除此广告图片" onclick="$(this).parents(\'.aitem-item\').remove();">x</span></div>';
+    $('.aitem-list').append(html);
+};
+//上传广告图片
+function submit(){
+    var image = new Array();
+    $('.aitem-item').each(function() {
+        var list = {};
+            list.logo = $(this).find('.logo').attr('src');
+            list.url = $(this).find('.url').val();
+            list.name = $(this).find('.name').val();
+            list.remark = $(this).find('.remark').val();
+            list.sort = $(this).find('.sort').val();
+        image.push(list);
+    });
+    var name = $(".name").val();
+    if(name.length < 1 ){
+        bpop.tip('请输入广告名称！', 2, 1);return false;
+    }
+    bpop.addLoading(true);
+    $.post("__MODULE__/Picture/add", {"image":image,'name':name},function(data){
+        if (data.success == true) {
+            bpop.tip(data.info, 1, 1);
+        }else {
+            bpop.tip(data.info, 2, 1);
+        }
+    },"json");
+}
+</script>
+</body>
+</html>

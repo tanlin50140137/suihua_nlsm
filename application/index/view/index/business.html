@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>店铺街</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/shop.css">
+    <link rel="stylesheet" href="./css/swiper-4.1.0.min.css">
+
+</head>
+<style>
+</style>
+
+<body style="background: #fff;">
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class='close'></a>
+        <div class="right" tapmode="highlight" onclick="search();">搜索</div>
+        <div class="middle">
+            <img src="./image/header/search_groupbuy.png">
+            <input type="text" id="keyword" placeholder="请输入店铺名称" />
+        </div>
+    </div>
+</div>
+
+<!--banner图开始-->
+<div class="banner" id="banner">
+    <div class="bannerlist">
+        <ul><div style="height: 150px;"></div></ul>
+    </div>
+    <div class="tablist">
+        <ul></ul>
+    </div>
+</div>
+<!--banner图结束-->
+
+<div class="shop_container">
+	<div id='menu' class="swiper-container_menu">
+			<ul class="swiper-wrapper menus">
+
+			</ul>
+	</div>
+	<div id='shop'>
+		<!-- 没有数据时display: block; -->
+        <div class="null-data" style="display: none;"></div>
+   		<div>
+			<ul></ul>
+		</div>
+
+    </div>
+</div>
+
+<ul class='nav'>
+    <li><a lass="selected1"><em></em><span>首页</span></a></li>
+    <li><a><em></em><span>分类</span></a></li>
+    <li><a><em></em><span>劵分区</span></a></li>
+    <li><a><em></em><span>购物车</span></a></li>
+    <li><a><em></em><span>我的</span></a></li>
+</ul>
+<!--底部 END-->
+</body>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/touchslide.1.1.js"></script>
+<script type="text/javascript" src="./js/swiper-4.1.0.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+<script>
+	var page = 1;
+	var iscroll = 1;
+
+    $(function(){
+      function init_menu_swiper(){
+        var swiper_menu = new Swiper('.swiper-container_menu', {
+
+        });
+
+      }
+
+
+    	// 获取banner图
+        $.post(serverurl+'/api/app/index_banner',{'token':token},function(data){
+            if(data.list){
+                //顶部轮播图
+                var html = '';
+                for(x in data.list.business){
+                    html = html + '<li><img onclick="tohtml(\'goods.html?id='+data.list.business[x].url+'\');" class="lazy" src="'+data.list.business[x].logo+'"></li>';
+                }
+                $('.bannerlist ul').html(html);
+
+
+                //顶部轮播图特效
+                TouchSlide({
+                    slideCell:"#banner",
+                    titCell:".tablist ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+                    mainCell:".bannerlist ul",
+                    effect:"leftLoop",
+                    autoPage:true,//自动分页
+                    autoPlay:true //自动播放
+                });
+            }else{
+                layer.msg(data.info);
+            }
+        },"json");
+
+        $.post(serverurl+'/api/app/business_type',{'token':token},function(data){
+            $("#loading").hide();
+            if(data.list.length>0){
+                var html = "<li name=''  style='background: url(./image/icon/quanbu.png) no-repeat center 10px / 45%;'>全部商家</li>";
+                var html2 = '';
+                // var html = "";
+
+                for(var i=0;i<Math.ceil(data.list.length / 10);i++){
+                  if(i==0){
+                    $('#menu ul').append("<div class='swiper-slide'>"+html+"</div>")
+                  }else{
+                    $('#menu ul').append("<div class='swiper-slide'></div>")
+                  }
+                }
+                init_menu_swiper();
+
+                  for(x in data.list){
+                    if(x<=8){
+                      $('#menu ul .swiper-slide').eq(0).append('<li name='+data.list[x].id+' style="background: url('+data.list[x].logo+') no-repeat center 10px / 45%;">'+data.list[x].name+'</li>');
+                    }else if(x>8 && x<=18){
+                      $('#menu ul .swiper-slide').eq(1).append('<li name='+data.list[x].id+' style="background: url('+data.list[x].logo+') no-repeat center 10px / 45%;">'+data.list[x].name+'</li>');
+                    }else if(x>18 && x<=28){
+                      $('#menu ul .swiper-slide').eq(2).append('<li name='+data.list[x].id+' style="background: url('+data.list[x].logo+') no-repeat center 10px / 45%;">'+data.list[x].name+'</li>');
+                    }
+
+                  }
+
+                //切换导航
+                $('#menu ul li').eq(0).addClass('menu_active');
+                $('#menu ul li').click(function(){
+                    $('#menu ul li').removeClass('menu_active');
+                    $(this).addClass("menu_active");
+                    search();
+                })
+
+            }
+        },"json");
+
+        getBusinessList();
+        //滚动到底部
+		$('.shop_container #shop').scroll(function(){
+		　　var scrollTop = $(this).scrollTop();
+		　　var scrollHeight = $('.shop_container #shop ul').height();
+		　　var windowHeight = $(this).height();
+		　　if( Math.ceil(scrollTop + windowHeight)+10 >= scrollHeight && iscroll == 1){
+				//查询下一页数据
+				page = page + 1;
+				getBusinessList();
+		　　}
+		});
+    })
+
+    //搜索
+    function search() {
+    	$('#shop ul').html('');
+    	$('.null-data').hide();
+        page = 1;
+        var typeid = $(".menu_active").attr('name');
+		var keyword = $('#keyword').val();
+		getBusinessList(typeid,keyword);
+    };
+
+    //获取商品列表
+    function getBusinessList(typeid,keyword){
+    	iscroll = 2;
+
+    	var typeid = typeid ? typeid : '';
+    	var keyword = keyword ? keyword : '';
+
+    	//获取经纬度
+    	var longitude = localStorage.longitude;
+        var latitude = localStorage.latitude;
+
+    	$("#loading").show();
+    	$.post(serverurl+'/api/app/business',{'typeid':typeid,'keyword':keyword,'page':page,'limit':6,'longitude':longitude,'latitude':latitude,'city':localStorage.city,'token':token},function(data){
+            $("#loading").hide();
+            if(data.list.length>0){
+        		iscroll = 1;
+        		var html = '';
+                for(x in data.list){
+                    html = html + "<li name='"+data.list[x].id+"'><em style='background:url("+data.list[x].logo+") center center / cover'></em><span class='shop_right'><h3>"+data.list[x].name+"</h3><b><a href='http://api.map.baidu.com/marker?location="+data.list[x].latitude+","+data.list[x].longitude+"&title=商家位置&content="+data.list[x].name+"&output=html'><samp>"+data.list[x].distance+"</samp></a><i style='background: url(./image/star"+data.list[x].star+".png) no-repeat center center / contain;'></i><strong>销量："+data.list[x].goods_salse+"</strong></b><p>"+data.list[x].city+"</p><p>"+data.list[x].mobile+"</p><span class='text_container'>"+data.list[x].remark+"</span></span></li>";
+                }
+                $('#shop ul').append(html);
+
+                $('#shop ul li').click(function(){
+                 	api.openWin({
+			            name: 'business_detail',
+                        reload:true,
+			            url:"business_detail.html?id="+$(this).attr('name')
+			        });
+                 })
+            }
+            if(data.list == '' && page == 1){
+               $('.null-data').show();
+            }
+        },"json");
+    }
+</script>
+</html>

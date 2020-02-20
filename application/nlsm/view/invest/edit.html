@@ -1,0 +1,224 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加项目</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/image.css" rel="stylesheet" />
+
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="nav-tabs-custom header-fixed">
+    <ul class="nav nav-tabs">
+        <li class="tab-item active"><a href="javascript:;">基本信息</a></li>
+        <li class="tab-item"><a href="javascript:;">项目详情</a></li>
+    </ul>
+</div>
+
+<div class="box box-solid">
+   <form action=" " method="post" id="form">
+    <div class="box box-solid getform">
+        <div class="box-body">
+            <div id="tabs">
+                <table class="tab-member">
+
+                    <tr>
+                        <td class="td-r">项目名称：</td>
+                        <td>
+                            <div class="input-group col-xs-12 input-group-sm left">
+                                <input type="text" autocomplete="off"  class="form-control input-sm col-xs-9 pinput name" name="name" value="{$list.name}" />
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr class="rtd spec-all">
+
+                        <td class="td-r">项目图片：</td>
+                        <td colspan="3">
+                            <div class="input-group col-xs-12 input-group-sm left">
+                                <div class="img-box full">
+                                    <section class=" img-section">
+                                        <div class="z_photo upimg-div clear" >
+                                                {volist name="$list.image" id="vo"}
+                                                <section class="up-section fl">
+                                                    <span class="up-span"></span>
+                                                    <img class="close-upimg" src="/public/image/a7.png">
+                                                    <img class="up-img images" src="{$vo}">
+                                                    <p class="img-name-p">{$vo}</p>
+                                                </section>
+                                                {/volist}
+                                                 <section class="z_file fl">
+                                                    <img src="/public/image/a11.png" class="add-img">
+                                                    <input type="file" name="file[]" id="image" class="file" accept="image/jpg,image/jpeg,image/png,image/bmp" />
+                                                 </section>
+                                         </div>
+                                     </section>
+                                </div>
+                                <aside class="mask works-mask">
+                                    <div class="mask-content">
+                                        <p class="del-p ">您确定要删除作品图片吗？</p>
+                                        <p class="check-p"><span class="del-com wsdel-ok">确定</span><span class="wsdel-no">取消</span></p>
+                                    </div>
+                                </aside>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-r">项目股数：</td>
+                        <td>
+                            <div class="input-group col-xs-12 input-group-sm left">
+                                <span class="input-group-addon"><i class="fa fa-dot-circle-o"></i></span>
+                                <input type="number" step="0.01" class="form-control pinput count" name="count" maxlength="10" value="{$list.count}" />
+                                <span class="input-group-addon">股</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-r">已售股数：</td>
+                        <td>
+                            <div class="input-group col-xs-12 input-group-sm left">
+                                <span class="input-group-addon"><i class="fa fa-dot-circle-o"></i></span>
+                                <input type="number" step="0.01" class="form-control pinput number" name="number" maxlength="10" value="{$list.number}" />
+                                <span class="input-group-addon">股</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-r">每股单价：</td>
+                        <td>
+                            <div class="input-group col-xs-12 input-group-sm left">
+                                <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                                <input type="number" step="0.01" class="form-control pinput price" name="price" maxlength="10" value="{$list.price}" />
+                                <span class="input-group-addon">元</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-r">直推返利：</td>
+                        <td>
+                            <div class="input-group col-xs-12 input-group-sm left">
+                                <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                                <input type="number" step="0.01" class="form-control pinput huitui" name="huitui" maxlength="10" value="{$list.huitui}" />
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-r">项目排序：</td>
+                        <td>
+                            <div class="input-group col-xs-12 input-group-sm left">
+                            
+                                <input type="number" step="0.01" class="form-control input-sm col-xs-9 pinput sort" name="sort" value="{$list.sort}" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="rtd spec-all">
+                        <td class="td-r">项目时间：</td>
+                        <td colspan="3">
+                            <div class="input-group col-xs-12 input-group-sm left">
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input id="d4311" class="form-control input-sm pinput start_time" name="start_time" type="text" autocomplete="off"  placeholder="开始时间" value="{$list.start_time}" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})"/>
+                                </div>
+                                <div style="width:30px;float:left;text-align:center;line-height:30px;">~</div>
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input id="d4312" class="form-control input-sm pinput end_time" name="end_time" type="text" autocomplete="off"  placeholder="结束时间" value="{$list.end_time}" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})"/>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="rtd spec-all">
+                        <td class="td-r">项目描述：</td>
+                        <td colspan="3">
+                            <div class="input-group col-xs-12 input-group-sm left">
+                                <textarea id="remark" rows="3" cols="100" name="remark" class="form-control pinput" style="height:100px;">{$list.remark}</textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <input type="hidden" name="id" value="{$list.id}">
+                    <input type="hidden" class="content" name="content" value="">
+                    <input type="hidden" class="image" name="image" value="">
+                    
+                </table>
+            </div>
+            <div id="tabs">
+                <script id="content" name="content" type="text/plain" style="width:100%;height:600px;"></script>
+            </div>
+        </div>
+        
+    </div>
+    <div class="footer">
+        <button class="btn btn-primary btn-sm btn-flat" type="submit">保存修改</button>
+    </div>
+</form>
+</div>
+</section>
+<script src="/public/static/js/jquery-1.8.3.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+
+<script src="/public/plugins/ueditor/ueditor.config.js"></script>
+<script src="/public/plugins/ueditor/ueditor.all.js"></script>
+<script src="/public/plugins/ueditor/ueditor.parse.js"></script>
+<script src="/public/static/js/image.js"></script>
+<script type="text/javascript" src="/public/plugins/My97DatePicker/WdatePicker.js"></script>
+<script>
+    window.UEDITOR_CONFIG.serverUrl = '__MODULE__'+window.UEDITOR_CONFIG.serverUrl;
+    //保存修改
+    $(function(){
+        UE.getEditor('content', {
+            toolbars: [
+                 ['fullscreen', 'source', 'undo', 'redo', 'bold', 'italic', 'underline', 'fontborder', 'backcolor', 'fontsize', 'fontfamily', 'justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', 'link', 'unlink', 'emotion', 'simpleupload', 'insertimage','insertvideo', 'help']
+            ]
+        });
+        UE.getEditor('content').ready(function() {
+            UE.getEditor('content').setContent('{$list.content}');
+        });
+
+        $("#form").submit(function(){  
+            // 验证用户输入数据
+            var name = $(".name").val();    //用户名
+            if(name.length<1){
+                bpop.tip('请输入项目名称！', 2, 1);return false;
+            }
+            var content = UE.getEditor('content').getContent();
+            $(".content").val(content);
+            var image = Array();
+            $('body .images').each(function() {
+                image.push($(this).attr('src'));
+            });
+            $(".image").val(image);
+
+            var formData = new FormData($("#form")[0]); 
+            bpop.addLoading(true);
+            $.ajax({ 
+                url: '__MODULE__/Invest/edit', 
+                type: 'POST',
+                data: formData, 
+                async: false, 
+                cache: false, 
+                contentType: false, 
+                processData: false, 
+                success: function (data) { 
+                    if (data.success == true) {
+                        bpop.tip(data.info, 1, 1);
+                    }else{
+                        bpop.tip(data.info, 2, 1);
+                    }
+                }, 
+                dataType:'json' 
+            });
+            return false; 
+        }); 
+    })
+</script>
+</body>
+</html>

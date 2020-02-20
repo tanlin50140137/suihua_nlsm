@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>Document</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/editSite.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+<script src="/public/skin/js/isLogin.js"></script>
+<script type="text/javascript" src="/public/skin/js/distpicker.data.js"></script>
+<script type="text/javascript" src="/public/skin/js/distpicker.js"></script>
+
+
+<body>
+<div id="worry"></div>
+<div id='editSite_container'>
+	<div class="cash_content">
+		<div class="top" id='WithdrawDeposit_top'>
+			<div>
+	    			<div class="head">
+						<a href='javascript:;' class="back" ></a>
+						<h2>修改地址</h2>
+					</div>
+	    		</div>
+		</div>
+		<div class="cash" id='WithdrawDeposit_form'>
+			<div>
+	    			<ul>
+						<li>
+							<span class="notes_left">收货人姓名</span>
+							<input type="text" value=''/>
+							<div class="claer"></div>
+						</li>
+						<li class="txz">
+							<span class="notes_left">手机号码</span>
+							<input type="text" value=''/>
+							<div class="claer"></div>
+						</li>
+						<li>
+							<strong class="fr" data-toggle="distpicker">
+				                <select></select>
+				                <select></select>
+				                <select></select>
+				            </strong>
+							<div class="claer"></div>
+						</li>
+						<li class="code">
+							<span class="notes_left">详细地址</span>
+							<input type="text" value=''/>
+							<div class="claer"></div>
+						</li>
+					</ul>
+					<button type="button" class="sc_btn" id="removeSiteBtn">删除</button>
+					<button type="button" class="tj_btn" id="editSiteBtn">保存</button>
+	    		</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+apiready = function() {
+
+function GetQueryString(val) {
+　　var s = '/'+val+'\\=([^&]+)/ig';
+    var re = new RegExp(eval(s));
+    var result = re.exec(window.location.href);
+    if(result && result.length > 0)
+        return result[1];
+}
+function selectNumber(citys,dom){
+    var num = citys;   //获取input中输入的数字
+    var numbers = dom.find("option"); //获取select下拉框的所有值
+        for (var j = 0; j < numbers.length; j++) {
+            if ($(numbers[j]).val() == num) {
+                $(numbers[j]).attr("selected", "selected");
+            }
+        }
+        dom.change();
+}
+$(function(){
+	$('.back').on('touchstart',function(){
+		api.closeWin()
+	})
+	//获取收货地址
+	$.ajax({
+		url:serverurl+'/api/app/address',
+		type:'post',
+		data:{
+			appkey:localStorage.appkey,
+			token:localStorage.token,
+		},success:function(data){
+			if(data.list.length>0){
+				for(var i=0;i<data.list.length;i++){
+					if(data.list[i].id==GetQueryString('siteId')){
+						$('.cash ul li').eq(0).children('input').val(data.list[i].username);
+						$('.cash ul li').eq(1).children('input').val(data.list[i].mobile);
+						selectNumber(data.list[i].city.split('-')[0],$("select:eq(0)"));
+                        selectNumber(data.list[i].city.split('-')[1],$("select:eq(1)"));
+                        selectNumber(data.list[i].city.split('-')[2],$("select:eq(2)"));
+                        $('.cash ul li').eq(3).children('input').val(data.list[i].address);
+					}
+				}
+			}
+
+		}
+	})
+
+	//保存修改
+	$('#editSiteBtn').click(function(){
+		if($('#userName').val()!='' && $('#userPhone').val()!='' && $('#userCitys').val()!=''){
+			var city1 = $("select:eq(0) option:checked").text();
+            var city2 = $("select:eq(1) option:checked").text();
+            var city3 = $("select:eq(2) option:checked").text();
+			var city = city1 +'-'+ city2 +'-'+ city3;
+			$.ajax({
+				url:serverurl+'/api/app/edit_address',
+				type:'post',
+				data:{
+					appkey:localStorage.appkey,
+					token:localStorage.token,
+					mobile:$('.cash ul li').eq(1).children('input').val(),
+					username:$('.cash ul li').eq(0).children('input').val(),
+					address:$('.cash ul li').eq(3).children('input').val(),
+					city:city,
+					id:GetQueryString('siteId')
+				},success:function(data){
+					if(data.success){
+						window.history.back();location.reload();
+					}else{
+						alertFade(data.info);
+					}
+				}
+			})
+		}else{
+			alertFade('请完善收货信息')
+		}
+	})
+
+	//删除收货地址
+	$('#removeSiteBtn').click(function(){
+		if(confirm("确定删除该收货地址吗？")){
+			$.ajax({
+				url:serverurl+'/api/app/del_address',
+				type:'post',
+				data:{
+					appkey:localStorage.appkey,
+					token:localStorage.token,
+					id:GetQueryString('siteId')
+				},success:function(data){
+					if(data.success){
+						window.history.back();location.reload();
+					}else{
+						alertFade(data.info);
+					}
+				}
+			})
+		}
+
+	})
+})
+}
+</script>

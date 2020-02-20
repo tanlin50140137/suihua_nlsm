@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>我的券分</title>
+</head>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/myPoint.css">
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+	<div>
+		<a href='javascript:;' class='close'></a>
+		<h2>我的券分</h2>
+	</div>
+</div>
+<div id='myMoney_container'>
+	<div class="balance_content">
+		<div class="top" id='myMoney_container_top'>
+			<div>
+				<div class="balance">
+					<p class="title">券分可用余额</p>
+					<span class="price"></span>
+					<div class="btn"  onclick="tohtml('transferpoint');">转账</div>
+				</div>
+    		</div>
+		</div>
+		<div class="balance_detail" id='myMoney_container_balance_detail'>
+			<!-- 没有数据时display: block; -->
+        	<div class="null-data" style="display: none;"></div>
+			<div>
+    			<ul></ul>
+    		</div>
+		</div>
+
+	</div>
+
+</div>
+</body>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script>
+	var page = 1;
+	var iscroll = 1;
+
+	$(function(){
+		//获取用户余额
+		$.ajax({
+			url:serverurl+'/api/app/detail',
+			type:'post',
+			data:{
+				'appkey':localStorage.appkey,
+		        'token':token
+			},
+			success:function(data){
+				if(data.info == 'appkey验证失败！'){
+	                api.openWin({
+	                    name: 'login',
+	                    url: 'login.html',
+	                });
+	            }
+	            localStorage.point = data.list.point;
+				$('.price').text(data.list.point)
+			}
+		})
+		getPointlog();
+		//滚动到底部.
+		$('#myMoney_container .balance_detail').scroll(function(){
+
+		　　var scrollTop = $(this).scrollTop();
+		　　var scrollHeight = $('#myMoney_container .balance_detail ul').height();
+		　　var windowHeight = $(this).height();
+		　　if( Math.ceil(scrollTop + windowHeight)+10 >= scrollHeight && iscroll == 1){
+				//查询下一页数据
+				page = page + 1;
+				getPointlog();
+		　　}
+		});
+	})
+
+	function getPointlog(){
+		$.post(serverurl+'/api/app/point',{'page':page,'appkey':localStorage.appkey,'token':token},function(data){
+            $("#loading").hide();
+            if(data.list.length>0){
+        		iscroll = 1;
+        		var html = '';
+                for(x in data.list){
+                    html = html + "<li>\
+										<h5>"+data.list[x].remark+"</h5>\
+										<div class='notes'>\
+											<span>"+data.list[x].name+"<samp>"+data.list[x].point+"</samp></span>\
+											<span class='time'>"+data.list[x].create_time+"</span>\
+										</div>\
+									</li>";
+                }
+                $('#myMoney_container_balance_detail ul').append(html);
+
+            }else if(page == 1){
+               $('.null-data').show();
+            }else{
+            	if(data.info == 'appkey验证失败！'){
+	                api.openWin({
+	                    name: 'login',
+	                    url: 'login.html',
+	                });
+	            }
+            }
+        },"json");
+	}
+</script>
+</html>

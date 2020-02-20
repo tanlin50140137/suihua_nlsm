@@ -1,0 +1,17 @@
+<xml><appid><![CDATA[wx8fe6379357798b4c]]></appid>
+<bank_type><![CDATA[ICBC_CREDIT]]></bank_type>
+<cash_fee><![CDATA[49800]]></cash_fee>
+<fee_type><![CDATA[CNY]]></fee_type>
+<is_subscribe><![CDATA[N]]></is_subscribe>
+<mch_id><![CDATA[1507500801]]></mch_id>
+<nonce_str><![CDATA[2018100284502625185]]></nonce_str>
+<openid><![CDATA[o2cFl0pVOAd-g_fKch7XFPexsg-k]]></openid>
+<out_trade_no><![CDATA[2018100284502625185]]></out_trade_no>
+<result_code><![CDATA[SUCCESS]]></result_code>
+<return_code><![CDATA[SUCCESS]]></return_code>
+<sign><![CDATA[6FE3185A70DC61926D3AECF7B97318BC]]></sign>
+<time_end><![CDATA[20181002202117]]></time_end>
+<total_fee>49800</total_fee>
+<trade_type><![CDATA[APP]]></trade_type>
+<transaction_id><![CDATA[4200000159201810020008125590]]></transaction_id>
+</xml>

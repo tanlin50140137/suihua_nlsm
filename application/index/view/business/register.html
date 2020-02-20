@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>商家加盟</title>
+</head>
+<link rel="stylesheet" href="/index/index/css/body.css">
+<link rel="stylesheet" href="/index/index/css/myInvest.css">
+<link rel="stylesheet" href="/index/index/css/common.css"  />
+<link rel="stylesheet" href="/index/index/css/image.css"  />
+
+<body>
+<div id='loading'><img src='/index/index/image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class='close'></a>
+        <h2>商家加盟</h2>
+    </div>
+</div>
+
+<div id="MyInvest">
+    <div class="invest_content">
+        
+        <div id="screen">
+            <div>
+                <ul>
+                    <li style="color: rgb(56, 174, 227); border-bottom: 2px solid rgb(56, 174, 227);">个体商户</li>
+                    <li>企业商户</li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="passport">
+        <div class="am-g">
+            <div class="am-u-md-8 am-u-sm-centered">
+                    <div class="am-form-group am-form-icon">
+                        <input type="text" class="name am-form-field am-input-lg" name="name" placeholder="商家名称" />
+                    </div>
+                    <div class="am-form-group am-form-icon">
+                        <input type="password" class="password am-form-field am-input-lg" placeholder="登陆密码" name="password"/>
+                    </div>
+                    <div class="am-form-group am-form-icon">
+                        <input type="text" class="truename am-form-field am-input-lg" name="truename" placeholder="真实名称" />
+                    </div>
+                    <div class="am-form-group am-form-icon">
+                        <input type="text" class="alipay am-form-field am-input-lg" name="alipay" placeholder="支付宝账号" />
+                    </div>
+                    <div class="am-form-group am-form-icon">
+                        <input type="text" class="mobile am-form-field am-input-lg" name="mobile" placeholder="联系手机" />
+                    </div>
+                    <div class="am-form-group am-form-icon">
+                        <input type="text" class="address am-form-field am-input-lg" name="address" placeholder="详细地址" />
+                    </div>
+                    <div style="margin-bottom:5px;color:#666;">营业执照/补充材料</div>
+                    <div class="col-xs-12 input-group-sm">
+                        <div class="img-box full">
+                            <section class="image-item img-section">
+                                <div class="z_photo upimg-div clear" >
+                                        <section class="z_file fl">
+                                            <img src="/index/index/image/a11.png" class="add-img">
+                                            <input type="file" name="file" id="image" class="file" accept="image/jpg,image/jpeg,image/png,image/bmp" />
+                                        </section>
+                                 </div>
+                             </section>
+                        </div>
+                        
+                    </div>
+
+                    <span class="am-btn am-btn-lg am-btn-danger am-btn-block invest">申请加盟</span>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="/index/index/js/jquery.min.js"></script>
+<script type="text/javascript" src="/index/index/js/layer/layer.min.js"></script>
+<script>
+    var type = 1;
+    $(function(){
+        $("#loading").hide();
+        //顶部导航切换
+        $('#screen ul li').click(function(){
+            $('#screen ul li').removeAttr('style');
+            $(this).css('color','#38aee3').css('border-bottom','2px solid #38aee3');
+            if($(this).index()==0){
+                type = 1;
+            }else{
+                type = 2;
+            }
+        })
+        //单图片文件上传
+        $("body").on('click', '.image-item .file', function(){
+            $(this).next().trigger("click"); 
+        });
+        $("body").on('change', '.image-item .file', function(){
+            var _this = $(this);
+            //显示选中图片
+            var file = new FileReader();
+            var img = _this.prop('files')[0];
+            file.readAsDataURL(img);
+            file.onload = function(e) {
+                _this.prev().attr('src',this.result);
+            };
+        });
+
+        //商家加盟
+        $(".invest").click(function(){
+            var name = $(".name").val();    
+            var truename = $(".truename").val();    
+            var alipay = $(".alipay").val();    
+            var mobile = $(".mobile").val();    
+            var address = $(".address").val();    
+            var license = $(".add-img").attr('src');    
+            var password = $(".password").val();    
+
+            // 验证用户输入数据
+            if(name.length<1){
+                layer.msg('请输入商家名称！');return false;
+            }else if(password.length<1){
+                layer.msg('请输入登陆密码！');return false;
+            }else if(truename.length<1){
+                layer.msg('请输入真实名称！');return false;
+            }else if(alipay.length<1){
+                layer.msg('请输入支付宝账号！');return false;
+            }else if(mobile.length<1){
+                layer.msg('请输入联系手机！');return false;
+            }else if(address.length<1){
+                layer.msg('请输入详细地址！');return false;
+            }else if(license == '/index/index/image/a11.png'){
+                layer.msg('请上传证明材料！');return false;
+            }
+            //Ajax post提交表单验证
+            $("#loading").show();
+            $.post(serverurl+'/api/app/enter',{'pid':'{$pid}','token':token,'name':name,'password':password,'truename':truename,'alipay':alipay,'mobile':mobile,'address':address,'license':license,'type':type},function(data){
+                $("#loading").hide();
+
+                layer.msg(data.info);
+                if(data.success){
+                    setTimeout(function(){
+                        api.openWin({
+                            name: 'login',
+                            reload:true,
+                            url:'login.html'
+                        });
+                    },500);
+                }
+            },"json");
+        });
+    })
+</script>
+</html>

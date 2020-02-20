@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>商品发布</title>
+</head>
+<link rel="stylesheet" href="./css/body.css">
+<link rel="stylesheet" href="./css/myInvest.css">
+<link rel="stylesheet" href="./css/common.css"  />
+<link rel="stylesheet" href="./css/image.css"  />
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+	<div>
+		<a href='javascript:;' class='close'></a>
+		<h2>商品发布</h2>
+	</div>
+</div>
+
+<div id="MyInvest">
+
+	
+	<div class="passport">
+	    <div class="am-g">
+	        <div class="am-u-md-8 am-u-sm-centered">
+        		<div class="col-xs-12 input-group-sm">
+                    <div class="img-box full">
+                        <section class="image-item img-section">
+                            <div class="z_photo upimg-div clear" >
+                                    <section class="z_file fl">
+                                        <img src="./image/a11.png" class="add-img">
+                                        <input type="file" name="file" id="image" class="file" accept="image/jpg,image/jpeg,image/png,image/bmp" />
+                                    </section>
+                             </div>
+                         </section>
+                    </div>
+                    
+                </div>
+
+                <div class="am-form-group am-form-icon">
+                    <input type="text" class="goods_name am-form-field am-input-lg" name="goods_name" placeholder="商品名称" />
+                </div>
+                <div class="am-form-group am-form-icon">
+                    <input type="text" class="goods_price am-form-field am-input-lg" name="goods_price" placeholder="商品价格" />
+                </div>
+				<div class="am-form-group am-form-icon">
+                    <input type="text" class="discount am-form-field am-input-lg" name="discount" placeholder="商品折扣" />
+                </div>
+                <div class="am-form-group am-form-icon">
+                    <input type="text" class="market_price am-form-field am-input-lg" name="market_price" placeholder="商品市场价" />
+                </div>
+                <div class="am-form-group am-form-icon">
+                    <input type="text" class="goods_number am-form-field am-input-lg" name="goods_number" placeholder="商品库存" />
+                </div>
+
+                
+
+                <span class="am-btn am-btn-lg am-btn-danger am-btn-block invest">确认发布</span>
+
+	        </div>
+	    </div>
+	</div>
+</div>
+</body>
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+<script>
+	$(function(){
+		$("#loading").hide();
+		
+		//单图片文件上传
+		$("body").on('click', '.image-item .file', function(){
+			$(this).next().trigger("click"); 
+		});
+		$("body").on('change', '.image-item .file', function(){
+			var _this = $(this);
+			//显示选中图片
+			var file = new FileReader();
+			var img = _this.prop('files')[0];
+			file.readAsDataURL(img);
+			file.onload = function(e) {
+				_this.prev().attr('src',this.result);
+			};
+		});
+
+		//商品发布
+		$(".invest").click(function(){
+			var goods_name = $(".goods_name").val();    
+            var goods_price = $(".goods_price").val();    
+            var discount = $(".discount").val();    
+            var market_price = $(".market_price").val();    
+            var goods_number = $(".goods_number").val();    
+            var goods_logo = $(".add-img").attr('src');    
+            // 验证用户输入数据
+            if(goods_name.length<1){
+                layer.msg('请输入商品名称！',{time:10000000});return false;
+            }else if(goods_price.length<1){
+                layer.msg('请输入商品价格！');return false;
+            }else if(market_price.length<1){
+                layer.msg('请输入商品市场价！');return false;
+            }else if(goods_logo.length<1){
+                layer.msg('请输入商品库存！');return false;
+            }else if(goods_logo == './image/a11.png'){
+                layer.msg('请上传商品图片！');return false;
+            }
+            //Ajax post提交表单验证
+            $("#loading").show();
+            $.post(serverurl+'/api/app/release',{'appkey':localStorage.appkey,'token':token,'goods_name':goods_name,'goods_price':goods_price,'discount':discount,'market_price':market_price,'goods_number':goods_number,'goods_logo':goods_logo},function(data){
+                $("#loading").hide();
+                
+                layer.msg(data.info);
+                if(data.success){
+                	setTimeout(function(){
+                        api.openWin({
+                            name: 'user',
+                            reload:true,
+                            url:'user.html'
+                        });
+                    },500);
+                }
+            },"json");
+		});
+	})
+</script>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员余额详情列表</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+    <link href="/public/static/css/page.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+
+<div class="box box-solid">
+    <div class="box-body">
+        <a href="javascript:;" class="btn btn-sm btn-success btn-flat" onclick="location.reload();"><i class="fa fa-refresh"></i> 刷新</a>
+        <a href="__MODULE__/Business/statisti" class="btn btn-sm btn-warning btn-flat" ><i class="fa fa-send"></i> 全部</a>
+        <div role="form" class="col-right form-inline form-group-sm">
+            <form action="__MODULE__/Business/statisti">
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="d4311" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})" class="form-control input-sm time start_time" name="start_time" type="text" autocomplete="off"  placeholder="开始时间" value="{$start_time}"/>
+                </div>
+                ~
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="d4312" onfocus="WdatePicker({startDate:'%y-%M-%D',dateFmt:'yyyy-MM-dd'})" class="form-control input-sm time end_time" name="end_time" type="text" autocomplete="off"  placeholder="结束时间" value="{$end_time}"/>
+                </div>
+                <input type="text" autocomplete="off"  name="keyword" class="keyword form-control" placeholder="关键词" value="{$keyword}">
+                <button type="submit" class="search btn btn-primary btn-sm btn-flat" >搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="box box box-solid">
+    <div class="goods-info">
+        <span class="block">商家流水总金额：<span class="red">{$total}</span></span>
+    </div>
+
+    <div class="box-body">
+        <table id="table" class="table table-bordered table-hover table-striped" role="grid">
+            <tr>
+                <th>订单号</th>
+                <th>商家名称</th>
+                <th>支付方式</th>
+                <th>支付金额</th>
+                <th width="140">支付时间</th>
+            </tr>
+            {if condition="empty($data)"}
+                <tr class="tr odd"><td colspan="13">暂无余额数据～！</td></tr>
+            {/if}
+            {volist name="data" id="vo"}
+            <tr class="tr tr-{$vo.order_id}" id="{$vo.order_id}">
+                <td>{$vo.order_id}</td>
+                <td><a href="javascript:;" onclick="dpop.add('80%', '80%', '余额详情', '__MODULE__/Business/money?id={$vo.uid}', true, Reload);">{$vo.name}</a></td>
+                <td>{$vo.paytype}</td>
+                <td><span class="red">{$vo.payprice}</span></td>
+                <td>{$vo.create_time}</td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+</div>
+</section>
+<div class="footer">
+    <div class="page">
+        <span class="rows" style="padding: 6px 10px;">共 {$list->total()} 条记录</span>
+        {$list->render()}
+    </div> 
+</div>
+</body>
+</html>
+
+<script src="/public/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/public/plugins/My97DatePicker/WdatePicker.js"></script>
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>

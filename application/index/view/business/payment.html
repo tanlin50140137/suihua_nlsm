@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, 
+    minimal-ui" /> 
+  <title>向商户付款</title> 
+  <link rel="stylesheet" href="/index/index/css/business.min.css" /> 
+ </head> 
+ <body> 
+  <div class="page">
+   <div id="storeInfo">
+    <div class="store-info">
+     <div class="store-info__avatar" style="margin-top: -20px;"><img src="{$list.logo}" width="100%" alt=""></div>
+     <div class="store-info__name-container">
+      <p id="fontSizeDetect" data-expect-font-size="36">{$list.name}</p>
+      <p class="store-info__merchant"><span>门店</span><span>{$list.name}</span></p>
+     </div>
+    </div>
+   </div>
+   <div class="js-main" id="main">
+    <div class="main">
+     <div class="main__amount">
+      <div class="main__amount__label">
+       金额
+      </div>
+      <div class="main__amount__number">
+       <span class="currency">&yen;</span>
+       <span class="amount js-amount-view"></span>
+       <span class="cursor js-cursor"></span>
+      </div>
+      <input placeholder="" name="amount" id="amount" type="hidden" readonly="" />
+     </div>
+     <div class="js-packets-c"></div>
+    </div>
+    <div class="fixed__amount__remark fixed__amount__remark__normal" id="store__remark">
+     <a class="normal__remark__button remark__button">添加备注</a>
+    </div>
+    <div style="width:100%;color: #858585;text-align:center;text-decoration:underline;font-size:15px;margin-top:30px;">
+     <a class="normal__remark__button remark__button">心自在，南领与你同在！</a>
+    </div>
+   </div>
+   <div id="copyright">
+    <div class="copyright">
+     <a href="javascript:;">千万人都在用<span style="color:#e1c386;"> 呗尔商城</span></a>
+    </div>
+   </div>
+   <div id="keyboard">
+    <div class="keyboard">
+     <div class="keyboard__number-keys">
+      <div class="row">
+       <div class="keyboard__key" data-key="1">
+        1
+       </div>
+       <div class="keyboard__key" data-key="2">
+        2
+       </div>
+       <div class="keyboard__key" data-key="3">
+        3
+       </div>
+      </div>
+      <div class="row">
+       <div class="keyboard__key" data-key="4">
+        4
+       </div>
+       <div class="keyboard__key" data-key="5">
+        5
+       </div>
+       <div class="keyboard__key" data-key="6">
+        6
+       </div>
+      </div>
+      <div class="row">
+       <div class="keyboard__key" data-key="7">
+        7
+       </div>
+       <div class="keyboard__key" data-key="8">
+        8
+       </div>
+       <div class="keyboard__key" data-key="9">
+        9
+       </div>
+      </div>
+      <div class="row">
+       <div class="keyboard__key keyboard__zero" data-key="0">
+        0
+       </div>
+       <div class="keyboard__key" data-key="0"></div>
+       <div class="keyboard__key keyboard__point" data-key=".">
+        .
+       </div>
+      </div>
+     </div>
+     <div class="keyboard__function-keys">
+      <div class="keyboard__key keyboard__del" data-key="del"></div>
+      <div class="keyboard__key keyboard__enter keyboard__enter--disabled" id="submit" data-key="enter" data-disabled="true">
+       <div class="normal normal-2 pay js-submit">
+        <span>确认</span>
+        <span>支付</span>
+       </div>
+       <div class="normal normal-2 pay js-submitting" style="display: none;">
+        <span>正在</span>
+        <span>支付</span>
+       </div>
+       <div class="normal normal-3 limit js-limit" style="display: none;">
+        <span>单笔金额</span>
+        <span>不得超过</span>
+        <span class="line js-limit-num"></span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div> 
+  <script type="text/javascript" src="/index/index/js/business.min.js"></script>  
+<script type="text/javascript" src="/index/index/js/jquery.min.js"></script>
+<script type="text/javascript" src="/index/index/js/layer/layer.min.js"></script>
+  <script>
+    $(function(){
+        $('#submit').on('click',function(){
+            var money = $(".js-amount-view").html();       
+            // 验证用户输入数据
+            if(money.length<1 || money < 0.01){
+                layer.msg('请输入金额！');return false;
+            }
+
+            window.location.href="{:url('Business/transfer')}?id={$list.id}&money="+money;
+        })
+    })
+</script>
+ </body>
+</html>

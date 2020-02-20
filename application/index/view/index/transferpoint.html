@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>券分转账</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/transfer.css">
+	
+</head>
+
+<body style="background: #fff;">
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class='close'></a>
+        <h2>券分转账</h2>
+    </div>
+</div>
+<div id='transfer_container'>
+	<div class="balance_content">
+		<div class="top" id='transfer_container_top'>
+			<div>
+    			
+				<div class="balance">
+					<p class="title">券分可用余额</p>
+					<span class="price">0.00</span>
+				</div>
+    		</div>
+		</div>
+
+		<div class="cash" id='WithdrawDeposit_form'>
+			<div class="box_h">
+				<div class="notes_left">
+					<span class="notes">手机 :<samp></samp></span>
+					<input type="text"  tabindex="1" size="15" id="mobile"/>
+					<div class="claer"></div>
+				</div>
+
+				<div class="notes_left">
+					<span class="notes">金额 :</span>
+					<div class="transfer_money">
+						<input type="number" id="money" tabindex="1" size="15" min="0" />
+						<div class="back">¥</div>
+					</div>
+					<div class="claer"></div>
+				</div>
+
+				<div class="notes_left">
+					<span class="notes">支付密码 :</span>
+					<input type="password" tabindex="1" size="15" id="payPassword" />
+					<div class="claer"></div>
+				</div>
+
+			</div>
+
+			<button type="button" class="tj_btn">确认转账</button>
+		</div>
+
+	</div>
+</div>
+
+
+
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+<script>
+    $(function(){
+    	$("#loading").hide();
+		if(localStorage.point){
+            $(".price").html(localStorage.point); 
+        }
+
+        //转账按钮
+		$('.tj_btn').click(function(){
+			if($('#mobile').val()!='' && $('#money').val()!='' && $('#payPassword').val()!=''){
+				$("#loading").show();
+				$.ajax({
+					url:serverurl+'/api/app/transfer_point',
+					type:'post',
+					data:{
+						'appkey':localStorage.appkey,
+				        'token':token,
+				        'mobile':$('#mobile').val(),
+				        'password':$('#payPassword').val(),
+				        'point':$('#money').val()
+					},
+					success:function(data){
+						$("#loading").hide();
+						if(data.success){
+							layer.msg(data.info)
+							api.closeWin();
+						}else{
+							layer.msg(data.info)
+						}
+					}
+				})
+			}else{
+				layer.msg("转账信息有误");
+			}
+		})
+    })
+</script>
+</html>

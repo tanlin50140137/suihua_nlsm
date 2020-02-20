@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改会员余额</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+
+</head>
+<body>
+
+<div class="box box-solid">
+    <div class="box-body">
+    <form action=" " method="post" id="form">
+        <table class="tab-member form-inline">
+            <tr>
+                <th colspan="4">调节余额</th>
+            </tr>
+            <tr>
+                <td class="td-r">可用余额：</td>
+                <td class="red">{$money}</td>
+            </tr>
+            <tr>
+                <td class="td-r">调整余额：</td>
+                <td class="red">
+                    <input type="number" step="0.01" class="form-control input-sm input-200 money" placeholder="输入余额！" /> * 输入负值即可减少余额；
+                </td>
+            </tr>
+            <tr>
+                <td class="td-r">调节说明：</td>
+                <td>
+                    <textarea type="textarea" class="form-control pinput remark" name="remark" datatype="0,255" rule="length" errorms="描述请在255以内！" style="width:400px;"></textarea>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+</div>
+<div class="footer">
+    <button class="btn btn-primary btn-sm btn-flat" type="submit">确认调节</button>
+</div>
+</form>
+<script src="/public/static/js/jquery.min.js"></script>
+<script src="/public/static/js/md5.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script type="text/javascript">
+$(function(){
+    $("#form").submit(function(){  
+        uid = '{$id}';
+        money = $('.money').val();
+        remark = $('.remark').val();
+        if (money == '' || money == 0) {
+            bpop.tip('请输入正确的余额数量！', 2, 1);
+            return false;
+        }
+        bpop.add('确定要对余额进行调节吗？', 2, function(){
+            bpop.addLoading(true);
+            $.post('__MODULE__/Member/money_edit',{'id':uid,'money':money,'remark':remark,'token':localStorage.token}, function(data) {
+                if (data.success == true) {
+                    bpop.tip(data.info, 1, 2);
+                    setTimeout(function(){
+                        window.location.reload();
+                    },1000);
+                }else {
+                    bpop.tip(data.info, 2, 1);
+                }
+            }, 'JSON');
+        })
+        return false; 
+    }); 
+})
+</script>
+</body>
+</html>

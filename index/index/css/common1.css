@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*清除标签的默认样式*/
+*{ margin:0; padding:0;}
+ul,li,dl,dd,dt,ol,li{ list-style:none;}
+img{ border:none;}
+a{ text-decoration:none;box-sizing: border-box;}
+
+
+/*设置公用样式*/
+body{ font-family:"Microsoft Yahei","SimSun",Arial;
+ font-size:16px;}
+.fl{ float:left;}
+.fr{ float:right;}
+.clearfix{zoom:1;}
+.clearfix:after{ display:block; clear:both; content:"";}

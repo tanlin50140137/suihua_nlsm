@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>个人中心</title>
+    <link rel="stylesheet" href="/index/index/css/body.css">
+    <link rel="stylesheet" href="/index/index/css/user.css">
+    <style>
+    .user-top .top_face{
+        background: #fe623c;
+    }
+    </style>
+</head>
+
+<body style="margin-bottom: 0px;">
+<div id="top"></div>
+<div id='user_container'>
+    <div class="user-top">
+        <div>
+            <div class='top_face'>
+                <div class='user_face'></div>
+                <div class='user_name'></div>
+                <div class='user_identity'></div>
+
+            </div>
+            <!-- <div class='chat_btn'></div> -->
+            <!-- <div class='setting_btn' onclick="tohtml('personal');"></div> -->
+            <ul>
+                <li onclick="tohtml('moneylog.html')">
+                    <i class="money">{$list.money}</i>
+                    <span>我的余额</span>
+                </li>
+                <li onclick="tohtml('moneylog.html')">
+                    <i class="point">{$list.total}</i>
+                    <span>累计收益</span>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    <div class="funList">
+        <ul>
+            <li class="touch goods" style="display: none;" onclick="tohtml('release');"><a >商品发布</a></li> 
+            <li class="touch"><a href="tel:020-31528513">服务热线</a></li>
+            <li class="touch" onclick="tohtml('code');"><a >收款二维码</a></li>
+            <li class="touch logout"><a >退出登录</a></li>
+        </ul>
+    </div>
+
+    <div style="height: 57px;"></div>
+</div>
+
+<script type="text/javascript" src="/index/index/js/jquery.min.js"></script>
+<script type="text/javascript" src="/index/index/js/layer/layer.min.js"></script>
+</body>
+
+<script>
+    $(function(){
+        $('.user_face').css('background','url("{$list.logo}") no-repeat center center / cover')
+                $('.user_name').html("{$list.name}")
+                $('.user_identity').html('商家会员')
+        //退出登陆
+        $(".logout").click(function(){
+            if(confirm("确定退出登录吗？")){
+                window.location.href="{:url('Business/logout')}"
+            }
+        });
+    })
+</script>
+</html>

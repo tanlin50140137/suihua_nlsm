@@ -1,0 +1,94 @@
+#classify_container {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: calc(100%);
+    overflow: hidden;
+    background: #f6f6f6;
+    margin-top: 23px;
+}
+#classify_container #content #left{
+    width: 23%;
+    height: calc(100%);
+    float: left;
+    text-align: center;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling : touch;
+}
+#classify_container #content #left ul li{
+    width: 100%;
+    height:43px;
+    line-height: 43px;
+    background: #f2f2f2;
+    box-sizing:border-box;
+    border-left: 2px solid #f2f2f2;
+    font-size: .9rem;
+}
+#classify_container #content #right{
+    width: 77%;
+    height: calc(100% - 35px);
+    float: left;
+    background: #fff;
+    overflow-y: scroll;
+}
+#classify_container #content #right > div{
+    width: 100%;
+    height: 100%;
+}
+#classify_container #content #right ul{
+    display: block;
+    width: 90%;
+    height: 90%;
+    padding: 5%;
+}
+#classify_container #content #right ul li{
+    width: 30%;
+    float: left;
+    background: #f2f2f2;
+    height: 105px;
+    border-radius: 10px;
+    margin-bottom: 5%;
+    position: relative;
+}
+#classify_container #content #right ul li:nth-child(2){
+    margin: 0px 5%;
+}
+#classify_container #content #right ul li:nth-child(5){
+    margin: 0px 5%;
+}
+#classify_container #content #right ul li:nth-child(8){
+    margin: 0px 5%;
+}
+#classify_container #content #right ul li:nth-child(11){
+    margin: 0px 5%;
+}
+#classify_container #content #right ul li:nth-child(14){
+    margin: 0px 5%;
+}
+#classify_container #content #right ul li:nth-child(17){
+    margin: 0px 5%;
+}
+#classify_container #content #right ul li:nth-child(20){
+    margin: 0px 5%;
+}
+#classify_container #content #right ul li em{
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 90%;
+    height: 70%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+#classify_container #content #right ul li span{
+    position: absolute;
+    display: block;
+    bottom: 8px;
+    font-size: .9rem;
+    width: 100%;
+    text-align: center;
+}

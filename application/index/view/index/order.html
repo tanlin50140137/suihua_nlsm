@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+    <title>确定订单</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/order.css">
+    <link rel="stylesheet" href="./css/coupon.css">
+</head>
+
+<body>
+<div id='loading'><img src='./image/loading.png' alt=''></div>
+<div id="top"></div>
+<div class='header'>
+    <div>
+        <a href='javascript:;' class="close"></a>
+        <h2>确定订单</h2>
+    </div>
+</div>
+
+
+<div id='ConfirmOrder_container'>
+    <div id='user_site'>
+        <div>
+
+        </div>
+    </div>
+    <div id='content'>
+        <div class='order_list'>
+            <ul>
+                <li></li>
+            </ul>
+            <div class='payBox'>
+                <p>支付方式<span>微信支付</span></p>
+                <p>优惠券<span>未使用</span></p>
+                <p>券分抵购<span><i>最多使用<samp>0</samp>券分</i><input type="checkbox" id="myCheck">
+                <label for="myCheck" id="myCheckLabel"></label></span></p>
+            </div>
+            <h3>结算详情</h3>
+            <div class='message'>
+                <p>商品总计：<span>￥0.00</span></p>
+                <p>运费：<span></span></p>
+                <span class="freight_price">满60元包邮</span>
+                <input type='text' placeholder='备注留言'/>
+            </div>
+            <div class='config_pay'>
+                <b>合计：￥<span>0.00</span></b>
+                <div class='config_pay_btn'>
+                    <button>提交订单</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="couponBox" style="display: none;">
+    <div id="top"></div>
+    <div id='Coupon_container'>
+        <div class='header'>
+            <div>
+                <a href='javascript:;'></a>
+                <h2>优惠券</h2>
+            </div>
+        </div>
+
+        <div id='content'>
+        <!-- 1 -->
+            <div class="cont_in state1" >
+                <ul class="pt"></ul>
+                <ul class="dp"></ul>
+                <div class="sy_btn_fales"></div>
+                <div class="sy_btn_out">
+                    <div class="sy_btn">立即使用</div>
+                </div>
+
+            </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="siteBox" style="display: none;">
+    <div class='header'>
+        <div>
+            <!-- <a href='javascript:;'></a> -->
+            <h2>收货地址</h2>
+        </div>
+    </div>
+    <div class="content">
+        <ul></ul>
+    </div>
+</div>
+
+<div id="payTypeBox" style="display: none;">
+    <div class='header'>
+        <div>
+            <a href='javascript:;'></a>
+            <h2>支付方式</h2>
+        </div>
+    </div>
+    <div class="payment-container payment">
+        <a href="javascript:;"><img src="image/payment1.png"><i>微信支付</i></a>
+        <!-- <a href="javascript:;"><img src="image/payment2.png"><i>支付宝支付</i></a> -->
+
+    </div>
+</div>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/layer/layer.min.js"></script>
+</body>
+
+<script>
+$(function(){
+    if(localStorage.goods_list){
+        $("#loading").hide();
+        var cid = 0;
+        var point = 0;
+        var bus_id = new Array();
+        var goods_list = JSON.parse(localStorage.goods_list);
+        //抓取上一页传的商品
+        var price = 0;
+        var html = '';
+        for(x in goods_list){
+            html = html +"<div class='goods_details'>\
+                            <em style='"+goods_list[x].goods_logo+"'></em>\
+                            <h4>"+goods_list[x].goods_name+"</h4>\
+                            <h6>￥"+goods_list[x].goods_price+"<br/></h6>\
+                            <span>x "+goods_list[x].goods_number+"</span>\
+                            <p>"+goods_list[x].spec_value+"</p>\
+                        </div>"
+            price = price + Number(goods_list[x].goods_price) * Number(goods_list[x].goods_number);
+            point = point + Number(goods_list[x].goods_point) * Number(goods_list[x].goods_number);
+            bus_id.push(goods_list[x].goods_bus_id);
+        }
+        //增加运费
+        $.post(serverurl+'/api/app/order_freight_price',{'goods_list':goods_list,'token':token},function(data){
+            
+            price = price + data.list;
+            point = point + data.list;
+            
+            $('.message p').eq(1).find('span').text('￥'+data.list.toFixed(2));
+
+            $('.order_list ul li').html(html);
+            $('.config_pay b span').text(price.toFixed(2));
+            $(".payBox p:nth-child(3) span i samp").html(point);
+
+            //1=微信 2=支付宝
+            var payType = 2;
+            //打开支付方式页面
+            $('.payBox p').eq(0).click(function(){
+                $('#payTypeBox').fadeIn(300);
+                $('.payment a').click(function(){
+
+                    if($(this).children('i').text()=='微信支付'){
+                        payType = 1
+                        $('.payBox p').eq(0).children('span').text($(this).children('i').text());
+
+                    }else if($(this).children('i').text()=='支付宝支付'){
+                        payType = 2
+                        $('.payBox p').eq(0).children('span').text($(this).children('i').text());
+                    }
+                    $('#payTypeBox').fadeOut(300);
+                })
+            })
+            //关闭支付方式页面
+            $('#payTypeBox #header a').click(function(){
+                $('#payTypeBox').fadeOut(300);
+            })
+
+            //获取收货地址
+            $.post(serverurl+'/api/app/address',{'appkey':localStorage.appkey,'token':token},function(data){
+                if(data.info == 'appkey验证失败！'){
+                    api.openWin({
+                        name: 'login',
+                        url: 'login.html',
+                    });
+                }
+                if(data.list != ''){
+                    var html1 = '';
+                    var html2 = '';
+                    for(x in data.list){
+                        if(data.list[x].is_state==1){
+                            $('#user_site div').html("<p><span>收货</span><samp class='user_name'>"+data.list[x].username+"</samp><i><samp class='user_mobile'>"+data.list[x].mobile+"</samp></i></p><p><span>地址</span><samp class='user_city'>"+data.list[x].city.replace(/-/g,'') + '-' + data.list[x].address+"</samp></p>");
+
+                            html1 = html1 +'<li><b>'+data.list[x].username+'</b><strong>'+data.list[x].mobile+'</strong><p>'+data.list[x].city.replace(/-/g,'') +'-'+  data.list[x].address+'</p><button class="hide" name="'+data.list[x].id+'"></button></li>'
+                        }else{
+                            html2 = '<li><b>'+data.list[x].username+'</b><strong>'+data.list[x].mobile+'</strong><em>默认</em><p>'+data.list[x].city.replace(/-/g,'') + '-' + data.list[x].address+'</p><button class="hide" name="'+data.list[x].id+'"></button></li>'
+                        }
+                    }
+                    $('#user_site').click(function(){
+                        $('#siteBox').fadeIn(200);
+                    })
+                    $('#siteBox .content ul').html(html1+html2);
+                    $('#siteBox .content ul li').click(function(){
+                        $('#user_site div').html("<p><span>收货</span><samp class='user_name'>"+$(this).children('b').text()+"</samp><i><samp class='user_mobile'>"+$(this).children('strong').text()+"</samp></i></p><p><span>地址</span><samp class='user_city'>"+$(this).children('p').text()+"</samp></p>")
+                        $('#siteBox').fadeOut(200);
+                    })
+                    $('#siteBox #header a').click(function(){
+                        $('#siteBox').fadeOut(200);
+                    })
+
+                }else{
+                    $('#user_site div').html("<center><a>暂无收货地址，请添加收货地址</a></center>");
+                    $('#user_site div center a').click(function(){
+                        localStorage.Callback = 'order';
+                        api.openWin({
+                            name: 'address',
+                            reload:true,
+                            url:'address.html'
+                        });
+                    })
+                }
+            },"json");
+            
+            //打开优惠券页面
+            $('.payBox p').eq(1).click(function(){
+                $('#couponBox').fadeIn(300);
+                //获取下单可用优惠券
+                $.post(serverurl+'/api/app/get_coupon',{'total':price,'bus_id':bus_id,'appkey':localStorage.appkey,'token':token},function(data){
+
+                    var html1 = '<h4 class="ptq">平台券</h4>';
+                    var html2 = '<h4 class="dpq">店铺券</h4>';
+                    for(x in data.list){
+                        if(data.list[x].bus_id==0){
+                            html1 = html1 +"<li><samp class='d_top'></samp><samp class='d_bottom'></samp><div class='checkBox'><input type='radio' class='rdo' name='select' id='"+data.list[x].id+"' price='"+data.list[x].money+"'/></div><div class='notes'><h2>平台通用卷</h2><h3>使用范围：无限制</h3><p>适用期限："+data.list[x].start_time+"-"+data.list[x].end_time+"</p>   </div><div class='full_out'><div class='full'><samp class='d_left'></samp><samp class='d_right'></samp><p class='price'>￥"+data.list[x].money+"</p><p class='my'>满"+data.list[x].min_price+"可用</p></div></div><div class='clear'></div></li>";
+                        }else{
+                            html2 = html2 +"<li><samp class='d_top'></samp><samp class='d_bottom'></samp><div class='checkBox'><input type='radio' class='rdo' name='select' id='"+data.list[x].id+"' price='"+data.list[x].money+"'/></div><div class='notes'><h2>"+data.list[x].name+"</h2><h3>店铺："+data.list[x].busname+"</h3><p>适用期限："+data.list[x].start_time+"-"+data.list[x].end_time+"</p>   </div><div class='full_out'><div class='full'><samp class='d_left'></samp><samp class='d_right'></samp><p class='price'>￥"+data.list[x].money+"</p><p class='my'>满"+data.list[x].min_price+"可用</p></div></div><div class='clear'></div></li>";
+                        }
+                    }
+                    $('.cont_in .pt').html(html1);
+                    $('.cont_in .dp').html(html2);
+
+                    //使用优惠卷
+                    $('#Coupon_container .sy_btn').click(function(){
+                        var coupon = $(".rdo:checked");
+                        if(coupon.length>0){
+                            cid = coupon.attr('id');
+                            var couprice = coupon.attr('price');
+                            $('.payBox p').eq(1).children('span').text('优惠'+couprice);
+                            var payprice = price - couprice;
+                            if($('#myCheck').is(':checked')){
+                                payprice = payprice - point;
+                            }
+                            $('.config_pay b span').text(payprice.toFixed(2));
+                        }
+                        $('#couponBox').fadeOut(300);
+                    })
+                },"json");
+            })
+
+            //关闭优惠券页面
+            $('#Coupon_container .header a').click(function(){
+                $('#couponBox').fadeOut(300);
+            })
+
+            //使用券分
+            $("#myCheckLabel").on('touchstart',function(){
+                if($('#myCheck').is(':checked')){
+                    var couprice = $(".rdo:checked").attr('price');
+                        couprice = couprice ?  couprice : 0;
+                    var payprice = price - couprice;
+                    $('.config_pay b span').text(payprice.toFixed(2));
+                }else{
+                    var couprice = $(".rdo:checked").attr('price');
+                        couprice = couprice ?  couprice : 0;
+                    var payprice = price - couprice - point;
+                    $('.config_pay b span').text(payprice.toFixed(2));
+                }
+            })
+
+            //提交订单
+            $('.config_pay_btn').click(function(){
+                layer.confirm('确认要下单吗？?', {icon: 3, title:'提示'}, function(index){
+
+                    if(!$('#myCheck').is(':checked')){
+                        usepoint = 0;
+                    }else{
+                        usepoint = point;
+                    }
+                    var paytype = $('.payBox p').eq(0).children('span').text();
+                    $.ajax({
+                        url:serverurl+'/api/app/add_order',
+                        type:'post',
+                        data:{
+                            'appkey':localStorage.appkey,
+                            'token':token,
+                            'paytype':paytype,
+                            'username':$('#user_site .user_name').text(),
+                            'mobile':$('#user_site .user_mobile').text(),
+                            'city':$('#user_site .user_city').text().split('-')[0],
+                            'address':$('#user_site .user_city').text().split('-')[1],
+                            'coupon':cid,
+                            'goods':goods_list,
+                            'remark':$('.message input').val(),
+                            'point':usepoint,
+                            'type':1
+                        },
+                        success:function(data){
+                            if(data.success){
+                                if(data.info != '支付成功！'){
+                                    window.location.href = "/index/payment/payorder?act=order&id="+data.order_id+"&appkey="+localStorage.appkey;
+                                }else{
+                                    api.openWin({
+                                        name: 'orderdetail',
+                                        reload:true,
+                                        url:"orderdetail.html?id="+data.order_id,
+                                    });
+                                }
+                                
+                            }else{
+                                layer.msg(data.info);
+                                if(data.info == 'appkey验证失败！'){
+                                    api.openWin({
+                                        name: 'login',
+                                        url: 'login.html',
+                                    });
+                                }
+                            }
+                        }
+                    })
+                
+                    layer.close(index);
+
+                });
+            })
+        },"json");
+    }else{
+        api.openWin({
+            name: 'index',
+            reload:true,
+            url:'index.html'
+        });
+    }
+})
+</script>
+</html>

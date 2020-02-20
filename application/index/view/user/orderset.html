@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,
+    minimal-ui"/>
+	<title>消费奖励</title>
+</head>
+<link rel="stylesheet" href="/public/skin/css/orderSet.css">
+<link rel="stylesheet" href="/public/skin/css/body.css">
+<script src="/public/skin/js/jquery.js"></script>
+<body>
+<div id="a"></div>
+<div id="worry"></div>
+<div id="change_phone" style="display: none;">
+	<div class="change_phone_top">
+		<p>修改手机号</p>
+	</div>
+	<div class="change_phone_bottom">
+		<p id="change_order">订单编号:</p>
+		<div class="change_phone_bottom_left">
+			<input type="text" name="header_phone_text" id="change_main" value="" />
+			<button type="button" class="confirm_change">确认修改</button>
+		</div>
+	</div>
+</div>
+	<div id='ConfirmOrder_container'>
+		<div id='header'>
+			<div>
+				<a href='javascript:;'></a>
+				<h2>话费记录</h2>
+			</div>
+			<ul class="nav">
+				<li class="hover">话费订单</li>
+				<li>充值记录</li>
+			</ul>
+		</div>
+		<div id='content'>
+			<div class='order_list'>
+				<ul></ul>
+    		</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+localStorage.appkey = '{$user.appkey}';
+apiready = function(){
+$(function(){
+	$('#header a').on('touchstart',function(){
+		api.closeWin()
+	})
+
+	// 导航点击
+	$('.nav li').click(function(){
+		$('.nav li').removeClass('hover');
+		$(this).addClass('hover');
+		if($(this).index()==0){
+			getSetMeal();
+		}else{
+			recharg_log();
+		}
+	})
+
+getSetMeal();
+//获取套餐记录
+function getSetMeal(){
+	$.ajax({
+		url:serverurl+'/api/app/setmeal',
+		type:'post',
+		data:{
+			appkey:localStorage.appkey,
+	        token:localStorage.token
+		},
+		success:function(data){
+			var oid='';
+			$('.order_list ul').html('');
+			if(data.list.length>0){
+				for(var i=0;i<data.list.length;i++){
+					var setmealListDOM = "<li>	\
+											<h5>订单编号:"+data.list[i].order_id+"\
+												<button type='button' class='button_change' name='"+data.list[i].order_id+"' mobile='"+data.list[i].mobile+"'><span>修改手机号</span></button>\
+											</h5>\
+											<div class='goods_details'>\
+												<p>充值手机号："+data.list[i].mobile+"<span class='a'>"+data.list[i].goods_name+"</span></p>\
+												<p><span class='b'>预存金额:"+data.list[i].payprice+"</span></p>\
+												<p>购买时间："+data.list[i].create_time+"</p>		\
+												<p>支付状态："+returnStatus(data.list[i].is_state)+"<span class='d'>剩余："+(12 - data.list[i].number)+"次</span><span class='c'>已充值："+data.list[i].number+"次</span></p>\
+											</div>\
+										</li>"
+							$('.order_list ul').append(setmealListDOM);
+
+				}
+				$('.order_list ul li button').click(function(){
+					oid = $(this).attr('name');
+					var ophone = $(this).attr('mobile');
+					$('#a').show();
+					$('#change_phone').show();
+					$('#change_main').val(ophone);
+					$('#change_order').text("订单编号："+oid)
+					$('#a').click(function(){
+						$('#change_phone').hide();
+						$('#a').hide();
+					})
+
+				})
+				$('.confirm_change').click(function(){
+						$('#change_phone').hide();
+						$('#a').hide();
+						$.ajax({
+							url:serverurl+'/api/app/setmobile',
+							type:'post',
+							data:{
+								appkey:localStorage.appkey,
+						        token:localStorage.token,
+						        id:oid,
+						        mobile:$('#change_main').val()
+							},
+							success:function(data){
+								if(data.success){
+									alertFade(data.info);
+									getSetMeal();
+								}else{
+									alertFade(data.info);
+								}
+							}
+						})
+					})
+			}else{
+				$('.order_list ul').html("<center>暂时没有充值的订单</center>")
+			}
+		}
+	})
+
+	function returnStatus(num){
+		if(num==1){
+			return '待支付'
+		}else{
+			return '已支付'
+		}
+	}
+}
+
+//获取充值记录
+function recharg_log(){
+	$.ajax({
+		url:serverurl+'/api/app/recharg_log',
+		type:'post',
+		data:{
+			appkey:localStorage.appkey,
+	        token:localStorage.token
+		},
+		success:function(data){
+			console.debug(data.list)
+			$('.order_list ul').html('');
+			if(data.list.length>0){
+				for(var i=0;i<data.list.length;i++){
+					var setmealListDOM = "<li>	\
+											<h5>订单编号:"+data.list[i].order_id+"</h5>\
+											<div class='goods_details' style='height:50px;'>\
+												<p>充值手机号："+data.list[i].mobile+"<span class='a'>充值金额：￥"+data.list[i].money+"</span></p>\
+												<p>充值时间："+data.list[i].create_time+"</p>		\
+											</div>\
+										</li>"
+							$('.order_list ul').append(setmealListDOM);
+				}
+			}else{
+				$('.order_list ul').html("<center>暂时没有充值的订单</center>")
+			}
+		}
+	})
+}
+
+})
+}
+
+</script>

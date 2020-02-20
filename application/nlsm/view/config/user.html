@@ -1,0 +1,139 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户设置</title>
+    <link href="/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/static/css/admin.min.css" rel="stylesheet"/>
+    <link href="/public/static/css/content.css" rel="stylesheet" />
+</head>
+<body style="background:#ecf0f5;">
+<section class="content">
+<div class="nav-tabs-custom goods-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li><a href="__MODULE__/Config/index">平台设置</a></li>
+        <li><a href="__MODULE__/Config/notice">通知设置</a></li>
+        <li class="active"><a href="__MODULE__/Config/user">用户设置</a></li>
+    </ul>
+</div>
+<form action=" " method="post" id="form">
+<div class="box box-solid">
+	<div class="box box-solid getform">
+	    <div class="box-body">
+			<table class="tab-member">
+				<tr>
+					<th colspan="4">基本设置</th>
+				</tr>
+				<tr>
+					<td class="td-r">购物车过期：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="cart_time" value="{$list.cart_time}">
+                            <span class="input-group-addon">小时</span>
+                        </div>
+						<span class="help-block">购物车商品的可用时间，单位：小时；过期后自动清除 0：不过期</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">订单过期时间：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="order_time" value="{$list.order_time}">
+                            <span class="input-group-addon">小时</span>
+                        </div>
+						<span class="help-block">未付款订单的可用时间，单位：小时；过期后自动清除 0：不过期</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">订单自动完成：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="finish_order" value="{$list.finish_order}">
+                            <span class="input-group-addon">小时</span>
+                        </div>
+						<span class="help-block">订单的自动确认收货时间，单位：天；到期后自动完成订单 0：不自动完成</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">券分兑换比例：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="ratio" value="{$list.ratio}">
+                            <span class="input-group-addon">：1</span>
+                        </div>
+						<span class="help-block">兑换比例 xxx个券分兑换1元</span>
+					</td>
+				</tr>
+				<tr>
+					<th colspan="4">手续费设置</th>
+				</tr>
+				
+				<tr>
+					<td class="td-r">余额提现扣除：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="money" value="{$list.money}">
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <span class="help-block">会员余额提现时需扣除xx%的手续费</span>
+					</td>
+				</tr>
+
+				<tr>
+					<th colspan="4">商家打折返佣设置</th>
+				</tr>
+				
+				<tr>
+					<td class="td-r">下单用户分佣：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="user" value="{$list.user}">
+                            <span class="input-group-addon">%</span>
+                        </div>
+					</td>
+				</tr>
+				<tr>
+					<td class="td-r">用户上级分佣：</td>
+					<td>
+						<div class="input-group col-xs-12 input-group-sm">
+                            <input type="number" step="0.01" class="form-control pinput" name="parent" value="{$list.parent}">
+                            <span class="input-group-addon">%</span>
+                        </div>
+					</td>
+				</tr>
+			</table>
+	    </div>
+	</div>
+	<div class="footer">
+		<button class="btn btn-primary btn-sm btn-flat" type="submit">保存修改</button>
+	</div>
+</div>
+</form>
+</section>
+<script src="/public/static/js/jquery.min.js"></script>
+
+<!-- 弹框插件 -->
+<link rel="stylesheet" href="/public/static/css/common.css">
+<script src="/public/static/js/common.js"></script>
+<script>
+	//保存修改
+	$(function(){
+		$("#form").submit(function(){  
+			var param = $("#form").serialize();
+			bpop.addLoading(true);
+		    //Ajax post提交表单验证
+	        $.post("__MODULE__/Config/user",param,function(data){
+	            if(data.success == true){
+                    bpop.tip(data.info, 1, 1);
+                }else{
+                    bpop.tip(data.info, 2, 1);
+                }
+	        },"json");
+	        return false; 
+		}); 
+	})
+</script>
+</body>
+</html>
